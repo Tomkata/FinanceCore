@@ -1,7 +1,7 @@
 ﻿
 namespace BankingSystem.Domain.Exceptions
 {
-    using BankingSystem.Domain.Enums;
+    using BankingSystem.Domain.Enums.Account;
 
     public class AccountNotActiveException : DomainException
     {

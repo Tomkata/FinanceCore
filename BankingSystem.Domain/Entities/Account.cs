@@ -6,6 +6,8 @@ namespace BankingSystem.Domain.Entities
     using BankingSystem.Domain.Enums;
     using BankingSystem.Domain.ValueObjects;
     using BankingSystem.Domain.Exceptions;
+    using BankingSystem.Domain.Enums.Account;
+
     public class Account : BaseEntity
     {
         public Account(AccountType accountType, IBAN iBAN, Guid customerId, DepositTerm? depositTerm, int? withdrawLimits)

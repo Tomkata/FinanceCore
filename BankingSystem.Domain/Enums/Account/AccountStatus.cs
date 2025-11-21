@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Domain.Enums.Account
 {
-    public enum Gender
+    public   enum AccountStatus
     {
-        Male = 0,
-        Female = 1,
-        Other = 2
+        Active = 0,
+        Blocked = 1,
+        Closed = 2
     }
 }

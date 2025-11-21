@@ -1,4 +1,4 @@
-﻿using BankingSystem.Domain.Enums;
+﻿using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -41,8 +41,8 @@ namespace BankingSystem.Tests.ValueObjects
         {
             if (input == "0651035020")
             {
-                var iban = IBAN.Create(input);
-                Assert.NotNull(iban);
+                var egn = EGN.Create(input);
+                Assert.NotNull(egn);
             }
             else
             {

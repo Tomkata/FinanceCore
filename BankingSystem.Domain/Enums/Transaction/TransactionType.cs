@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingSystem.Domain.Enums.Account
+namespace BankingSystem.Domain.Enums
 {
-    public enum Gender
+    internal class TransactionType
     {
-        Male = 0,
-        Female = 1,
-        Other = 2
     }
 }

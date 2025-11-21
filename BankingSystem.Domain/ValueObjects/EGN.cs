@@ -1,7 +1,7 @@
 ﻿
 namespace BankingSystem.Domain.ValueObjects
 {
-    using BankingSystem.Domain.Enums;
+    using BankingSystem.Domain.Enums.Account;
     using System.Runtime.CompilerServices;
 
     public  record class EGN

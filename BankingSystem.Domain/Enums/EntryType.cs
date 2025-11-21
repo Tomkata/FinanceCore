@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingSystem.Domain.Enums
+namespace BankingSystem.Domain.Entities
 {
-    public   enum AccountStatus
+    internal class EntryType
     {
-        Active = 0,
-        Blocked = 1,
-        Closed = 2
     }
 }
