@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="BankingSystem.Domain/BankingSystem.Domain.csproj" />
+  <Project Path="BankingSystem.Tests/BankingSystem.Tests.ValueObjects.csproj" Id="9e267ded-5dc2-411c-8b0e-ffb7e809f2a6" />
 </Solution>

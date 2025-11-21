@@ -12,7 +12,7 @@ namespace BankingSystem.Domain.ValueObjects
 
             this.Value = value;
         }
-
+            
         private bool IsValid(string value)
         {
             return !String.IsNullOrEmpty(value) && Regex.IsMatch(value, @"^\+?[0-9]{10,15}$");

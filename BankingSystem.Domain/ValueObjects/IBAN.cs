@@ -1,4 +1,6 @@
-﻿using System.Numerics;
+﻿using BankingSystem.Domain.Exceptions;
+using System.Data;
+using System.Numerics;
 
 public record IBAN
 {
@@ -35,21 +37,34 @@ public record IBAN
         raw = raw.Replace(" ", "").ToUpper();
 
         if (!raw.All(char.IsLetterOrDigit))
-            throw new ArgumentException("IBAN must consist only of letters and digits.");
+            throw new IbanException("IBAN must consist only of letters and digits.");
 
         if (raw.StartsWith("BG") && raw.Length != 22)
-            throw new ArgumentException("Bulgarian IBAN must be exactly 22 characters long.");
+            throw new IbanException("Invalid IBAN format for Bulgaria.");
 
         var rearranged = raw.Substring(4) + raw.Substring(0, 4);
 
         var sb = new System.Text.StringBuilder();
-        foreach (var c in rearranged)
-            sb.Append(char.IsLetter(c) ? IbanLetterValues[c] : c);
+        foreach (char c in rearranged)
+        {
+            if (char.IsLetter(c))
+                sb.Append(IbanLetterValues[c]); 
+            else if (char.IsDigit(c))
+                sb.Append(c);                 
+            else
+                throw new ArgumentException($"Invalid character {c} found.");
+        }
 
-        BigInteger number = BigInteger.Parse(sb.ToString());
 
-        if (number % 97 != 1)
-            throw new ArgumentException("Invalid IBAN checksum.");
+        int mod97 = 0;
+        foreach (var c in sb.ToString())
+        {
+            mod97 = (mod97 * 10 + (c - '0')) % 97;
+        }
+
+
+        if (mod97 != 1)
+            throw new IbanException("Invalid IBAN checksum.");
 
         string countryCode = raw[..2];
         string checkDigits = raw.Substring(2, 2);

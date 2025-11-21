@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Domain.Exceptions
 {
-    internal class InvalidPhoneNumberException
+    public class InvalidPhoneNumberException : DomainException
     {
+
+        public InvalidPhoneNumberException(string value)
+            :base($"The phone number: {value} is not valid.")
+        {
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace BankingSystem.Domain.Exceptions
 
     public class AccountNotActiveException : DomainException
     {
-        public Guid AccountId { get;  }
+        public Guid AccountId { get;  } 
         public AccountStatus AccountStatus { get;}
 
         public AccountNotActiveException(Guid accountId,AccountStatus accountStatus)

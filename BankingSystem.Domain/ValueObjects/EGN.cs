@@ -27,10 +27,9 @@ namespace BankingSystem.Domain.ValueObjects
                 throw new ArgumentException("EGN must be exactly 10 digits.");
 
             var year = int.Parse(raw.Substring(0,2));
-            var month = int.Parse(raw.Substring(2, 2));
+            var month = int.Parse(raw.Substring(2, 2)); 
             var day = int.Parse(raw.Substring(4, 2));
-
-            var birthDate = new DateOnly(year, month, day);
+            
 
 
             if (month >= 1 && month <= 12)
@@ -61,7 +60,7 @@ namespace BankingSystem.Domain.ValueObjects
             if (control != raw[9] - '0')
                 throw new ArgumentException("Invalid EGN control digit.");
 
-
+            var birthDate = new DateOnly(year,month,day);
             int genderDigit = int.Parse(raw.Substring(8, 1));
             var gender = (genderDigit % 2 == 0) ? Gender.Male : Gender.Female;
 

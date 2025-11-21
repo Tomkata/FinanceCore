@@ -6,7 +6,21 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Domain.ValueObjects
 {
-    internal class Address
+    public record class Address
     {
+
+        public Address(string cityAddress, string city, int zip, string country)
+        {
+            //Check for valid values
+            this.CityAddress = cityAddress;
+            this.City = city;
+            this.Zip = zip;
+            this.Country = country;
+        }
+
+        public string CityAddress { get; }
+        public string City { get;  }
+        public int Zip { get; }
+        public string Country { get; }
     }
 }
