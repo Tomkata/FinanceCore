@@ -1,6 +1,9 @@
-﻿namespace BankingSystem.Domain.Entities
+﻿using BankingSystem.Domain.Common;
+
+namespace BankingSystem.Domain.Entities
 {
-    public class Customer
+    public class Customer : BaseEntity
     {
+
     }
 }
