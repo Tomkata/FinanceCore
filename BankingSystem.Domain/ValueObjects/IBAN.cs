@@ -4,6 +4,8 @@ using System.Numerics;
 
 public record IBAN
 {
+    private IBAN()
+    { }
     public static readonly Dictionary<char, int> IbanLetterValues = new()
     {
         { 'A', 10 }, { 'B', 11 }, { 'C', 12 }, { 'D', 13 }, { 'E', 14 },
@@ -14,11 +16,11 @@ public record IBAN
         { 'Z', 35 }
     };
 
-    public string Value { get; }
-    public string CountryCode { get; }
-    public string CheckDigits { get; }
-    public string BankCode { get; }
-    public string AccountNumber { get; }
+    public string Value { get; init; }
+    public string CountryCode { get; init; }
+    public string CheckDigits { get; init; }
+    public string BankCode { get; init; }
+    public string AccountNumber { get; init; }
 
     private IBAN(string value, string countryCode, string checkDigits, string bankCode, string accountNumber)
     {

@@ -7,7 +7,7 @@ namespace BankingSystem.Domain.Entities
     {
         private Customer() {  }
         public Customer(string userName, 
-            string firstName,
+            string firstName,   
             string lastName,
             PhoneNumber phoneNumber,
             Address address,

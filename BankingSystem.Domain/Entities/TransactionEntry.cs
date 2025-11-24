@@ -1,15 +1,11 @@
-﻿using BankingSystem.Domain.Common;
-using BankingSystem.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
+﻿
 
 namespace BankingSystem.Domain.Entities
 {
+    using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.Enums;
+    using System.Transactions;
+
     public class TransactionEntry : BaseEntity
     {
         private TransactionEntry()

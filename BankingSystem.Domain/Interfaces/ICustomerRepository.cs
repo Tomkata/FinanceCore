@@ -1,12 +1,8 @@
-﻿using BankingSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BankingSystem.Domain.Interfaces
 {
+    using BankingSystem.Domain.Entities;
+
     public interface ICustomerRepository
     {
         Task<Customer?> GetByIdAsync(Guid id);

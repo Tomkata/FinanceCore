@@ -6,10 +6,12 @@ namespace BankingSystem.Domain.ValueObjects
 
     public  record class EGN
     {
-        public string Value { get; }
+        private EGN()
+        {  }
+        public string Value { get; init; }
 
-        public DateOnly BirthDate { get; }
-        public Gender Gender { get; }
+        public DateOnly BirthDate { get; init; }
+        public Gender Gender { get; init; }
 
         public EGN(string value, DateOnly birthDate, Gender gender)
         {

@@ -8,7 +8,10 @@ namespace BankingSystem.Domain.ValueObjects
 {
     public record class Address
     {
-
+        private Address()
+        {
+            
+        }
         public Address(string cityAddress, string city, int zip, string country)
         {
             this.CityAddress = cityAddress;
@@ -17,9 +20,9 @@ namespace BankingSystem.Domain.ValueObjects
             this.Country = country;
         }
 
-        public string CityAddress { get; }
-        public string City { get;  }
-        public int Zip { get; }
-        public string Country { get; }
+        public string CityAddress { get; init; }
+        public string City { get; init; }
+        public int Zip { get; init; }
+        public string Country { get; init; }
     }
 }

@@ -34,7 +34,7 @@ namespace BankingSystem.Domain.Entities
         public string Description { get;private set; }
         public string IdempotencyKey { get; private set; }
         public DateTime TransactionDate { get; private set; }
-
+            
         public virtual ICollection<TransactionEntry> TransactionEntries { get; private set; } = new HashSet<TransactionEntry>();
 
         public virtual Account Account { get; private set; }

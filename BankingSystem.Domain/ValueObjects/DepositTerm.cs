@@ -5,7 +5,9 @@
 
     public record DepositTerm
     {
-        public int Months { get;}
+        private DepositTerm()
+        {}
+        public int? Months { get; init; }
 
         public DepositTerm(int months)
         {
@@ -16,7 +18,11 @@
 
         public DateTime CalculateMaturity(DateTime startDate)
         {
-            return startDate.AddMonths(Months);
+            if (Months == null)
+                throw new InvalidOperationException("Months cannot be null");
+
+            return startDate.AddMonths(Months.Value);
         }
+
     }
 }

@@ -45,7 +45,7 @@ namespace BankingSystem.Domain.Entities
         public AccountType AccountType { get; private set; }
         public decimal Balance { get; private set; }    
         public AccountStatus AccountStatus { get; private set; }
-        public IBAN IBAN { get; private set; }
+        public IBAN IBAN { get; private set; }  
         public DateTime? MaturityDate { get; private set; } //only for Deposit Account
         public DepositTerm? DepositTerm { get; private set; }
         public int? WithdrawLimits { get; private set; }
