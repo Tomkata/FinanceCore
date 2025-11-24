@@ -1,4 +1,4 @@
-﻿using BankingSystem.Domain.Enums.Account;
+﻿using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;

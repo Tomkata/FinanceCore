@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BankingSystem.Domain.Entities
 {
@@ -15,10 +16,21 @@ namespace BankingSystem.Domain.Entities
         {
             
         }
-        public TransactionEntry(Guid accountId, Guid transactionId, EntryType entryType, decimal amount)
+        public TransactionEntry(Guid accountId, EntryType entryType, decimal amount)
         {
+            if (accountId == Guid.Empty)
+                throw new TransactionException("Account ID is required for TransactionEntry");
+
+            if (amount == 0)
+                throw new TransactionException("Transaction entry amount cannot be zero");
+
+            if (entryType == EntryType.Debit && amount > 0)
+                throw new TransactionException("Debit entries must have a negative amount");
+
+            if (entryType == EntryType.Credit && amount < 0)
+                throw new TransactionException("Credit entries must have a positive amount");
+
             AccountId = accountId;
-            TransactionId = transactionId;
             EntryType = entryType;
             Amount = amount;
         }

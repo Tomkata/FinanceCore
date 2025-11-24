@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingSystem.Domain.Enums
+namespace BankingSystem.Domain.Enums.Transaction
 {
-    internal class TransactionType
+    public enum TransactionType
     {
+       Deposit = 0,
+       Withdrawal = 1,
+       Transfer = 2,
+       Payment = 3,
+       Fee = 4
     }
 }

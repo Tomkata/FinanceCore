@@ -11,7 +11,6 @@ namespace BankingSystem.Domain.ValueObjects
 
         public Address(string cityAddress, string city, int zip, string country)
         {
-            //Check for valid values
             this.CityAddress = cityAddress;
             this.City = city;
             this.Zip = zip;

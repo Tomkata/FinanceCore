@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Domain.Enums.Transaction
 {
-    internal class TransactionStatus
+    public enum TransactionStatus
     {
+        Pending = 0,
+        Completed = 1, 
+        Failed = 2
     }
 }

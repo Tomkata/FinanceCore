@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingSystem.Domain.Entities
+namespace BankingSystem.Domain.Enums
 {
-    internal class EntryType
+    public enum EntryType
     {
+        Debit = 0,
+        Credit = 1
     }
 }
