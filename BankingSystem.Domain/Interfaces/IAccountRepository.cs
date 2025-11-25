@@ -5,8 +5,9 @@ namespace BankingSystem.Domain.Interfaces
 
     public interface IAccountRepository
     {
-        Task<Customer?> GetByIdAsync(Guid id);
-        Task SaveAsync(Customer account);
+        Task<Account?> GetByIdAsync(Guid id);
+        Task SaveAsync(Account account);
 
     }
 }
+    

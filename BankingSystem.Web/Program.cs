@@ -1,4 +1,6 @@
+using BankingSystem.Domain.Interfaces;
 using BankingSystem.Infrastructure.Data;
+using BankingSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 //Add dbContext
 builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Repositories
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
