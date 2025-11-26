@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="BankingSystem.Application/BankingSystem.Application.csproj" Id="f892906c-e41d-43cf-be68-6eb1aa4391f0" />
   <Project Path="BankingSystem.Domain/BankingSystem.Domain.csproj" />
   <Project Path="BankingSystem.Infrastructure/BankingSystem.Infrastructure.csproj" Id="b3f19d14-94dc-450a-83bf-5cb928601892" />
   <Project Path="BankingSystem.Tests/BankingSystem.Tests.ValueObjects.csproj" Id="9e267ded-5dc2-411c-8b0e-ffb7e809f2a6" />

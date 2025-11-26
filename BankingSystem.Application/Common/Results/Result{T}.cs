@@ -19,6 +19,8 @@ namespace BankingSystem.Application.Common.Results
         }
 
         public static Result<T> Success(T value) => new(true, value, string.Empty);
-        public static Result<T> Failure(string error) => new(false,default,error);
+        public static Result<T> Failure(string error) => new(false, default, error);
     }
+}
+
 

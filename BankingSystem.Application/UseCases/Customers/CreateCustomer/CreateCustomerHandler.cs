@@ -5,6 +5,8 @@ using BankingSystem.Domain.Entities;
 using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.Interfaces;
 using BankingSystem.Domain.ValueObjects;
+using FluentValidation;
+using System.ComponentModel.DataAnnotations;
 
 namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
 {
@@ -12,15 +14,28 @@ namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly CreateCustomerValidator _validator;
 
-        public CreateCustomerHandler(ICustomerRepository customerRepository, IUnitOfWork unitOfWork)
+        public CreateCustomerHandler(ICustomerRepository customerRepository, 
+            IUnitOfWork unitOfWork,
+            CreateCustomerValidator validator)
         {
             this._customerRepository = customerRepository;
             this._unitOfWork = unitOfWork;
+            this._validator = validator;
         }
 
         public async Task<Result<CustomerDto>> Handle(CreateCustomerCommand command)
         {
+
+            //validation
+            var validationResult = await _validator.ValidateAsync(command);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join(", ",validationResult.Errors.Select(x=>x.ErrorMessage));
+                return Result<CustomerDto>.Failure(errors);
+            }
 
             try
             {
