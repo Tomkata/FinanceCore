@@ -1,6 +1,6 @@
 ﻿
 
-namespace BankingSystem.Infrastructure.Presistence
+namespace BankingSystem.Infrastructure.Persistence
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Infrastructure.Data;

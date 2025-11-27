@@ -1,44 +1,34 @@
-using BankingSystem.Domain.Interfaces;
-using BankingSystem.Infrastructure.Data;
-using BankingSystem.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
+using BankingSystem.Application;
+using BankingSystem.Infrastructure;
 
-var builder = WebApplication.CreateBuilder(args);
-
-//Add dbContext
-builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Repositories
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+public class Program
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        // Add services
+        builder.Services
+            .AddApplication()
+            .AddInfrastructure(builder.Configuration);
+
+        builder.Services.AddControllers();  
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        var app = builder.Build();
+
+        // Configure pipeline
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();  
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();

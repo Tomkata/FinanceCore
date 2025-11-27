@@ -1,6 +1,7 @@
 ﻿using BankingSystem.Domain.Entities;
 using BankingSystem.Domain.Interfaces;
 using BankingSystem.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +26,18 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task SaveAsync(Customer customer)
         {
-            _context.Customers.Update(customer);
-            await _context.SaveChangesAsync();
+            var existingCustomer = await _context.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == customer.Id);
+
+            if (existingCustomer is null)
+            {
+                await _context.Customers.AddAsync(customer);
+            }
+            else
+            {
+                _context.Customers.Update(customer);
+            }
         }
     }
 }

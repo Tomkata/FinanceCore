@@ -87,7 +87,14 @@ namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
 
                 return Result<CustomerDto>.Failure(ex.Message);
             }
-
+            catch (ArgumentException ex)  
+            {
+                return Result<CustomerDto>.Failure(ex.Message);
+            }
+            catch (Exception ex)  
+            {
+                return Result<CustomerDto>.Failure($"An error occurred: {ex.Message}");
+            }
         }
 
 

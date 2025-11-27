@@ -26,8 +26,18 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task SaveAsync(Transaction transaction)
         {
-            _context.Transactions.Update(transaction);
-            await _context.SaveChangesAsync();
+            var existingTransaction = await _context.Transactions
+             .AsNoTracking()
+             .FirstOrDefaultAsync(c => c.Id == transaction.Id);
+
+            if (existingTransaction is null)
+            {
+                await _context.Transactions.AddAsync(transaction);
+            }
+            else
+            {
+                _context.Transactions.Update(transaction);
+            }
         }
     }
 }
