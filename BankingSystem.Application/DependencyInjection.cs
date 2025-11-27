@@ -3,6 +3,8 @@
 namespace BankingSystem.Application
 {
     using BankingSystem.Application.UseCases.Customers.CreateCustomer;
+    using Mapster;
+    using MapsterMapper;
     using Microsoft.Extensions.DependencyInjection;
     public static class DependencyInjection
     {
@@ -13,6 +15,9 @@ namespace BankingSystem.Application
 
             //Handlers
             services.AddScoped<CreateCustomerHandler>();
+
+            //mapper
+            services.AddSingleton<IMapper>(new Mapper(TypeAdapterConfig.GlobalSettings));
                 
             return services;
         }
