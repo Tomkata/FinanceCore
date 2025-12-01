@@ -20,9 +20,9 @@ namespace BankingSystem.Web.Middleware
             {
                 await HandleExceptionAsync(context, 400, ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                await HandleExceptionAsync(context, 500, "Something went wrong.");
+                await HandleExceptionAsync(context, 500, ex.ToString());
             }
         }
 

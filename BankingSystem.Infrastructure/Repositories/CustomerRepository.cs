@@ -19,6 +19,11 @@ namespace BankingSystem.Infrastructure.Repositories
             _context = context;
         }
 
+        public async Task<Customer?> FindByEgnAsync(string egn)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(x => x.EGN.Value == egn);
+        }
+
         public async Task<Customer?> GetByIdAsync(Guid id)
         {
             return await _context.Customers.FindAsync(id);

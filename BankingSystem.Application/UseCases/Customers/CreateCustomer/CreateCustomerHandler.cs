@@ -35,8 +35,13 @@ namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
             if (!validationResult.IsValid)
                 return Result<CustomerDto>.Failure(validationResult.ToString());
 
+            var existingCustomer = await _customerRepository.FindByEgnAsync(command.Data.EGN);
+
+            if (existingCustomer is not null)
+                throw new CustomerWithExistingEgnException();
+
             //map
-            var customer = command.Data.Adapt<Customer>();
+            var customer = command.Adapt<Customer>();
 
             await _customerRepository.SaveAsync(customer);
             await _unitOfWork.SaveChangesAsync();

@@ -9,6 +9,8 @@ namespace BankingSystem.Domain.Interfaces
 
         Task SaveAsync(Customer account);
 
+        Task<Customer?> FindByEgnAsync(string egn);
+
 
     }
 }

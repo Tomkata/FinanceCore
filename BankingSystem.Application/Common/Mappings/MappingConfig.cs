@@ -11,17 +11,30 @@ namespace BankingSystem.Application.Common.Mappings
         public static void RegisterMappings()
         {
 
-            // Command -> Domain
-            TypeAdapterConfig<CreateCustomerCommand, Customer>
-                   .NewConfig()
-                   .Map(dest => dest.EGN, src => EGN.Create(src.Data.EGN))
-                   .Map(dest => dest.PhoneNumber, src => new PhoneNumber(src.Data.PhoneNumber))
-                   .Map(dest => dest.Address, src => new Address(src.Data.Street, src.Data.City,
-                   int.Parse(src.Data.PostalCode), src.Data.Country));
+             TypeAdapterConfig<CreateCustomerCommand, Customer>
+            .NewConfig()
+            .ConstructUsing(src => new Customer(
+                src.Data.UserName,
+                src.Data.FirstName,
+                src.Data.LastName,
+                new PhoneNumber(src.Data.PhoneNumber),
+                new Address(src.Data.Street, src.Data.City, int.Parse(src.Data.PostalCode), src.Data.Country),
+                EGN.Create(src.Data.EGN)
+            ));
 
-            //Domain -> Dto
+            TypeAdapterConfig<CreateCustomerDto, Customer>
+                .NewConfig()
+                .ConstructUsing(src => new Customer(
+                    src.UserName,
+                    src.FirstName,
+                    src.LastName,
+                    new PhoneNumber(src.PhoneNumber),
+                    new Address(src.Street, src.City, int.Parse(src.PostalCode), src.Country),
+                    EGN.Create(src.EGN)
+                ));
 
-            TypeAdapterConfig<Customer, CreateCustomerDto>
+            // Domain → DTO
+            TypeAdapterConfig<Customer, CustomerDto>
                 .NewConfig()
                 .Map(dest => dest.EGN, src => src.EGN.Value)
                 .Map(dest => dest.PhoneNumber, src => src.PhoneNumber.Value)
