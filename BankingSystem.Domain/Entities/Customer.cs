@@ -1,4 +1,7 @@
 ﻿using BankingSystem.Domain.Common;
+using BankingSystem.Domain.Enums.Account;
+using BankingSystem.Domain.Enums.Customer;
+using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
 
 namespace BankingSystem.Domain.Entities
@@ -28,7 +31,7 @@ namespace BankingSystem.Domain.Entities
         public Address Address { get;private set; }
         public PhoneNumber PhoneNumber { get; private set; }
         public EGN EGN { get; private set; }
-       
+        public CustomerStatus Status { get; private set; }
 
         public virtual ICollection<Account> Accounts { get; private set; }
 
@@ -41,6 +44,15 @@ namespace BankingSystem.Domain.Entities
         {
             this.PhoneNumber = new PhoneNumber(phoneNumber);
             this.UpdateTimeStamp();
+        }
+
+        public void Deactivate()
+        {
+            if (this.Accounts.Any(x=>x.AccountStatus==AccountStatus.Active))
+                throw new CannotDeactivateCustomerWithActiveAccountsException();
+
+            this.Status = CustomerStatus.Inactive;
+           
         }
     }
 }
