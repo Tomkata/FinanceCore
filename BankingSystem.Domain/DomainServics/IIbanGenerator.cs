@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingSystem.Domain.Enums.Customer
+namespace BankingSystem.Domain.DomainServics
 {
-    public enum CustomerStatus
+    public interface IIbanGenerator
     {
-        Active = 0,
-        Inactive = 1
+        IBAN Generate(Guid Id);
     }
 }
-    

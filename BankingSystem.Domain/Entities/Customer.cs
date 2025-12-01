@@ -1,4 +1,6 @@
 ﻿using BankingSystem.Domain.Common;
+using BankingSystem.Domain.DomainServics;
+using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.Enums.Customer;
 using BankingSystem.Domain.Exceptions;
@@ -34,6 +36,45 @@ namespace BankingSystem.Domain.Entities
         public CustomerStatus Status { get; private set; }
 
         public virtual ICollection<Account> Accounts { get; private set; }
+
+
+        public Account OpenAccount(
+            AccountType type,
+            decimal initialBalance,
+            IIbanGenerator ibanGenerator,
+            int? withdrawLimit = null,
+            DepositTerm? depositTerm = null)
+        {
+            if (this.Status != CustomerStatus.Active)
+                throw new CannotOpenAccountForInactiveCustomerException();
+
+            if(initialBalance<0)
+                throw new InvalidAmountException(initialBalance);
+
+            var iban = ibanGenerator.Generate(this.Id);
+
+            Account account = type switch
+            {
+                AccountType.Checking => Account.CreateRegular(iban, this.Id),
+
+                AccountType.Saving => withdrawLimit is null
+                    ? throw new InvalidOperationException("WithdrawLimit required for Saving account.")
+                    : Account.CreateSaving(iban, this.Id, withdrawLimit.Value),
+
+                AccountType.Deposit => depositTerm is null
+                    ? throw new InvalidOperationException("WithdrawLimit required")
+                    : Account.CreateDeposit(iban, this.Id, depositTerm),
+
+                _ => throw new InvalidOperationException("Unknown account type")
+            };
+
+            if (initialBalance > 0)
+                account.Deposit(initialBalance);
+
+            this.Accounts.Add(account);
+
+            return account;
+        }
 
         public void UpdateAddress(string address, string city, int zip, string country)
         {
