@@ -26,7 +26,7 @@ namespace BankingSystem.Domain.Entities
             if (accountType == AccountType.Saving)
             {
                 if (withdrawLimits == null)
-                    throw new InvalidOperationException("Saving account must have withdraw limits.");
+                    throw new DomainException("Saving account must have withdraw limits.");
 
                 this.WithdrawLimits = withdrawLimits;
                 this.CurrentMonthWithdrawals = 0;
@@ -41,7 +41,7 @@ namespace BankingSystem.Domain.Entities
             }
             else if (depositTerm != null)
             {
-                throw new InvalidOperationException("Only Deposit accounts can have DepositTerm");
+                throw new DomainException("Only Deposit accounts can have DepositTerm");
             }
         }
         private Account()
@@ -160,15 +160,15 @@ namespace BankingSystem.Domain.Entities
 
         public void Reactivate()
         {
-            if (this.AccountStatus == AccountStatus.Closed) throw new InvalidOperationException("Cannot reactivate a closed account");
-
+            if (this.AccountStatus == AccountStatus.Closed) throw new DomainException("Cannot reactivate a closed account");
+                
             this.AccountStatus = AccountStatus.Active;
             this.UpdateTimeStamp();
         }
 
         public void Freeze()
         {
-            if (this.AccountStatus == AccountStatus.Closed) throw new InvalidOperationException("Cannot freeze a closed account");
+            if (this.AccountStatus == AccountStatus.Closed) throw new DomainException("Cannot freeze a closed account");
 
             this.AccountStatus = AccountStatus.Blocked;
             this.UpdateTimeStamp();
@@ -177,8 +177,8 @@ namespace BankingSystem.Domain.Entities
 
         public void Close()
         {
-            if (this.AccountStatus == AccountStatus.Closed) throw new InvalidOperationException("This account is already closed");
-            if (this.Balance > 0) throw new InvalidOperationException("Cannot close account with existing balance");
+            if (this.AccountStatus == AccountStatus.Closed) throw new DomainException("This account is already closed");
+            if (this.Balance > 0) throw new DomainException("Cannot close account with existing balance");
 
             this.AccountStatus = AccountStatus.Closed;
             this.UpdateTimeStamp();
@@ -192,8 +192,5 @@ namespace BankingSystem.Domain.Entities
             if (customerId == Guid.Empty)
                 throw new IdentityNullException();
         }
-
-
-
     }
 }

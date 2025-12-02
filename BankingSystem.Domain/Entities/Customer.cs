@@ -79,6 +79,15 @@ namespace BankingSystem.Domain.Entities
             return account;
         }
 
+        public Account GetAccountById(Guid accountId)
+        {
+            var account = this.Accounts.SingleOrDefault(x => x.Id == accountId);
+            if (account == null)
+                throw new AccountNotFoundException();
+
+            return account;
+        }
+
         public void UpdateAddress(string address, string city, int zip, string country)
         {
             this.Address = new Address(address,city,zip,country);
