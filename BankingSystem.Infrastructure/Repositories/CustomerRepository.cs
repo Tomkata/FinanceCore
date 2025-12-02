@@ -2,11 +2,6 @@
 using BankingSystem.Domain.Interfaces;
 using BankingSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingSystem.Infrastructure.Repositories
 {
@@ -26,10 +21,10 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task<Customer?> GetByIdAsync(Guid id)
         {
-            return await _context.Customers.FindAsync(id);
+            return await _context.Customers.FindAsync(id);  
         }
 
-        public async Task SaveAsync(Customer customer)
+        public async Task SaveAsync(Customer customer)  
         {
             var existingCustomer = await _context.Customers
                 .AsNoTracking()

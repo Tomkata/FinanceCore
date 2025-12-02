@@ -8,8 +8,8 @@ namespace BankingSystem.Domain.Exceptions
 {
     public class AccountWithdrawInvalidParameter : DomainException
     {
-
-        public AccountWithdrawInvalidParameter(int limit)
+                
+        public AccountWithdrawInvalidParameter(int? limit)
             :base($"The parameter {limit} is invalid")
         {
             

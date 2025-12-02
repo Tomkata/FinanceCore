@@ -9,7 +9,7 @@ namespace BankingSystem.Domain.Exceptions
     public class DepositTermNullException : DomainException
     {
         public DepositTermNullException()
-            : base("Cannot set maturity date without a deposit term.")
+            : base("DepositTerm required for Deposit account")
         {
         }
     }

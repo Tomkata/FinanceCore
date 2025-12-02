@@ -12,7 +12,7 @@ namespace BankingSystem.Application.Common.Results
         public T? Value { get; }
 
 
-        private Result(bool isSuccess, T? value, string error)
+        private Result(bool isSuccess, T? value, string error)  
         : base(isSuccess, error)
         {
             Value = value;

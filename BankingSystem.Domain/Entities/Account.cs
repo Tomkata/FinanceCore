@@ -78,52 +78,33 @@ namespace BankingSystem.Domain.Entities
 
         public static Account CreateRegular( IBAN iban, Guid customerId)
         {
+            CommonValidate(iban, customerId);
 
-            if (iban == null)
-                throw new IbanException("IBAN cannot be null.");
-
-            if (customerId == Guid.Empty)
-                throw new IdentityNullException();
-
-            var account = new Account(AccountType.Checking,iban,customerId,null,null);
-            return account;
+            return new Account(AccountType.Checking, iban, customerId, null, null);
 
         }
+
+       
+
         public static Account CreateDeposit(IBAN iban, Guid customerId, DepositTerm term)
         {
-            if (iban == null)
-                throw new IbanException("IBAN cannot be null.");
+            CommonValidate(iban, customerId);
 
-            if (customerId == Guid.Empty)
-                throw new IdentityNullException();
 
-            if (term == null)
+            if (term == null || term.Months <= 0)
                 throw new InvalidDepositTerm();
 
-            if (term.Months <= 0)
-                throw new InvalidDepositTerm();
-
-
-            var account = new Account(AccountType.Deposit, iban, customerId, term, null);
-
-            return account;
+            return new Account(AccountType.Deposit, iban, customerId, term, null);
 
         }
-        public static Account CreateSaving(IBAN iban, Guid customerId, int withdrawLimit)
+        public static Account CreateSaving(IBAN iban, Guid customerId, int? withdrawLimit)
         {
-            if (iban == null)
-                throw new IbanException("IBAN cannot be null.");
+            CommonValidate(iban, customerId);
 
-            if (customerId == Guid.Empty)
-                throw new IdentityNullException();
-
-            if(withdrawLimit <= 0)
+            if (withdrawLimit <= 0)
                 throw new AccountWithdrawInvalidParameter(withdrawLimit);
 
-
-            var account = new Account(AccountType.Saving, iban, customerId, null, withdrawLimit);
-
-            return account;
+            return new Account(AccountType.Saving, iban, customerId, null, withdrawLimit);
         }
 
         public void Withdraw(decimal amount)
@@ -202,6 +183,16 @@ namespace BankingSystem.Domain.Entities
             this.AccountStatus = AccountStatus.Closed;
             this.UpdateTimeStamp();
         }
+
+        private static void CommonValidate(IBAN iban, Guid customerId)
+        {
+            if (iban == null)
+                throw new IbanException("IBAN cannot be null.");
+
+            if (customerId == Guid.Empty)
+                throw new IdentityNullException();
+        }
+
 
 
     }

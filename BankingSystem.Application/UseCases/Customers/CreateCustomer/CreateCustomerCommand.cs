@@ -2,7 +2,7 @@
 
 namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
 {   
-    public class CreateCustomerCommand
+    public record CreateCustomerCommand
     {
         /*
         Защо изобщо ни трябва Command, ако само wrap-ва DTO:

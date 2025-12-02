@@ -51,6 +51,9 @@ namespace BankingSystem.Domain.Entities
             if(initialBalance<0)
                 throw new InvalidAmountException(initialBalance);
 
+                if(type == AccountType.Deposit && this.Accounts.Any(a => a.AccountType == AccountType.Deposit))
+    throw new CannotHaveMultipleDepositAccountsException();
+
             var iban = ibanGenerator.Generate(this.Id);
 
             Account account = type switch
@@ -58,11 +61,11 @@ namespace BankingSystem.Domain.Entities
                 AccountType.Checking => Account.CreateRegular(iban, this.Id),
 
                 AccountType.Saving => withdrawLimit is null
-                    ? throw new InvalidOperationException("WithdrawLimit required for Saving account.")
+                    ? throw new InvalidOperationException("Withdraw limit required for Saving account.")
                     : Account.CreateSaving(iban, this.Id, withdrawLimit.Value),
 
                 AccountType.Deposit => depositTerm is null
-                    ? throw new InvalidOperationException("WithdrawLimit required")
+                    ? throw new InvalidOperationException("Withdraw limit required")
                     : Account.CreateDeposit(iban, this.Id, depositTerm),
 
                 _ => throw new InvalidOperationException("Unknown account type")

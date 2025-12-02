@@ -1,16 +1,14 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.Common.Results;
-using BankingSystem.Application.DTOs.Customer;
-using BankingSystem.Domain.Entities;
-using BankingSystem.Domain.Exceptions;
-using BankingSystem.Domain.Interfaces;
-using BankingSystem.Domain.ValueObjects;
-using FluentValidation;
-using Mapster;
-using System.ComponentModel.DataAnnotations;
+﻿
 
 namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
 {
+    using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Application.Common.Results;
+    using BankingSystem.Application.DTOs.Customer;
+    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Exceptions;
+    using BankingSystem.Domain.Interfaces;
+    using Mapster;
     public class CreateCustomerHandler
     {
         //inject

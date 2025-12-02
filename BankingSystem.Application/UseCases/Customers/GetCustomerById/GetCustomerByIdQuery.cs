@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Application.UseCases.Customers.GetCustomerById
 {
-    internal class GetCustomerByIdQuery
-    {
-    }
+    public record GetCustomerByIdQuery(Guid Id);
 }
