@@ -12,20 +12,17 @@ namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
     public class OpenBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly IAccountRepository _accountRepository;
         private readonly OpenBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIbanGenerator _ibanGenerator;
 
         public OpenBankAccountHandler(
                  ICustomerRepository customerRepository,
-                 IAccountRepository accountRepository,
                  OpenBankAccountValidator validator,
                  IUnitOfWork unitOfWork,
                  IIbanGenerator ibanGenerator)
         {
             _customerRepository = customerRepository;
-            _accountRepository = accountRepository;
             _validator = validator;
             _unitOfWork = unitOfWork;
             _ibanGenerator = ibanGenerator;

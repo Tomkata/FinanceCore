@@ -22,7 +22,7 @@ namespace BankingSystem.Web.Middleware
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, 500, ex.ToString());
+                await HandleExceptionAsync(context, 500, ex.Message);
             }
         }
 
