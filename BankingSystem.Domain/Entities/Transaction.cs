@@ -16,51 +16,34 @@ namespace BankingSystem.Domain.Entities
             private Transaction(
         TransactionType transactionType,
         TransactionStatus transactionStatus,
-        string description,
-        string idempotencyKey,
-        Account account)
+        string description)
         {
             TransactionType = transactionType;
             TransactionStatus = transactionStatus;
             Description = description;
-            IdempotencyKey = idempotencyKey;
             TransactionDate = DateTime.UtcNow;
-            Account = account;
         }
 
         public TransactionType TransactionType { get; private set; }
         public TransactionStatus TransactionStatus { get; private set; }
 
         public string Description { get;private set; }
-        public string IdempotencyKey { get; private set; }
         public DateTime TransactionDate { get; private set; }
             
         public virtual ICollection<TransactionEntry> TransactionEntries { get; private set; } = new HashSet<TransactionEntry>();
 
-        public virtual Account Account { get; private set; }
-
         public static Transaction Create(
      TransactionType type,
-     string description,
-     string idempotencyKey,
-     Account account)
+     string description)
         {
             if (string.IsNullOrWhiteSpace(description))
                 throw new TransactionException("Transaction description is required.");
 
-            if (string.IsNullOrWhiteSpace(idempotencyKey))
-                throw new TransactionException("Idempotency key is required.");
-
-            if (account == null)
-                throw new TransactionException("Transaction must be linked to an account.");
-
-            return new Transaction(type, TransactionStatus.Pending, description, idempotencyKey, account);
+            return new Transaction(type, TransactionStatus.Pending, description);
         }
 
-        public void AddEntry(EntryType type, decimal amount, Account account)
+        public void AddEntry(EntryType type,Guid accountId, decimal amount)
         {
-            if (account == null)
-                throw new TransactionException("Account is required for transaction entry");
 
             if (amount == 0)
                 throw new TransactionException("Transaction entry amount cannot be zero");
@@ -71,7 +54,7 @@ namespace BankingSystem.Domain.Entities
             if (type == EntryType.Credit && amount < 0)
                 throw new TransactionException("Credit entry must have positive amount");
 
-            TransactionEntries.Add(new TransactionEntry(account.Id, type, amount));
+            TransactionEntries.Add(new TransactionEntry(accountId,type, amount));
         }
 
 
@@ -86,13 +69,7 @@ namespace BankingSystem.Domain.Entities
             if (TransactionStatus == TransactionStatus.Completed)
                 throw new TransactionException("Transaction is already completed.");
 
-            if (TransactionType == TransactionType.Withdrawal || TransactionType == TransactionType.Payment)
-            {
-                var outgoing = TransactionEntries.Where(e => e.Amount < 0).Sum(e => e.Amount);
-                if (Account.Balance + outgoing < 0)
-                    throw new TransactionException("Insufficient account balance.");
-            }
-
+           
             TransactionStatus = TransactionStatus.Completed;
         }
 

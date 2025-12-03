@@ -24,7 +24,7 @@ namespace BankingSystem.Application.UseCases.Customers.GetCustomerById
             var existingCustomer = await _customerRepository.GetByIdAsync(query.Id);
 
             if (existingCustomer is null)
-                return Result<CustomerDto>.Failure("Customer not found");
+                    return Result<CustomerDto>.Failure("Customer not found");
 
             var dto = existingCustomer.Adapt<CustomerDto>();
 

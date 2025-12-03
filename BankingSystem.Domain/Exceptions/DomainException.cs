@@ -2,9 +2,9 @@
 {
     public  class DomainException : Exception
     {
-        protected DomainException() { }
-        protected DomainException(string message) : base(message) { }
-        protected DomainException(string message, Exception innerException) : base(message, innerException) { }
+        public DomainException() { }
+        public DomainException(string message) : base(message) { }
+        public DomainException(string message, Exception innerException) : base(message, innerException) { }
 
     }
 }

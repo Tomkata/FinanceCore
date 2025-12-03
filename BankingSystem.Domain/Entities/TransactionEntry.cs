@@ -20,11 +20,12 @@ namespace BankingSystem.Domain.Entities
             if (amount == 0)
                 throw new TransactionException("Transaction entry amount cannot be zero");
 
-            if (entryType == EntryType.Debit && amount > 0)
-                throw new TransactionException("Debit entries must have a negative amount");
+            if (entryType == EntryType.Debit)
+                amount = Math.Abs(amount);
 
-            if (entryType == EntryType.Credit && amount < 0)
-                throw new TransactionException("Credit entries must have a positive amount");
+
+            if (entryType == EntryType.Credit)
+                amount = -Math.Abs(amount);
 
             AccountId = accountId;
             EntryType = entryType;

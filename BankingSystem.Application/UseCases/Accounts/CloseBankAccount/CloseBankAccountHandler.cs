@@ -1,13 +1,6 @@
 ﻿using BankingSystem.Application.Common.Interfaces;
 using BankingSystem.Application.Common.Results;
-using BankingSystem.Application.UseCases.Accounts.OpenBankAccount;
-using BankingSystem.Domain.DomainServics;
 using BankingSystem.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
 {
@@ -37,6 +30,13 @@ namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
             if(customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
+            var account = customer.GetAccountById(command.accountId); //not async !!
+            account.Close();
+
+           await _customerRepository.SaveAsync(customer);
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result<Guid>.Success(account.Id);
 
         }
     }

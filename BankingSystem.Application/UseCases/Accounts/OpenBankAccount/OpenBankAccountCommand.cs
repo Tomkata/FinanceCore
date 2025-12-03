@@ -1,13 +1,9 @@
-﻿using BankingSystem.Domain.Enums;
-using BankingSystem.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
 {
+    using BankingSystem.Domain.Enums;
+    using BankingSystem.Domain.ValueObjects;
+
     public record OpenBankAccountCommand(
         AccountType type,
         Guid customerId,
@@ -16,3 +12,4 @@ namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
         DepositTerm? term
         );
 }
+            

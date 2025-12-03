@@ -1,16 +1,10 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.Common.Results;
-using BankingSystem.Application.DTOs.Customer;
-using BankingSystem.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace BankingSystem.Application.UseCases.Customers.DeactivateCustomer
 {
+    using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Application.Common.Results;
+    using BankingSystem.Domain.Interfaces;
     public class DeactivateCustomerCommandHandler
     {
         private readonly ICustomerRepository _customerRepository;

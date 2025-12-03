@@ -7,8 +7,8 @@ namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
     {
         public CloseBankAccountValidator()
         {
-            RuleFor(x => x.accountId)
-                NotEmpty();
+            RuleFor(x => x.accountId)   
+                .NotEmpty();
 
             RuleFor(x => x.customerId)
                 .NotEmpty();

@@ -19,8 +19,8 @@ namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
 
             RuleFor(x => x.Data.UserName)
                .NotEmpty()
-               .MinimumLength(3)
-               .MaximumLength(50);
+                   .MinimumLength(3)
+                   .MaximumLength(50);
 
             RuleFor(x => x.Data.PhoneNumber)
                 .NotEmpty()

@@ -13,7 +13,7 @@ namespace BankingSystem.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-
+            
             services.Scan(scan => scan
             .FromAssemblyOf<CreateCustomerHandler>()
             .AddClasses(classes => classes.Where(x => x.Name.EndsWith("Handler")))
@@ -28,7 +28,7 @@ namespace BankingSystem.Application
             
 
             //mapper
-                        services.AddSingleton<IMapper>(new Mapper(TypeAdapterConfig.GlobalSettings));
+                 services.AddSingleton<IMapper>(new Mapper(TypeAdapterConfig.GlobalSettings));
                 
             return services;
         }

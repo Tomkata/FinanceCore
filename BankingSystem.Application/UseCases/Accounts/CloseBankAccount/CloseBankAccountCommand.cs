@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
 {
-    internal class CloseBankAccountCommand
-    {
-    }
+    public record CloseBankAccountCommand(Guid customerId, Guid accountId);
 }

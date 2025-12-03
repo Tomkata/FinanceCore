@@ -6,6 +6,7 @@ namespace BankingSystem.Domain.Entities
     using BankingSystem.Domain.DomainServics;
     using BankingSystem.Domain.Enums;
     using BankingSystem.Domain.Enums.Account;
+    using BankingSystem.Domain.Enums.Transaction;
     using BankingSystem.Domain.Exceptions;
     using BankingSystem.Domain.ValueObjects;
     using System.Runtime.CompilerServices;
@@ -71,6 +72,7 @@ namespace BankingSystem.Domain.Entities
                 throw new AccountNotActiveException(this.Id, this.AccountStatus);
 
             }
+
 
             this.Balance += amount;
             this.UpdateTimeStamp();

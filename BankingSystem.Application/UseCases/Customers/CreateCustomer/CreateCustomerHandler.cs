@@ -32,11 +32,11 @@ namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
 
             if (!validationResult.IsValid)
                 return Result<CustomerDto>.Failure(validationResult.ToString());
-
+                
             var existingCustomer = await _customerRepository.FindByEgnAsync(command.Data.EGN);
 
             if (existingCustomer is not null)
-                throw new CustomerWithExistingEgnException();
+                throw new CustomerWithExistingEgnException( );
 
             //map
             var customer = command.Adapt<Customer>();

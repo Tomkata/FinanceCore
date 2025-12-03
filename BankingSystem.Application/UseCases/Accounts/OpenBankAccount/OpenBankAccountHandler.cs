@@ -1,14 +1,11 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.Common.Results;
-using BankingSystem.Application.DTOs.Customer;
-using BankingSystem.Domain.DomainServics;
-using BankingSystem.Domain.Exceptions;
-using BankingSystem.Domain.Interfaces;
-using System.Security.Cryptography;
-using System.Threading.Tasks.Dataflow;
+﻿
 
 namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
 {
+    using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Application.Common.Results;
+    using BankingSystem.Domain.DomainServics;
+    using BankingSystem.Domain.Interfaces;
     public class OpenBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
@@ -47,7 +44,7 @@ namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
                 _ibanGenerator,
                 command.withdrawLimit,
                 command.term);
-
+            
             await _customerRepository.SaveAsync(customer);
 
             await _unitOfWork.SaveChangesAsync();
