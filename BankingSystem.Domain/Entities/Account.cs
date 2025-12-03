@@ -61,23 +61,7 @@ namespace BankingSystem.Domain.Entities
         public virtual ICollection<Transaction> Transactions { get; private set; }
 
 
-        public void Deposit(decimal amount)
-        {
-            if (amount <= 0)
-            {
-                throw new InvalidAmountException(amount);
-            }
-            if (this.AccountStatus != AccountStatus.Active)
-            {
-                throw new AccountNotActiveException(this.Id, this.AccountStatus);
-
-            }
-
-
-            this.Balance += amount;
-            this.UpdateTimeStamp();
-        }
-
+       
         public static Account CreateRegular( IBAN iban, Guid customerId)
         {
             CommonValidate(iban, customerId);
@@ -107,6 +91,22 @@ namespace BankingSystem.Domain.Entities
                 throw new AccountWithdrawInvalidParameter(withdrawLimit);
 
             return new Account(AccountType.Saving, iban, customerId, null, withdrawLimit);
+        }
+        public void Deposit(decimal amount)
+        {
+            if (amount <= 0)
+            {
+                throw new InvalidAmountException(amount);
+            }
+            if (this.AccountStatus != AccountStatus.Active)
+            {
+                throw new AccountNotActiveException(this.Id, this.AccountStatus);
+
+            }
+
+
+            this.Balance += amount;
+            this.UpdateTimeStamp();
         }
 
         public void Withdraw(decimal amount)
