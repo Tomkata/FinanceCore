@@ -13,9 +13,7 @@ namespace BankingSystem.Infrastructure.Data.Configurations
             builder.Property(x => x.RowVersion)
                 .IsRowVersion();
 
-            builder.HasIndex(x => x.IdempotencyKey)
-            .IsUnique();
-
+       
 
             builder.HasMany(x => x.TransactionEntries)
         .WithOne(x => x.Transaction)

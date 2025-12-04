@@ -159,7 +159,7 @@ namespace BankingSystem.Domain.Entities
 
             this.MaturityDate = DepositTerm.CalculateMaturity(startDate);
         }
-
+        
         public void Reactivate()
         {
             if (this.AccountStatus == AccountStatus.Closed) throw new DomainException("Cannot reactivate a closed account");
@@ -193,6 +193,10 @@ namespace BankingSystem.Domain.Entities
 
             if (customerId == Guid.Empty)
                 throw new IdentityNullException();
+        }
+        public bool CanWithdraw(decimal amount)
+        {
+            return Balance >= amount && amount > 0;
         }
     }
 }

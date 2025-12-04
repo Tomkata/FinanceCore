@@ -38,12 +38,13 @@ namespace BankingSystem.Application.UseCases.TransferBankAccount
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(String.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
 
-            var customer = await _customerRepository.GetByIdAsync(command.customerId);
+            var senderCustomer = await _customerRepository.GetByIdAsync(command.customerId);
 
-            if (customer is null)
+            if (senderCustomer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            var fromAccount =  customer.GetAccountById(command.fromAccountId);
+
+            var fromAccount =  senderCustomer.GetAccountById(command.fromAccountId);
 
             var toAccount = await _accountRepository.GetByIdAsync(command.toAccountid);
             if(toAccount is null)
@@ -63,9 +64,6 @@ namespace BankingSystem.Application.UseCases.TransferBankAccount
             );
 
             await _transactionRepository.SaveAsync(transaction);
-
-            await _customerRepository.SaveAsync(customer);
-            await _customerRepository.SaveAsync(receiverCustomer);
 
             await _unitOfWork.SaveChangesAsync();
 

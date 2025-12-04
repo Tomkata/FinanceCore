@@ -43,7 +43,7 @@ namespace BankingSystem.Application.UseCases.Accounts.DepositBankAccount
             if(customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            var account = customer.GetAccountById(command.accountId);
+            var account = customer.GetAccountById(command.accountId);   
 
             account.Deposit(command.amount);
 
