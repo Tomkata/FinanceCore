@@ -21,7 +21,11 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task<Account?> GetByIdAsync(Guid id)
         {
-            return await _context.Accounts.FindAsync(id);
+            return await _context.Accounts
+                .AsNoTracking()
+                .Include(x => x.Transactions)
+                .ThenInclude(x => x.TransactionEntries)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task SaveAsync(Account account)

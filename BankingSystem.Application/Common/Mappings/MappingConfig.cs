@@ -1,5 +1,6 @@
 ﻿using BankingSystem.Application.DTOs.Accounts;
 using BankingSystem.Application.DTOs.Customer;
+using BankingSystem.Application.DTOs.Transaction;
 using BankingSystem.Application.UseCases.Accounts.GetAccountById;
 using BankingSystem.Application.UseCases.Customers.CreateCustomer;
 using BankingSystem.Domain.Entities;
@@ -14,6 +15,7 @@ namespace BankingSystem.Application.Common.Mappings
     {
         public static void RegisterMappings()
         {
+
 
              TypeAdapterConfig<CreateCustomerCommand, Customer>
             .NewConfig()
@@ -61,6 +63,27 @@ namespace BankingSystem.Application.Common.Mappings
                 .Map(dest => dest.MaturityDate, src => src.MaturityDate)
                 .Map(dest => dest.CreatedAt, src => src.CreatedAt)
                 .Map(dest => dest.UpdatedAt, src => src.UpdatedAt);
+
+
+            TypeAdapterConfig<Transaction, TransactionDto>
+                .NewConfig()
+                .Map(dest => dest.Id, src => src.Id)
+                .Map(dest => dest.TransactionType, src => src.TransactionType.ToString())
+                .Map(dest => dest.TransactionStatus, src => src.TransactionStatus.ToString())
+                .Map(dest => dest.Description, src => src.Description)
+                .Map(dest => dest.TransactionDate, src => src.TransactionDate)
+                .Map(dest => dest.Amount, src => Math.Abs(src.TransactionEntries.First().Amount))
+                .Map(dest => dest.Entries, src => src.TransactionEntries);
+
+
+            TypeAdapterConfig<TransactionEntry, TransactionEntryDto>
+                .NewConfig()
+                .Map(dest => dest.AccountId, src => src.AccountId)
+                .Map(dest => dest.EntryType, src => src.EntryType.ToString())
+                .Map(dest => dest.Amount, src => src.Amount);
+
+
+
 
 
 

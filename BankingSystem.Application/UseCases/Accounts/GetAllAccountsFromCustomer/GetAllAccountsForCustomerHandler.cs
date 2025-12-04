@@ -23,10 +23,14 @@ namespace BankingSystem.Application.UseCases.Accounts.GetAllAccountsFromCustomer
             if (customer is null)
                 return Result<List<AccountDto>>.Failure("Customer not found.");
 
-            var accounts = customer.Accounts; ;
+            var accounts = customer.Accounts
+                    .OrderByDescending(a => a.AccountStatus == AccountStatus.Active)
+                    .ThenByDescending(a => a.AccountStatus == AccountStatus.Blocked)
+                    .ThenBy(a => a.AccountStatus == AccountStatus.Closed)
+                    .ToList();
 
             var dto = accounts.Adapt<List<AccountDto>>();
-
+                
             return Result<List<AccountDto>>.Success(dto);
         }
     }
