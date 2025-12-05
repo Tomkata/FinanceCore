@@ -193,6 +193,7 @@ namespace BankingSystem.Domain.Entities
 
             if (customerId == Guid.Empty)
                 throw new IdentityNullException();
+
         }
         public bool CanWithdraw(decimal amount)
         {

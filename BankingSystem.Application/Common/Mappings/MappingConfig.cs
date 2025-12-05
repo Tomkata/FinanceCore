@@ -72,7 +72,12 @@ namespace BankingSystem.Application.Common.Mappings
                 .Map(dest => dest.TransactionStatus, src => src.TransactionStatus.ToString())
                 .Map(dest => dest.Description, src => src.Description)
                 .Map(dest => dest.TransactionDate, src => src.TransactionDate)
-                .Map(dest => dest.Amount, src => Math.Abs(src.TransactionEntries.First().Amount))
+                .Map(dest => dest.Amount,
+                src => src.TransactionEntries
+                 .Select(e => Math.Abs(e.Amount))
+                 .Max())
+                .Map(dest => dest.Direction,
+                 src => src.TransactionEntries.Any(e => e.Amount > 0) ? "IN" : "OUT")
                 .Map(dest => dest.Entries, src => src.TransactionEntries);
 
 
@@ -81,19 +86,6 @@ namespace BankingSystem.Application.Common.Mappings
                 .Map(dest => dest.AccountId, src => src.AccountId)
                 .Map(dest => dest.EntryType, src => src.EntryType.ToString())
                 .Map(dest => dest.Amount, src => src.Amount);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
