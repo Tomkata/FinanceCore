@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BankingSystem.Application.UseCases.Transactions.GetTransactionById
-{
-    internal class GetTransactionByIdQuery
+﻿    namespace BankingSystem.Application.UseCases.Transactions.GetTransactionById
     {
+        public record GetTransactionByIdQuery(Guid transactionId);
     }
-}

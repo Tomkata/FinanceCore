@@ -6,7 +6,7 @@ using Mapster;
 
 
 namespace BankingSystem.Application.UseCases.Accounts.GetAllAccountsFromCustomer
-{7
+{
     public class GetAllAccountsForCustomerHandler
     {
         private readonly ICustomerRepository _customerRepository;

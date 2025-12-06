@@ -4,7 +4,6 @@ namespace BankingSystem.Application.UseCases.Accounts.GetAccountWithRecentTransa
     using BankingSystem.Application.Common.Results;
     using BankingSystem.Application.DTOs.Accounts;
     using BankingSystem.Application.DTOs.Transaction;
-    using BankingSystem.Domain.Entities;
     using BankingSystem.Domain.Interfaces;
     using Mapster;
     using System.Collections.Generic;
