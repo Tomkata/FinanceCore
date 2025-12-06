@@ -18,25 +18,36 @@ namespace BankingSystem.Application.UseCases.Transactions.SearchTransactions
             _transactionRepository = transactionRepository;
         }
 
-        public async Task<Result<List<TransactionDto>>> Handle(
+        public async Task<Result<PagedResult<TransactionDto>>> Handle(
             SearchTransactionsQuery query,
             CancellationToken cancellationToken)
         {
             if (query.StartDate > query.EndDate)
-                return Result<List<TransactionDto>>.Failure("Invalid date range.");
+                return Result<PagedResult<TransactionDto>>.Failure("Invalid date range.");
 
             if (query.MinAmount > query.MaxAmount)
-                return Result<List<TransactionDto>>.Failure("Invalid amount range.");
+                return Result<PagedResult<TransactionDto>>.Failure("Invalid amount range.");
 
-            var queryable = _transactionRepository.Query();
+            var baseQuery = _transactionRepository.Query();
+            baseQuery = ApplyFilters(baseQuery, query);
 
-            queryable = ApplyFilters(queryable, query);
+            var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-            var transactions = await queryable
+            var items = await baseQuery
+                .Skip((query.Page - 1) * query.PageSize)
+                .Take(query.PageSize)
                 .ProjectToType<TransactionDto>()
                 .ToListAsync(cancellationToken);
 
-            return Result<List<TransactionDto>>.Success(transactions);
+            var result = new PagedResult<TransactionDto>
+            {
+                Items = items,
+                Page = query.Page,
+                PageSize = query.PageSize,
+                TotalCount = totalCount
+            };
+
+            return Result<PagedResult<TransactionDto>>.Success(result);
         }
 
         private IQueryable<Transaction> ApplyFilters(
