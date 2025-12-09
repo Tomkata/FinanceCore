@@ -3,8 +3,11 @@
 namespace BankingSystem.Infrastructure
 {
     using BankingSystem.Application.Common.Interfaces;
-    using BankingSystem.Domain.DomainServics;
+    using BankingSystem.Application.DomainEventHandlers;
+    using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.DomainServices;
     using BankingSystem.Infrastructure.Data;
+    using BankingSystem.Infrastructure.DomainEvents;
     using BankingSystem.Infrastructure.Persistence;
     using BankingSystem.Infrastructure.Repositories;
     using BankingSystem.Infrastructure.Services;
@@ -33,6 +36,19 @@ namespace BankingSystem.Infrastructure
 
             //services
             services.AddScoped<IIbanGenerator, IbanGenerator>();
+
+            //event dispatcher
+            services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+
+            //domain event handlers
+            services.Scan(scan => scan
+            .FromAssembliesOf(typeof(AccountCreditedEventHandler))
+            .AddClasses(classes => classes.AssignableTo(typeof(IDomainEventHandler<>)))
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+
+            //domain service
+            services.AddScoped<ITransactionDomainService, TransactionDomainService>();
 
             return services;
         }

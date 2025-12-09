@@ -1,6 +1,6 @@
 ﻿using BankingSystem.Domain.Aggregates.Customer.Events;
 using BankingSystem.Domain.Common;
-using BankingSystem.Domain.DomainServics;
+using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.Enums.Customer;

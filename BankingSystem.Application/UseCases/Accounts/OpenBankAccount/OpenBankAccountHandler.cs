@@ -4,7 +4,7 @@ namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Application.Common.Results;
-    using BankingSystem.Domain.DomainServics;
+    using BankingSystem.Domain.DomainServices;
     using BankingSystem.Domain.Interfaces;
     public class OpenBankAccountHandler
     {

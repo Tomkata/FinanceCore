@@ -4,7 +4,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
 {
     using BankingSystem.Domain.Aggregates.Transaction;
     using BankingSystem.Domain.Common;
-    using BankingSystem.Domain.DomainServics;
+    using BankingSystem.Domain.DomainServices;
     using BankingSystem.Domain.Enums;
     using BankingSystem.Domain.Enums.Account;
     using BankingSystem.Domain.Enums.Transaction;

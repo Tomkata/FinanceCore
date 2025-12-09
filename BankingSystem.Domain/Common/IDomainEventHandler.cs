@@ -3,6 +3,6 @@
     public interface IDomainEventHandler<TEvent>
         where TEvent : IDomainEvent
     {
-        Task Handle(TEvent doaminEvent, CancellationToken cancellationToken);
+        Task Handle(TEvent domainEvent, CancellationToken cancellationToken);
     }
 }

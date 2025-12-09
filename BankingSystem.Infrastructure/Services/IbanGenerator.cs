@@ -1,5 +1,5 @@
-﻿using BankingSystem.Domain.DomainServics;
-using BankingSystem.Domain.Entities;
+﻿using BankingSystem.Domain.DomainServices;
+using BankingSystem.Domain.Aggregates;
 using System;
 using System.Collections.Generic;
 using System.Linq;

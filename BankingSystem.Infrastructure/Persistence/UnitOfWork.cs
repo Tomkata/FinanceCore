@@ -26,15 +26,17 @@ namespace BankingSystem.Infrastructure.Persistence
                 .SelectMany(entry => entry.Entity.DomainEvents)
                 .ToList();
 
-            // 2. save changes to DB
+            // 2. save changes to db
             await _context.SaveChangesAsync();
 
-            // 3. dispatch events
-            await _dispatcher.Dispatch(domainEvents);
-
-            // 4. clear events
+            // 3. clear events
             foreach (var entry in _context.ChangeTracker.Entries<AggregateRoot>())
                 entry.Entity.ClearDomainEvents();
+
+            // 4. dispatch events
+            await _dispatcher.Dispatch(domainEvents);
+
+           
         }
     }
 }
