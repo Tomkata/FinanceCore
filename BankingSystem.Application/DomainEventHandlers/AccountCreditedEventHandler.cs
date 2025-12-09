@@ -22,7 +22,7 @@ namespace BankingSystem.Application.DomainEventHandlers
         {
             var transaction = _transactionService.CreateDepositTransaction(domainEvent.accountId,domainEvent.amount);
 
-            _transactionRepository.SaveAsync(transaction);
+            _transactionRepository.Add(transaction);
 
             return Task.CompletedTask;
         }

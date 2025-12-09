@@ -1,10 +1,11 @@
-﻿using BankingSystem.Domain.Aggregates.Customer.Events;
-using BankingSystem.Domain.Common;
-using BankingSystem.Domain.DomainService;
-using BankingSystem.Domain.Interfaces;
-
+﻿
 namespace BankingSystem.Application.DomainEventHandlers
 {
+    using BankingSystem.Domain.Aggregates.Customer.Events;
+    using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.DomainService;
+    using BankingSystem.Domain.Interfaces;
+
     public class AccountDebitedEventHandler : IDomainEventHandler<AccountDebitedEvent>
     {
         private readonly ITransactionDomainService _transactionDomainService;
@@ -19,10 +20,10 @@ namespace BankingSystem.Application.DomainEventHandlers
 
         public Task Handle(AccountDebitedEvent doaminEvent, CancellationToken cancellationToken)
         {
-            var transaction = _transactionDomainService
+            var transaction =  _transactionDomainService
                 .CreateWithdrawTransaction(doaminEvent.AccountId, doaminEvent.Amount);
 
-            _transactionRepository.SaveAsync(transaction);
+            _transactionRepository.Add(transaction);
 
             return Task.CompletedTask;
         }

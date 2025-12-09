@@ -23,6 +23,10 @@ namespace BankingSystem.Infrastructure.Repositories
         {
             return await _context.Transactions.FindAsync(id);
         }
+        public void Add(Transaction transaction)
+        {
+            _context.Transactions.Add(transaction);
+        }
 
         public IQueryable<Transaction> Query()
         {

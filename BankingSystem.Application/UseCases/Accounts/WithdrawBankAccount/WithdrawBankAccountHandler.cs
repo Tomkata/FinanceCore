@@ -42,4 +42,3 @@ namespace BankingSystem.Application.UseCases.Accounts.WithdrawBankAccount
     }
 
 }
-}

@@ -11,5 +11,7 @@ using Transaction = Transaction;
         Task<Transaction?> GetByIdAsync(Guid id);
         Task SaveAsync(Transaction account);
         IQueryable<Transaction> Query();
+
+        void Add(Transaction transaction);
     }
 }
