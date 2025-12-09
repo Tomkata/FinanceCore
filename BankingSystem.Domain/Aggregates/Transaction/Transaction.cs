@@ -1,5 +1,5 @@
 ﻿
-namespace BankingSystem.Domain.Entities
+namespace BankingSystem.Domain.Aggregates.Transaction
 {
     using BankingSystem.Domain.Common;
     using BankingSystem.Domain.Enums;

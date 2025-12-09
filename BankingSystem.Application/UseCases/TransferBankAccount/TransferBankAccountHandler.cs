@@ -2,7 +2,7 @@
 using BankingSystem.Application.Common.Results;
 using BankingSystem.Application.UseCases.Accounts.DepositBankAccount;
 using BankingSystem.Domain.DomainService;
-using BankingSystem.Domain.Entities;
+using BankingSystem.Domain.Aggregates;
 using BankingSystem.Domain.Interfaces;
 
 namespace BankingSystem.Application.UseCases.TransferBankAccount

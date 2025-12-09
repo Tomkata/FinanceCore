@@ -5,7 +5,7 @@ namespace BankingSystem.Application.UseCases.Customers.CreateCustomer
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Application.Common.Results;
     using BankingSystem.Application.DTOs.Customer;
-    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Aggregates.Customer;
     using BankingSystem.Domain.Exceptions;
     using BankingSystem.Domain.Interfaces;
     using Mapster;

@@ -1,4 +1,4 @@
-﻿using BankingSystem.Domain.Entities;
+﻿using BankingSystem.Domain.Aggregates.Transaction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -30,6 +30,9 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionHistoryF
                 .Query()
                 .Where(x=>x.TransactionEntries.Any(x=>x.AccountId == query.accountId));
 
+
+
+
             var totalCount = await baseQuery.CountAsync(cancellationToken);
 
             var items = await baseQuery

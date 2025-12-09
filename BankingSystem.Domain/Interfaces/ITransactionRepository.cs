@@ -1,8 +1,10 @@
 ﻿
+using BankingSystem.Domain.Aggregates.Transaction;
+
 namespace BankingSystem.Domain.Interfaces
 {
 
-using Transaction = BankingSystem.Domain.Entities.Transaction;
+using Transaction = Transaction;
 
     public interface ITransactionRepository
     {

@@ -19,7 +19,8 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionsByDate
             this._transactionRepository = transactionRepository;
         }
 
-        public async Task<Result<PagedResult<TransactionDto>>> Handle(GetTransactionsByDateQuery query)
+        public async Task<Result<PagedResult<TransactionDto>>> Handle(GetTransactionsByDateQuery query,
+            CancellationToken cancellationToken)
         {
             var account = await _accountRepository.GetByIdAsync(query.accountId);
 
@@ -36,14 +37,14 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionsByDate
                              x.TransactionDate <= query.transactionEndDate &&
                              x.TransactionEntries.Any(x => x.AccountId == query.accountId));
 
-            var totalCount = await baseQuery.CountAsync();
+            var totalCount = await baseQuery.CountAsync(cancellationToken);
 
             var items = await baseQuery
                 .OrderByDescending(x => x.TransactionDate)
                 .Skip((query.page - 1) * query.pageSize)
                 .Take(query.pageSize)
                 .ProjectToType<TransactionDto>()
-                 .ToListAsync();
+                 .ToListAsync(cancellationToken);
 
             var result = new PagedResult<TransactionDto>
             {

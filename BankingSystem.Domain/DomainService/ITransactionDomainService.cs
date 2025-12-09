@@ -2,7 +2,7 @@
 
 namespace BankingSystem.Domain.DomainService
 {
-    using Transaction = Domain.Entities.Transaction;
+    using Transaction = Aggregates.Transaction.Transaction;
 
     public interface ITransactionDomainService
     {

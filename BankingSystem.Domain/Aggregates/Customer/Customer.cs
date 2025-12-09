@@ -1,4 +1,5 @@
-﻿using BankingSystem.Domain.Common;
+﻿using BankingSystem.Domain.Aggregates.Customer.Events;
+using BankingSystem.Domain.Common;
 using BankingSystem.Domain.DomainServics;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Account;
@@ -6,9 +7,9 @@ using BankingSystem.Domain.Enums.Customer;
 using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
 
-namespace BankingSystem.Domain.Entities
+namespace BankingSystem.Domain.Aggregates.Customer
 {
-    public class Customer : BaseEntity
+    public class Customer : AggregateRoot
     {
         private Customer() {  }
         public Customer(string userName, 
@@ -78,6 +79,34 @@ namespace BankingSystem.Domain.Entities
 
             return account;
         }
+
+        public void Deposit(Guid accountId, decimal amount)
+        {
+            var account = GetAccountById(accountId);
+
+            account.Deposit(amount);
+            
+            AddDomainEvent(new AccountCreditedEvent(
+                this.Id,
+                accountId,
+                amount
+            ));
+        }
+
+
+        public void Withdraw(Guid accountId, decimal amount)
+        {
+            var account = GetAccountById(accountId);
+
+            account.Withdraw(amount);
+
+            AddDomainEvent(new AccountDebitedEvent(
+                this.Id,
+                accountId,
+                amount
+            ));
+        }
+
 
         public Account GetAccountById(Guid accountId)
         {

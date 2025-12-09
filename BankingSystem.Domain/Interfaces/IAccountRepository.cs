@@ -1,7 +1,7 @@
 ﻿
 namespace BankingSystem.Domain.Interfaces
 {
-    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Aggregates.Customer;
 
     public interface IAccountRepository
     {

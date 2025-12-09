@@ -2,7 +2,7 @@
 
 namespace BankingSystem.Infrastructure.Data.Configurations
 {
-    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Aggregates.Customer;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
     public class AccountConfiguration : IEntityTypeConfiguration<Account>

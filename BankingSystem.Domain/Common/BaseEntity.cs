@@ -1,6 +1,6 @@
 ﻿namespace BankingSystem.Domain.Common
 {
-    public abstract class BaseEntity
+    public  abstract class BaseEntity
     {
         protected BaseEntity()
         {

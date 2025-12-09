@@ -4,7 +4,7 @@ namespace BankingSystem.Application.UseCases.Transactions.SearchTransactions
 {
     using BankingSystem.Application.Common.Results;
     using BankingSystem.Application.DTOs.Transaction;
-    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Aggregates.Transaction;
     using BankingSystem.Domain.Interfaces;
     using Mapster;
     using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,8 @@
 ﻿
 namespace BankingSystem.Infrastructure.Data
 {
-    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Aggregates.Customer;
+    using BankingSystem.Domain.Aggregates.Transaction;
     using BankingSystem.Infrastructure.Data.Configurations;
     using Microsoft.EntityFrameworkCore;
 

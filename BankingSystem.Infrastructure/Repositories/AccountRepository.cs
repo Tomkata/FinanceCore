@@ -1,4 +1,4 @@
-﻿using BankingSystem.Domain.Entities;
+﻿using BankingSystem.Domain.Aggregates.Customer;
 using BankingSystem.Domain.Interfaces;
 using BankingSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

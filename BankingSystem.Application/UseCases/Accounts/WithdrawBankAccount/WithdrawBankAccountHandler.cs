@@ -1,31 +1,24 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.Common.Results;
-using BankingSystem.Application.UseCases.Accounts.DepositBankAccount;
-using BankingSystem.Domain.DomainService;
-using BankingSystem.Domain.Entities;
-using BankingSystem.Domain.Interfaces;
+﻿
 
 namespace BankingSystem.Application.UseCases.Accounts.WithdrawBankAccount
 {
+    using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Application.Common.Results;
+    using BankingSystem.Domain.Interfaces;
     public class WithdrawBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly WithdrawBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ITransactionDomainService _transactionDomainService;
-        private readonly ITransactionRepository _transactionRepository;
 
-        public WithdrawBankAccountHandler(ICustomerRepository customerRepository, 
+        public WithdrawBankAccountHandler(
+            ICustomerRepository customerRepository,
             WithdrawBankAccountValidator validator,
-            IUnitOfWork unitOfWork, 
-            ITransactionDomainService transactionDomainService,
-            ITransactionRepository transactionRepository)
+            IUnitOfWork unitOfWork)
         {
-            this._customerRepository = customerRepository;
-            this._validator = validator;
-            this._unitOfWork = unitOfWork;
-            this._transactionDomainService = transactionDomainService;
-            this._transactionRepository = transactionRepository;
+            _customerRepository = customerRepository;
+            _validator = validator;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<Guid>> Handle(WithdrawBankAccountCommand command)
@@ -39,18 +32,14 @@ namespace BankingSystem.Application.UseCases.Accounts.WithdrawBankAccount
             if (customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            var account = customer.GetAccountById(command.accountId);
-
-            account.Withdraw(command.amount);
-
-           var transaction =  _transactionDomainService.CreateWithdrawTransaction(account.Id,command.amount);
-            await _transactionRepository.SaveAsync(transaction);
+            customer.Withdraw(command.accountId, command.amount);
 
             await _customerRepository.SaveAsync(customer);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(); 
 
-            return Result<Guid>.Success(account.Id);
-
+            return Result<Guid>.Success(command.accountId);
         }
     }
+
+}
 }

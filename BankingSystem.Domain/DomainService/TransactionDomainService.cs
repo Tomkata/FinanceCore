@@ -1,9 +1,9 @@
-﻿using BankingSystem.Domain.Entities;
+﻿using BankingSystem.Domain.Aggregates.Transaction;
 using BankingSystem.Domain.Enums.Transaction;
 
 namespace BankingSystem.Domain.DomainService
 {
-    using Transaction = Domain.Entities.Transaction;
+    using Transaction = Transaction;
     public class TransactionDomainService : ITransactionDomainService
     {
         private readonly Guid _bankVaultAccountId;
