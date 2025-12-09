@@ -8,7 +8,6 @@ using Transaction = BankingSystem.Domain.Entities.Transaction;
     {
         Task<Transaction?> GetByIdAsync(Guid id);
         Task SaveAsync(Transaction account);
-        Task<List<Transaction>> GetAllAsync();
-
+        IQueryable<Transaction> Query();
     }
 }

@@ -1,10 +1,12 @@
-﻿namespace BankingSystem.Application.UseCases.Transactions.SearchTransactions
+﻿public record SearchTransactionsQuery
 {
-        public record SearchTransactionsQuery(
-            Guid? accountId,
-            string? transactionType,
-            DateTime? startDate,
-            DateTime? endDate,
-            decimal? minAmount, 
-            decimal? maxAmount);
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+    public Guid? AccountId { get; set; }
+    public string? TransactionType { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public decimal? MinAmount { get; set; }
+    public decimal? MaxAmount { get; set; }
+    public string? SortOrder { get; set; }
 }

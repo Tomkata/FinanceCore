@@ -24,12 +24,11 @@ namespace BankingSystem.Infrastructure.Repositories
             return await _context.Transactions.FindAsync(id);
         }
 
-        public async Task<List<Transaction>> GetAllAsync()
+        public IQueryable<Transaction> Query()
         {
             return _context.Transactions
-                               .AsNoTracking()
-                               .Include(x => x.TransactionEntries)
-                               .ToList();
+                .AsNoTracking()
+                .Include(x => x.TransactionEntries);
         }
 
         public async Task SaveAsync(Transaction transaction)

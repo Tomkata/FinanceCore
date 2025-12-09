@@ -10,7 +10,7 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionHistoryF
     public class GetTransactionHistoryForAccountHandler
     {
         private readonly ITransactionRepository  _transactionRepository;
-        private readonly IAccountRepository _accountRepository
+        private readonly IAccountRepository _accountRepository;
 
         public GetTransactionHistoryForAccountHandler(ITransactionRepository transactionRepository,
                                                        IAccountRepository accountRepository)
@@ -19,7 +19,7 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionHistoryF
             this._accountRepository = accountRepository;
         }
 
-        public async Task<Result<PagedResult<TransactionDto>>> Handle(GetTransactionHistoryForAccountQuery query)
+        public async Task<Result<PagedResult<TransactionDto>>> Handle(GetTransactionHistoryForAccountQuery query, CancellationToken cancellationToken)
         {
             var account = await _accountRepository.GetByIdAsync(query.accountId);
             if (account is null)
@@ -30,14 +30,14 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionHistoryF
                 .Query()
                 .Where(x=>x.TransactionEntries.Any(x=>x.AccountId == query.accountId));
 
-            var totalCount = await baseQuery.CountAsync();
+            var totalCount = await baseQuery.CountAsync(cancellationToken);
 
-            var items = baseQuery
+            var items = await baseQuery
                 .OrderByDescending(x => x.TransactionDate)
                 .Skip((query.page - 1) * query.pageSize)
                 .Take(query.pageSize)
                 .ProjectToType<TransactionDto>()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
 
             
@@ -50,7 +50,6 @@ namespace BankingSystem.Application.UseCases.Transactions.GetTransactionHistoryF
                  TotalCount = totalCount
             };
             return Result<PagedResult<TransactionDto>>.Success(result);
-
 
         }
     }
