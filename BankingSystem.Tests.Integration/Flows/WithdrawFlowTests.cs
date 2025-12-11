@@ -12,7 +12,7 @@ using BankingSystem.Infrastructure.Repositories;
 using BankingSystem.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BankingSystem.Tests.Integration
+namespace BankingSystem.Tests.Integration.Flows
 {
     public class WithdrawFlowTests : IClassFixture<InfrastructureTestFixture>
     {

@@ -22,7 +22,7 @@ public class DepositFlowTests : IClassFixture<InfrastructureTestFixture>
     {
         // Arrange
         var db = _services.GetRequiredService<ApplicationDbContext>();
-        var uow = _services.GetRequiredService<IUnitOfWork>();
+        var uow = _services.GetRequiredService<IUnitOfWork>();  
         var customerRepo = _services.GetRequiredService<ICustomerRepository>();
         var ibanGen = _services.GetRequiredService<IIbanGenerator>();
 
