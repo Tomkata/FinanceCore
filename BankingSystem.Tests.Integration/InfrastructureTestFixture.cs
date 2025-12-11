@@ -1,5 +1,4 @@
 ﻿using BankingSystem.Domain.Aggregates.Customer;
-using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using BankingSystem.Infrastructure.Data;
@@ -11,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 public class InfrastructureTestFixture : IDisposable
 {
     public ServiceProvider ServiceProvider { get; }
-    public Guid BankVaultAccountId { get; }  // Експортирай за тестове ако трябва
+    public Guid BankVaultAccountId { get; } 
 
     private readonly SqliteConnection _connection;
 
@@ -25,12 +24,10 @@ public class InfrastructureTestFixture : IDisposable
         services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseSqlite(_connection));
 
-        // Първо build-ни временен provider за да създадем Bank Vault
         var tempProvider = services.BuildServiceProvider();
         var db = tempProvider.GetRequiredService<ApplicationDbContext>();
         db.Database.EnsureCreated();
 
-        // Създай Bank Vault Customer и Account
         var ibanGen = new FakeIbanGenerator();
 
         var bankVaultCustomer = new Customer(
@@ -44,7 +41,7 @@ public class InfrastructureTestFixture : IDisposable
 
         var bankVaultAccount = bankVaultCustomer.OpenAccount(
             AccountType.Checking,
-            1_000_000_000, // Голям начален баланс
+            1_000_000_000, 
             ibanGen
         );
 
@@ -53,7 +50,6 @@ public class InfrastructureTestFixture : IDisposable
         db.Customers.Add(bankVaultCustomer);
         db.SaveChanges();
 
-        // Сега регистрирай services с истинския BankVaultAccountId
         services.AddInfrastructureForTests(BankVaultAccountId);
 
         ServiceProvider = services.BuildServiceProvider();
