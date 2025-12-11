@@ -3,9 +3,9 @@
 namespace BankingSystem.Domain.Aggregates.Customer.Events
 {
     public record AccountDebitedEvent(
-     Guid CustomerId,
-     Guid AccountId,
-     decimal Amount
+     Guid customerId,
+     Guid accountId,
+     decimal amount
  ) : IDomainEvent;
 
 

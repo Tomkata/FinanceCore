@@ -20,7 +20,7 @@ namespace BankingSystem.Infrastructure.DomainEvents
                 var handlerType = typeof(IDomainEventHandler<>)
                     .MakeGenericType(domainEvent.GetType());
 
-                var handlers = _serviceProvider.GetServices(handlerType);
+                var handlers = _serviceProvider.GetServices(handlerType);   
 
                 foreach (var handler in handlers)
                 {

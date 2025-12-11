@@ -1,6 +1,6 @@
 ﻿namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
 {
-    using BankingSystem.Domain.Entities;
+    using BankingSystem.Domain.Aggregates;
     using BankingSystem.Domain.Enums;
     using FluentValidation;
     public class OpenBankAccountValidator : AbstractValidator<OpenBankAccountCommand>

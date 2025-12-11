@@ -8,8 +8,12 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     {
         builder.HasKey(x => x.Id);
 
+        // RowVersion - конфигуриран САМО веднъж
         builder.Property(x => x.RowVersion)
-            .IsRowVersion();
+            .IsRowVersion()
+            .IsConcurrencyToken()
+            .ValueGeneratedOnAddOrUpdate()
+            .HasDefaultValue(new byte[] { 0 });
 
         builder.Property(x => x.UserName)
             .HasMaxLength(100)
@@ -38,11 +42,9 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .IsRequired();
-
             egn.Property(e => e.BirthDate)
                 .HasColumnName("BirthDate")
                 .IsRequired();
-
             egn.Property(e => e.Gender)
                 .HasColumnName("Gender")
                 .IsRequired();
@@ -51,14 +53,11 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.HasIndex(x => x.UserName)
             .IsUnique();
 
-
         builder.ComplexProperty(x => x.PhoneNumber, phone =>
         {
             phone.Property(p => p.Value)
                 .HasColumnName("PhoneNumber")
                 .HasMaxLength(20);
         });
-
-       
     }
 }

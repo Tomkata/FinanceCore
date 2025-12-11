@@ -1,11 +1,11 @@
-﻿using BankingSystem.Domain.Aggregates.Customer.Events;
-using BankingSystem.Domain.Aggregates.Transaction;
-using BankingSystem.Domain.Common;
-using BankingSystem.Domain.DomainService;
-using BankingSystem.Domain.Interfaces;
-
+﻿
 namespace BankingSystem.Application.DomainEventHandlers
 {
+    using BankingSystem.Domain.Aggregates.Customer.Events;
+    using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.DomainServices;
+    using BankingSystem.Domain.Interfaces;
+
     public class AccountCreditedEventHandler : IDomainEventHandler<AccountCreditedEvent>
     {
         private readonly ITransactionRepository _transactionRepository;

@@ -1,18 +1,20 @@
-﻿
-
-namespace BankingSystem.Infrastructure.Data.Configurations
+﻿namespace BankingSystem.Infrastructure.Data.Configurations
 {
     using BankingSystem.Domain.Aggregates.Customer;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
     public class AccountConfiguration : IEntityTypeConfiguration<Account>
     {
         public void Configure(EntityTypeBuilder<Account> builder)
         {
-            builder.HasKey(x=>x.Id);
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.RowVersion)
-                .IsRowVersion();
+                .IsRowVersion()
+                .IsConcurrencyToken()
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValue(new byte[] { 0 });
 
             builder.ComplexProperty(x => x.IBAN, iban =>
             {
@@ -30,17 +32,12 @@ namespace BankingSystem.Infrastructure.Data.Configurations
                     .IsRequired(false);
             });
 
-
-
-
             builder.Property(x => x.Balance)
-                .HasPrecision(14,2);
+                .HasPrecision(14, 2);
 
             builder.HasOne(x => x.Customer)
                 .WithMany(x => x.Accounts)
                 .HasForeignKey(x => x.CustomerId);
-
-
         }
     }
 }

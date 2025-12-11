@@ -7,7 +7,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
     using System.Transactions;
     using TransactionStatus = Enums.Transaction.TransactionStatus;
 
-    public class Transaction : BaseEntity
+    public class Transaction : AggregateRoot
     {
         private Transaction()
         {

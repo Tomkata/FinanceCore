@@ -1,9 +1,7 @@
-﻿using System.Transactions;
+﻿using BankingSystem.Domain.Aggregates.Transaction;
 
-namespace BankingSystem.Domain.DomainService
+namespace BankingSystem.Domain.DomainServices
 {
-    using Transaction = Aggregates.Transaction.Transaction;
-
     public interface ITransactionDomainService
     {
         Transaction CreateDepositTransaction(Guid accountId, decimal amount);

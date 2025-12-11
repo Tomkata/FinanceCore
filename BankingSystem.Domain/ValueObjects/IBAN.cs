@@ -56,7 +56,7 @@ public record IBAN
             else
                 throw new ArgumentException($"Invalid character {c} found.");
         }
-
+            
 
         int mod97 = 0;
         foreach (var c in sb.ToString())

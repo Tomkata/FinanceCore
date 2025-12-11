@@ -3,7 +3,7 @@ namespace BankingSystem.Application.DomainEventHandlers
 {
     using BankingSystem.Domain.Aggregates.Customer.Events;
     using BankingSystem.Domain.Common;
-    using BankingSystem.Domain.DomainService;
+    using BankingSystem.Domain.DomainServices;
     using BankingSystem.Domain.Interfaces;
 
     public class AccountDebitedEventHandler : IDomainEventHandler<AccountDebitedEvent>
@@ -21,7 +21,7 @@ namespace BankingSystem.Application.DomainEventHandlers
         public Task Handle(AccountDebitedEvent doaminEvent, CancellationToken cancellationToken)
         {
             var transaction =  _transactionDomainService
-                .CreateWithdrawTransaction(doaminEvent.AccountId, doaminEvent.Amount);
+                .CreateWithdrawTransaction(doaminEvent.accountId, doaminEvent.amount);
 
             _transactionRepository.Add(transaction);
 

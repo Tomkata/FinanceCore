@@ -1,18 +1,15 @@
-﻿
-
-namespace BankingSystem.Infrastructure.Persistence
+﻿namespace BankingSystem.Infrastructure.Persistence
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Domain.Common;
     using BankingSystem.Infrastructure.Data;
+
     public class UnitOfWork : IUnitOfWork
     {
-
         private readonly ApplicationDbContext _context;
         private readonly IDomainEventDispatcher _dispatcher;
 
-        public UnitOfWork(ApplicationDbContext context,
-                            IDomainEventDispatcher dispatcher)
+        public UnitOfWork(ApplicationDbContext context, IDomainEventDispatcher dispatcher)
         {
             _context = context;
             _dispatcher = dispatcher;
@@ -20,23 +17,35 @@ namespace BankingSystem.Infrastructure.Persistence
 
         public async Task SaveChangesAsync()
         {
-            // 1. collect domain events before save
-            var domainEvents = _context.ChangeTracker
-                .Entries<AggregateRoot>()
-                .SelectMany(entry => entry.Entity.DomainEvents)
-                .ToList();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var aggregates = _context.ChangeTracker.Entries()
+                    .Where(e => e.Entity is AggregateRoot)
+                    .Select(e => (AggregateRoot)e.Entity)
+                    .ToList();
 
-            // 2. save changes to db
-            await _context.SaveChangesAsync();
+                var domainEvents = aggregates
+                    .Where(a => a.DomainEvents != null && a.DomainEvents.Any())
+                    .SelectMany(a => a.DomainEvents)
+                    .ToList();
 
-            // 3. clear events
-            foreach (var entry in _context.ChangeTracker.Entries<AggregateRoot>())
-                entry.Entity.ClearDomainEvents();
+                aggregates.ForEach(a => a.ClearDomainEvents());
 
-            // 4. dispatch events
-            await _dispatcher.Dispatch(domainEvents);
+                await _context.SaveChangesAsync();
 
-           
+                if (domainEvents.Any())
+                    await _dispatcher.Dispatch(domainEvents);
+                
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

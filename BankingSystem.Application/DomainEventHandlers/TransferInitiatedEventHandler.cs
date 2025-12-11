@@ -1,15 +1,11 @@
-﻿using BankingSystem.Domain.Aggregates.Customer.Events;
-using BankingSystem.Domain.Common;
-using BankingSystem.Domain.DomainServices;
-using BankingSystem.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace BankingSystem.Application.DomainEventHandlers
 {
+    using BankingSystem.Domain.Aggregates.Customer.Events;
+    using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.DomainServices;
+    using BankingSystem.Domain.Interfaces;
     public class TransferInitiatedEventHandler : IDomainEventHandler<TransferInitiatedEvent>
     {
         private readonly ITransactionDomainService _transactionService;

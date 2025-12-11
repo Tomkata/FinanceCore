@@ -1,6 +1,6 @@
 using BankingSystem.Application;
 using BankingSystem.Application.Common.Mappings;
-using BankingSystem.Domain.DomainService;
+using BankingSystem.Domain.DomainServices;
 using BankingSystem.Infrastructure;
 using BankingSystem.Web.Middleware;
 using Microsoft.AspNetCore.Diagnostics;

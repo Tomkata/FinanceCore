@@ -11,9 +11,12 @@ namespace BankingSystem.Infrastructure.Data.Configurations
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.RowVersion)
-                .IsRowVersion();
+              .IsRowVersion()
+              .IsConcurrencyToken()
+              .ValueGeneratedOnAddOrUpdate()
+              .HasDefaultValue(new byte[] { 0 });
 
-       
+
 
             builder.HasMany(x => x.TransactionEntries)
         .WithOne(x => x.Transaction)

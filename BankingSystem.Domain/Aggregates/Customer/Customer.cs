@@ -1,14 +1,15 @@
-﻿using BankingSystem.Domain.Aggregates.Customer.Events;
-using BankingSystem.Domain.Common;
-using BankingSystem.Domain.DomainServices;
-using BankingSystem.Domain.Enums;
-using BankingSystem.Domain.Enums.Account;
-using BankingSystem.Domain.Enums.Customer;
-using BankingSystem.Domain.Exceptions;
-using BankingSystem.Domain.ValueObjects;
+﻿
 
 namespace BankingSystem.Domain.Aggregates.Customer
 {
+    using BankingSystem.Domain.Aggregates.Customer.Events;
+    using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.DomainServices;
+    using BankingSystem.Domain.Enums;
+    using BankingSystem.Domain.Enums.Account;
+    using BankingSystem.Domain.Enums.Customer;
+    using BankingSystem.Domain.Exceptions;
+    using BankingSystem.Domain.ValueObjects;
     public class Customer : AggregateRoot
     {
         private Customer() {  }
@@ -93,6 +94,21 @@ namespace BankingSystem.Domain.Aggregates.Customer
             ));
         }
 
+        public void Transfer(Guid fromAccountId, Guid toAccountId, decimal amount)
+        {
+            var from = GetAccountById(fromAccountId);
+            var to = GetAccountById(toAccountId);
+
+            from.Withdraw(amount);
+            to.Deposit(amount);
+
+            AddDomainEvent(new TransferInitiatedEvent(
+                this.Id,
+                fromAccountId,
+                toAccountId,
+                amount
+            ));
+        }
 
         public void Withdraw(Guid accountId, decimal amount)
         {

@@ -36,6 +36,7 @@ namespace BankingSystem.Infrastructure
 
             //services
             services.AddScoped<IIbanGenerator, IbanGenerator>();
+            services.AddScoped<IIbanGenerator, FakeIbanGenerator>();
 
             //event dispatcher
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();

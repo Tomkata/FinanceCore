@@ -38,6 +38,7 @@ namespace BankingSystem.Application.UseCases.TransferBankAccount
                 command.amount
             );
 
+
             await _customerRepository.SaveAsync(senderCustomer);
             await _unitOfWork.SaveChangesAsync();
 

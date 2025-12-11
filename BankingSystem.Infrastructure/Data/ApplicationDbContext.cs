@@ -25,9 +25,12 @@ namespace BankingSystem.Infrastructure.Data
         {
             base.OnConfiguring(optionsBuilder);
 
-            optionsBuilder.UseSqlServer(
-                "Server=.;Database=BankingSystem;TrustServerCertificate=true;Integrated Security=true"
-            );
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    "Server=.;Database=BankingSystem;TrustServerCertificate=true;Integrated Security=true"
+                );
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
