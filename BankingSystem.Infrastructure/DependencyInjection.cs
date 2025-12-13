@@ -19,6 +19,8 @@ namespace BankingSystem.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services,
             IConfiguration configuration)
         {
+
+
             //db context
             services.AddDbContext<ApplicationDbContext>(opt =>
         opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
@@ -48,8 +50,7 @@ namespace BankingSystem.Infrastructure
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
-            //domain service
-            services.AddScoped<ITransactionDomainService, TransactionDomainService>();
+        
 
             return services;
         }

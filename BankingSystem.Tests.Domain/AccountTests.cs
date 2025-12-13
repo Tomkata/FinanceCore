@@ -1,15 +1,6 @@
-﻿using BankingSystem.Application.UseCases.Customers.GetCustomerById;
-using BankingSystem.Domain.Aggregates.Customer;
-using BankingSystem.Domain.DomainServices;
-using BankingSystem.Domain.Enums;
+﻿using BankingSystem.Domain.Aggregates.Customer;
 using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
-using BankingSystem.Infrastructure.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BankingSystem.Tests.Domain
 {
@@ -23,7 +14,7 @@ namespace BankingSystem.Tests.Domain
             var iban = IBAN.Create("BG80BNBG96611020345678"); 
             var account = Account.CreateRegular(iban, customerId);
 
-            var amount = 100m;
+            var amount = -100m;
 
             // Act
             account.Deposit(amount);
@@ -39,7 +30,7 @@ namespace BankingSystem.Tests.Domain
             var iban = IBAN.Create("BG80BNBG96611020345678");
             var account = Account.CreateRegular(iban, customerId);
 
-            var amount = -100m;
+            var amount = 100m;
 
             
 
@@ -56,7 +47,7 @@ namespace BankingSystem.Tests.Domain
 
             account.Close();
 
-            var amount = 100m;
+            var amount = -100m;
 
 
 
@@ -71,7 +62,7 @@ namespace BankingSystem.Tests.Domain
             var iban = IBAN.Create("BG80BNBG96611020345678");
             var account = Account.CreateRegular(iban, customerId);
 
-            var initialBalance = 100m;
+            var initialBalance = -100m;
             var withdrawAmount = 200m;
 
             account.Deposit(initialBalance);
@@ -88,7 +79,7 @@ namespace BankingSystem.Tests.Domain
             var customerId = Guid.NewGuid();
             var iban = IBAN.Create("BG80BNBG96611020345678");
 
-            var initialBalance = 500m;
+            var initialBalance = -500m;
             var withdrawAmount = 100m;
 
             var account = Account.CreateDeposit(iban, customerId, new DepositTerm(12));
