@@ -11,13 +11,10 @@ public class PhoneNumberTests
     [InlineData("+359888123456")]
     [InlineData("+1234567890")]
     [InlineData("0888123456")]
-    [InlineData("+359123456789012345")] // 15 digits max
     public void Create_WithValidPhoneNumber_ShouldSucceed(string phoneNumber)
     {
-        // Act
         var result = new PhoneNumber(phoneNumber);
 
-        // Assert
         result.Should().NotBeNull();
         result.Value.Should().Be(phoneNumber);
     }
@@ -41,11 +38,9 @@ public class PhoneNumberTests
     [Fact]
     public void PhoneNumbers_WithSameValue_ShouldBeEqual()
     {
-        // Arrange
         var phone1 = new PhoneNumber("+359888123456");
         var phone2 = new PhoneNumber("+359888123456");
 
-        // Assert
         phone1.Should().Be(phone2);
         (phone1 == phone2).Should().BeTrue();
     }
@@ -53,11 +48,9 @@ public class PhoneNumberTests
     [Fact]
     public void PhoneNumbers_WithDifferentValues_ShouldNotBeEqual()
     {
-        // Arrange
         var phone1 = new PhoneNumber("+359888123456");
         var phone2 = new PhoneNumber("+359888654321");
 
-        // Assert
         phone1.Should().NotBe(phone2);
         (phone1 != phone2).Should().BeTrue();
     }

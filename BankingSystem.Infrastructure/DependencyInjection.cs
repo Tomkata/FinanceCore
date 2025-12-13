@@ -19,8 +19,6 @@ namespace BankingSystem.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services,
             IConfiguration configuration)
         {
-
-
             //db context
             services.AddDbContext<ApplicationDbContext>(opt =>
         opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
@@ -34,10 +32,10 @@ namespace BankingSystem.Infrastructure
         .AddClasses(c => c.Where(t => t.Name.EndsWith("Repository")))
         .AsImplementedInterfaces()
         .WithScopedLifetime());
-            
 
-            //services
-            services.AddScoped<IIbanGenerator, IbanGenerator>();
+
+            //services - Use FakeIbanGenerator for now (has proper checksum validation)
+            // TODO: Implement real IbanGenerator with bank integration, then use environment-based registration
             services.AddScoped<IIbanGenerator, FakeIbanGenerator>();
 
             //event dispatcher
@@ -50,7 +48,16 @@ namespace BankingSystem.Infrastructure
             .AsImplementedInterfaces()
             .WithScopedLifetime());
 
-        
+            //domain service - configured with vault account ID from appsettings
+            services.AddScoped<ITransactionDomainService, TransactionDomainService>(sp =>
+            {
+                var vaultAccountId = configuration["BankInternalAccounts:VaultAccountId"];
+                if (string.IsNullOrEmpty(vaultAccountId) || !Guid.TryParse(vaultAccountId, out var vaultId))
+                {
+                    throw new InvalidOperationException("BankInternalAccounts:VaultAccountId must be configured in appsettings.json");
+                }
+                return new TransactionDomainService(vaultId);
+            });
 
             return services;
         }
