@@ -75,7 +75,7 @@ public class IbanTests
     public void IBANs_WithDifferentValues_ShouldNotBeEqual()
     {
         var iban1 = IBAN.Create("BG80BNBG96611020345678");
-        var iban2 = IBAN.Create("BG18FINV91501014464646"); 
+        var iban2 = IBAN.Create("BG16BNPA94402493416375"); 
 
         iban1.Should().NotBe(iban2);
         (iban1 != iban2).Should().BeTrue();

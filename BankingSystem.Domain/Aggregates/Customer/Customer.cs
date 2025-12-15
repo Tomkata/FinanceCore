@@ -54,7 +54,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
                 throw new InvalidAmountException(initialBalance);
 
                 if(type == AccountType.Deposit && this.Accounts.Any(a => a.AccountType == AccountType.Deposit))
-    throw new CannotHaveMultipleDepositAccountsException();
+     throw new CannotHaveMultipleDepositAccountsException();
 
             var iban = ibanGenerator.Generate(this.Id);
 

@@ -1,70 +1,166 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.UseCases.Accounts.DepositBankAccount;
-using BankingSystem.Domain.Aggregates.Customer;
-using BankingSystem.Domain.DomainServices;
+﻿using BankingSystem.Domain.Aggregates.Customer;
 using BankingSystem.Domain.Enums;
-using BankingSystem.Domain.Interfaces;
+using BankingSystem.Domain.Enums.Customer;
+using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
-using BankingSystem.Infrastructure.Data;
-using Microsoft.Extensions.DependencyInjection;
+using BankingSystem.Infrastructure.Services;
 
-public class DepositFlowTests : IClassFixture<InfrastructureTestFixture>
+namespace BankingSystem.Tests.Domain;
+
+public class CustomerTests
 {
-    private readonly ServiceProvider _services;
+    private readonly FakeIbanGenerator _ibanGenerator = new();
 
-    public DepositFlowTests(InfrastructureTestFixture fixture)
+    private Customer CreateCustomer(CustomerStatus? status = null)
     {
-        _services = fixture.ServiceProvider;
+        var customer = new Customer(
+
+            "testuser",
+            "John",
+            "Doe",
+            new PhoneNumber("1234567890"),
+            new Address("Main St", "Sofia", 1000, "Bulgaria"),
+            EGN.Create("0651035020")
+            );
+
+        if (status.HasValue && status != CustomerStatus.Active)
+        {
+            typeof(Customer).GetProperty("Status")?.SetValue(customer, status.Value);
+        }
+
+        return customer;
+    }
+
+    private (Customer customer, Account account) CreateCustomerWithAccount(
+        AccountType type = AccountType.Checking,
+        decimal balance = 100m,
+        int? withdrawLimit = null,
+        DepositTerm? depositTerm = null)
+    {
+        var customer = CreateCustomer();
+        var account = customer.OpenAccount(type, balance, _ibanGenerator, withdrawLimit, depositTerm);
+        customer.ClearDomainEvents();
+        return (customer, account);
+    }
+
+    #region Constructor Tests
+    [Fact]
+    public void Constructor_ValidParameters_CreatesActiveCustomerWithEmptyAccounts()
+    {
+        var customer = CreateCustomer();
+
+        Assert.Equal("testuser", customer.UserName);
+        Assert.Equal("John", customer.FirstName);
+        Assert.Equal("Doe", customer.LastName);
+        Assert.NotNull(customer.PhoneNumber);
+        Assert.NotNull(customer.Address);
+        Assert.NotNull(customer.EGN);
+        Assert.Equal(CustomerStatus.Active, customer.Status);
+        Assert.Empty(customer.Accounts);
+    }
+    [Fact]
+    public void Constructor_NullEGN_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new Customer("testuser", "John", "Doe",
+                new PhoneNumber("1234567890"),
+                new Address("123 Main St", "Sofia", 1000, "Bulgaria"),
+                null!));
+    }
+
+    #endregion
+
+    #region OpenAccount Tests
+    [Theory]
+    [InlineData(AccountType.Checking, 100)]
+    [InlineData(AccountType.Checking, 0)]
+    public void OpenAccount_Cheking_CreatesAccountSuccessfully(AccountType type, decimal balance)
+    {
+        var customer = CreateCustomer();
+
+        var account = customer.OpenAccount(type,balance,_ibanGenerator);
+
+        Assert.NotNull(account);
+        Assert.Equal(type, account.AccountType);
+        Assert.Equal(balance, account.Balance);
+        Assert.Equal(customer.Id, account.CustomerId);
+        Assert.Single(customer.Accounts);
     }
 
     [Fact]
-    public async Task Deposit_Should_Update_Balance_And_Create_Transaction()
+    public void OpenAccount_Saving_WithWithdrawLimit_CreatesAccountSuccessfully()
     {
-        // Arrange
-        var db = _services.GetRequiredService<ApplicationDbContext>();
-        var uow = _services.GetRequiredService<IUnitOfWork>();  
-        var customerRepo = _services.GetRequiredService<ICustomerRepository>();
-        var ibanGen = _services.GetRequiredService<IIbanGenerator>();
+        var customer = CreateCustomer();
 
-        var customer = new Customer(
-            "jane123",
-            "Jane",
-            "Doe",
-            new PhoneNumber("+359888777666"),
-            new Address("Street", "Sofia", 1000, "BG"),
-            new EGN("0987654321", new DateOnly(1985, 5, 15), Gender.Female)
-        );
+        var account = customer.OpenAccount(AccountType.Saving, 500m, _ibanGenerator, withdrawLimit: 3);
 
-        var account = customer.OpenAccount(AccountType.Checking, 500, ibanGen);
-
-        await customerRepo.SaveAsync(customer);
-        await uow.SaveChangesAsync();
-
-        var handler = new DepositBankAccountHandler(
-            customerRepo,
-            new DepositBankAccountValidator(),
-            uow
-        );
-
-        var command = new DepositBankAccountCommand(
-            customer.Id,
-            account.Id,
-            200
-        );
-
-        // Act
-        var result = await handler.Handle(command);
-
-        // Assert
-        Assert.True(result.IsSuccess);
-
-        var updated = await customerRepo.GetByIdAsync(customer.Id);
-        var updatedAccount = updated.GetAccountById(account.Id);
-
-        Assert.Equal(700, updatedAccount.Balance);  // 500 + 200
-
-        var transactions = db.Transactions.ToList();
-        Assert.Single(transactions);
-        Assert.Equal(0, transactions.First().TransactionEntries.Sum(x => x.Amount));
+        Assert.Equal(AccountType.Saving, account.AccountType);
+        Assert.Equal(3, account.WithdrawLimits);
     }
+
+
+    [Fact]
+    public void OpenAccount_Saving_WithoutWithWithdrawLimit_CreatesAccountSuccessfully()
+    {
+        var customer = CreateCustomer();
+
+        var ex = Assert.Throws<InvalidOperationException>(() => customer.OpenAccount(AccountType.Saving, 100m, _ibanGenerator));
+
+        Assert.Contains("Withdraw limit required", ex.Message);
+
+    }
+
+    [Fact]
+    public void OpenAccount_Deposit_WithDepositTerm_CreatesAccountWithMaturityDate()
+    {
+        var customer = CreateCustomer();
+
+        var account = customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator,depositTerm: new DepositTerm(12));
+
+        Assert.Equal(AccountType.Deposit,account.AccountType);
+        Assert.NotNull(account.MaturityDate);
+        Assert.True(account.MaturityDate > DateTime.UtcNow);
+
+    }
+
+
+    [Fact]
+    public void OpenAccount_Deposit_WithoutDepositTerm_ThrowsInvalidOperationException()
+    {
+        var customer = CreateCustomer();
+
+        var ex = Assert.Throws<InvalidOperationException>(()=>customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator));
+
+        Assert.Contains("Withdraw limit required", ex.Message);
+    }
+
+    [Fact]
+    public void OpenAccount_MultiplueCheckingAccounts_Succeeds()
+    {
+        var customer = CreateCustomer();
+
+         customer.OpenAccount(AccountType.Checking, 200m, _ibanGenerator);
+         customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator);
+
+        Assert.Equal(2,customer.Accounts.Count);
+    }
+
+    [Fact]
+    public void OpenAccount_MultipleDepositAccounts_ThrowsCannotHaveMultipleDepositAccountsException()
+    {
+        var customer = CreateCustomer();
+        var depositTerm = new DepositTerm(12);
+        customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator, depositTerm: depositTerm);
+
+        Assert.Throws<CannotHaveMultipleDepositAccountsException>(() =>
+            customer.OpenAccount(AccountType.Deposit, 2000m, _ibanGenerator, depositTerm: depositTerm));
+
+
+
+
+    }
+
+    #endregion
+
+
 }

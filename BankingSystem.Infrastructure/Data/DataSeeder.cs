@@ -34,7 +34,7 @@ namespace BankingSystem.Infrastructure.Data
                     lastName: "Account",
                     phoneNumber: new PhoneNumber("+359000000000"),
                     address: new Address("Internal", "Sofia", 1000, "Bulgaria"),
-                    eGN: EGN.Create("0000000000") 
+                    eGN: EGN.Create("0202107000 ") 
                 );
 
                 typeof(Customer).GetProperty("Id")!.SetValue(systemCustomer, systemCustomerId);
@@ -42,7 +42,7 @@ namespace BankingSystem.Infrastructure.Data
                 context.Customers.Add(systemCustomer);
             }
 
-            var vaultIban = IBAN.Create("BG00BANK00000000000000");
+            var vaultIban = IBAN.Create("BG51UNCR70008378815696");
             var vaultAccount = Account.CreateRegular(vaultIban, systemCustomerId);
 
             typeof(Account).GetProperty("Id")!.SetValue(vaultAccount, vaultAccountId);
