@@ -3,6 +3,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
 {
     using BankingSystem.Domain.Common;
     using BankingSystem.Domain.Enums;
+    using BankingSystem.Domain.Enums.Account;
     using BankingSystem.Domain.Enums.Transaction;
     using System.Transactions;
     using TransactionStatus = Enums.Transaction.TransactionStatus;
@@ -42,7 +43,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
             return new Transaction(type, TransactionStatus.Pending, description);
         }
 
-        public void AddEntry(EntryType type,Guid accountId, decimal amount)
+        public void AddEntry(EntryType type,Guid accountId, decimal amount, LedgerAccountType ledgerAccountType)
         {
 
             if (amount == 0)
@@ -54,7 +55,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
             if (type == EntryType.Credit && amount < 0)
                 throw new TransactionException("Credit entry must have positive amount");
 
-            TransactionEntries.Add(new TransactionEntry(accountId,type, amount));
+            TransactionEntries.Add(new TransactionEntry(accountId, ledgerAccountType, type, amount));
         }
 
 
