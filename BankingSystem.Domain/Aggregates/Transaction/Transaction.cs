@@ -30,7 +30,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
 
         public string Description { get;private set; }
         public DateTime TransactionDate { get; private set; }
-            
+                
         public virtual ICollection<TransactionEntry> TransactionEntries { get; private set; } = new HashSet<TransactionEntry>();
 
         public static Transaction Create(
@@ -49,11 +49,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
             if (amount == 0)
                 throw new TransactionException("Transaction entry amount cannot be zero");
 
-            if (type == EntryType.Debit && amount > 0)
-                throw new TransactionException("Debit entry must have negative amount");
-
-            if (type == EntryType.Credit && amount < 0)
-                throw new TransactionException("Credit entry must have positive amount");
+           
 
             TransactionEntries.Add(new TransactionEntry(accountId, ledgerAccountType, type, amount));
         }

@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Domain.Enums.Account
 {
-    internal class LedgerAccountType
+    public enum LedgerAccountType
     {
+        Asset = 0, //vault
+        Liability = 1 //client accounts
+
     }
 }

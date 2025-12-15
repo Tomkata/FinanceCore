@@ -12,24 +12,19 @@
         {
             
         }
-        public TransactionEntry(Guid accountId,LedgerAccountType ledgerAccountType, EntryType entryType,
-            decimal amount)
+        public TransactionEntry(Guid accountId, LedgerAccountType ledgerAccountType, EntryType entryType, decimal amount)
         {
             if (accountId == Guid.Empty)
                 throw new TransactionException("Account ID is required for TransactionEntry");
-
-            if (amount == 0)
-                throw new TransactionException("Transaction entry amount cannot be zero");
-
-            var isIncrease = (ledgerAccountType == LedgerAccountType.Asset && entryType == EntryType.Debit)
-             || (ledgerAccountType == LedgerAccountType.Liability && entryType == EntryType.Credit);
-
-              
-
+            if (amount <= 0)
+                throw new TransactionException("Transaction entry amount must be positive");
 
             AccountId = accountId;
             EntryType = entryType;
-            Amount = isIncrease ? amount : -Math.Abs(amount);
+            LedgerAccountType = ledgerAccountType;
+
+            // Просто: Debit = +, Credit = -
+            Amount = entryType == EntryType.Debit ? amount : -amount;
         }
 
 
@@ -37,6 +32,7 @@
         public Guid AccountId { get; private set; }
         public Account Account { get; private set; }
         public EntryType EntryType { get; private set; }
+        public LedgerAccountType LedgerAccountType { get; set; }
         public decimal Amount { get; private set; }
 
         public Guid TransactionId { get; private set; }
