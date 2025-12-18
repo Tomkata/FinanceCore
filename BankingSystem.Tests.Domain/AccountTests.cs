@@ -1,4 +1,6 @@
 ﻿using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.Enums;
+using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
 using FluentAssertions;
@@ -86,6 +88,44 @@ namespace BankingSystem.Tests.Domain
             account.Balance.Should().Be(500m);
         }
 
-        
+        #region Factort Method Tests
+        [Fact]
+        public void CreateRegular_WithValidParameters_ShouldCreateCheckingAccount()
+        {
+            var customerId = Guid.NewGuid();
+            var iban = IBAN.Create("BG80BNBG96611020345678");
+
+            var account = Account.CreateRegular(iban,customerId);
+
+
+            Assert.NotNull(account);
+            Assert.Equal(AccountType.Checking, account.AccountType);
+            Assert.Equal(iban, account.IBAN);
+            Assert.Equal(customerId, account.CustomerId);
+            Assert.Equal(0m, account.Balance);
+            Assert.Equal(AccountStatus.Active, account.AccountStatus);
+            Assert.Null(account.WithdrawLimits);
+            Assert.Null(account.DepositTerm);
+            Assert.Null(account.MaturityDate);
+        }
+
+
+        [Fact]
+
+        public void CreateRegular_WithNullIban_ShouldThrowIbanNullException()
+
+        {
+
+            var customerId = Guid.NewGuid();
+
+
+            // Act & Assert
+
+            Assert.Throws<IbanException>(() => Account.CreateRegular(null!, customerId));
+
+        }
+        #endregion
+
+
     }
 }

@@ -13,7 +13,7 @@ public static class InfrastructureTestExtensions
 {
     public static IServiceCollection AddInfrastructureForTests(
         this IServiceCollection services,
-        Guid bankVaultAccountId)  // Приеми като параметър
+        Guid bankVaultAccountId)  
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
@@ -31,7 +31,6 @@ public static class InfrastructureTestExtensions
 
         services.AddScoped<IIbanGenerator, FakeIbanGenerator>();
 
-        // Използвай ИСТИНСКИЯ bankVaultAccountId
         services.AddScoped<ITransactionDomainService>(sp =>
             new TransactionDomainService(bankVaultAccountId));
 

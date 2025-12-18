@@ -43,7 +43,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
             return new Transaction(type, TransactionStatus.Pending, description);
         }
 
-        public void AddEntry(EntryType type,Guid accountId, decimal amount, LedgerAccountType ledgerAccountType)
+        public void AddEntry(EntryType type,Guid accountId, decimal amount,LedgerAccountType ledger)
         {
 
             if (amount == 0)
@@ -51,7 +51,7 @@ namespace BankingSystem.Domain.Aggregates.Transaction
 
            
 
-            TransactionEntries.Add(new TransactionEntry(accountId, ledgerAccountType, type, amount));
+            TransactionEntries.Add(new TransactionEntry(accountId, ledger, type, amount));
         }
 
 

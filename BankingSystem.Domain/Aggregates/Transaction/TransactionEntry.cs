@@ -22,8 +22,6 @@
             AccountId = accountId;
             EntryType = entryType;
             LedgerAccountType = ledgerAccountType;
-
-            // Просто: Debit = +, Credit = -
             Amount = entryType == EntryType.Debit ? amount : -amount;
         }
 

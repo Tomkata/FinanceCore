@@ -6,4 +6,4 @@
         public string EntryType { get; set; } 
         public decimal Amount { get; set; }
     }
-}
+}   
