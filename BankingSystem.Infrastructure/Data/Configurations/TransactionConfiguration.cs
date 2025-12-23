@@ -13,8 +13,7 @@ namespace BankingSystem.Infrastructure.Data.Configurations
             builder.Property(x => x.RowVersion)
               .IsRowVersion()
               .IsConcurrencyToken()
-              .ValueGeneratedOnAddOrUpdate()
-              .HasDefaultValue(new byte[] { 0 });
+              .ValueGeneratedOnAddOrUpdate();
 
 
 

@@ -12,8 +12,7 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(x => x.RowVersion)
             .IsRowVersion()
             .IsConcurrencyToken()
-            .ValueGeneratedOnAddOrUpdate()
-            .HasDefaultValue(new byte[] { 0 });
+            .ValueGeneratedOnAddOrUpdate();
 
         builder.Property(x => x.UserName)
             .HasMaxLength(100)

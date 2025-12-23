@@ -13,8 +13,7 @@
             builder.Property(x => x.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken()
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValue(new byte[] { 0 });
+                .ValueGeneratedOnAddOrUpdate();
 
             builder.ComplexProperty(x => x.IBAN, iban =>
             {
