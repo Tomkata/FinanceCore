@@ -62,7 +62,17 @@ namespace BankingSystem.Domain.Aggregates.Customer
         public virtual ICollection<Transaction> Transactions { get; private set; }
 
 
-       
+        public static Account CreateSystemAccount(
+    Guid id,
+    IBAN iban,
+    Guid customerId)
+        {
+            var account = CreateRegular(iban, customerId);
+            account.Id = id;
+            return account;
+        }
+
+
         public static Account CreateRegular( IBAN iban, Guid customerId)
         {
             CommonValidate(iban, customerId);

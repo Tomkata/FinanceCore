@@ -39,6 +39,28 @@ namespace BankingSystem.Domain.Aggregates.Customer
 
         public virtual ICollection<Account> Accounts { get; private set; }
 
+        public static Customer CreateSystemCustomer(
+    Guid id,
+    string userName,
+    string firstName,
+    string lastName,
+    PhoneNumber phoneNumber,
+    Address address,
+    EGN egn)
+        {
+            var customer = new Customer(
+                userName,
+                firstName,
+                lastName,
+                phoneNumber,
+                address,
+                egn
+            );
+
+            customer.Id = id;
+            return customer;
+        }
+
 
         public Account OpenAccount(
             AccountType type,

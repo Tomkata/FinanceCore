@@ -66,7 +66,7 @@ public record IBAN
 
 
         if (mod97 != 1)
-            throw new IbanException("Invalid IBAN checksum.");
+            throw new IbanException("Invalid IBAN checksum.");  
 
         string countryCode = raw[..2];
         string checkDigits = raw.Substring(2, 2);

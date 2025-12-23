@@ -23,32 +23,35 @@ namespace BankingSystem.Infrastructure.Data
                 return; 
             }
 
-            var systemCustomerId = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            var systemCustomerId = Guid.NewGuid();
             var systemCustomerExists = await context.Customers.AnyAsync(c => c.Id == systemCustomerId);
 
             if (!systemCustomerExists)
             {
-                var systemCustomer = new Customer(
-                    userName: "SYSTEM",
-                    firstName: "System",
-                    lastName: "Account",
-                    phoneNumber: new PhoneNumber("+359000000000"),
-                    address: new Address("Internal", "Sofia", 1000, "Bulgaria"),
-                    eGN: EGN.Create("0202107000 ") 
+                var systemCustomer = Customer.CreateSystemCustomer(
+                    systemCustomerId,
+                    "SYSTEM",
+                    "System",
+                    "Account",
+                    new PhoneNumber("+359000000000"),
+                    new Address("Internal", "Sofia", 1000, "Bulgaria"),
+                    EGN.Create("0651035020")
                 );
-
-                typeof(Customer).GetProperty("Id")!.SetValue(systemCustomer, systemCustomerId);
 
                 context.Customers.Add(systemCustomer);
             }
 
             var vaultIban = IBAN.Create("BG51UNCR70008378815696");
-            var vaultAccount = Account.CreateRegular(vaultIban, systemCustomerId);
 
-            typeof(Account).GetProperty("Id")!.SetValue(vaultAccount, vaultAccountId);
+            var vaultAccount = Account.CreateSystemAccount(
+                vaultAccountId,
+                vaultIban,
+                systemCustomerId
+            );
 
             context.Accounts.Add(vaultAccount);
             await context.SaveChangesAsync();
+
         }
     }
 }
