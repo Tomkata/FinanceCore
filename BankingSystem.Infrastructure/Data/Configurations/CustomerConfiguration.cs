@@ -8,6 +8,9 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id)
+   .ValueGeneratedNever();
+
         // RowVersion - конфигуриран САМО веднъж
         builder.Property(x => x.RowVersion)
             .IsRowVersion()

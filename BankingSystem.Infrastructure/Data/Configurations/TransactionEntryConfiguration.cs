@@ -8,7 +8,7 @@ namespace BankingSystem.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<TransactionEntry> builder)
         {
-            builder.HasKey(x => x.Id);
+            builder.HasKey(x => x.Id);  
 
             builder.Property(x => x.Id)
    .ValueGeneratedNever();
