@@ -1,4 +1,4 @@
-using BankingSystem.Application;
+﻿using BankingSystem.Application;
 using BankingSystem.Application.Common.Mappings;
 using BankingSystem.Domain.DomainServices;
 using BankingSystem.Infrastructure;
@@ -10,7 +10,7 @@ public class Program
 {
     private static async Task Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+      var builder = WebApplication.CreateBuilder(args);
 
         MappingConfig.RegisterMappings();
 
@@ -24,14 +24,14 @@ public class Program
 
         var app = builder.Build();
 
-        using (var scope = app.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            var configuration = services.GetRequiredService<IConfiguration>();
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    var services = scope.ServiceProvider;
+        //    var context = services.GetRequiredService<ApplicationDbContext>();
+        //    var configuration = services.GetRequiredService<IConfiguration>();
 
-            await DatabaseSeeder.SeedAsync(context, configuration);
-        }
+        //    await DatabaseSeeder.SeedAsync(context, configuration);
+        //}
 
         if (app.Environment.IsDevelopment())
         {
@@ -45,7 +45,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-
+       
         app.Run();
     }
 }

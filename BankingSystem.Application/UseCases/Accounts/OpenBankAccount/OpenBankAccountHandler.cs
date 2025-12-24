@@ -45,7 +45,6 @@ namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
                 command.withdrawLimit,
                 command.term);
             
-            await _customerRepository.SaveAsync(customer);
 
             await _unitOfWork.SaveChangesAsync();
 

@@ -34,7 +34,6 @@ namespace BankingSystem.Application.UseCases.Accounts.DepositBankAccount
 
             customer.Deposit(command.accountId, command.amount);
 
-            await _customerRepository.SaveAsync(customer);
             await _unitOfWork.SaveChangesAsync();
 
             return Result<Guid>.Success(command.accountId);

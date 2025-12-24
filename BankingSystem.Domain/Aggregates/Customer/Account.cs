@@ -46,11 +46,11 @@ namespace BankingSystem.Domain.Aggregates.Customer
                 throw new DomainException("Only Deposit accounts can have DepositTerm");
             }
         }
-        private Account()
+        private Account()   
         { }
         public AccountType AccountType { get; private set; }
         public decimal Balance { get; private set; }        
-        public AccountStatus AccountStatus { get; private set; }
+        public AccountStatus AccountStatus { get; private set; }    
         public IBAN IBAN { get; private set; }  
         public DateTime? MaturityDate { get; private set; } //only for Deposit Account
         public DepositTerm? DepositTerm { get; private set; }

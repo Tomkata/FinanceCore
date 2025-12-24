@@ -26,7 +26,6 @@ namespace BankingSystem.Domain.Aggregates.Customer
             this.PhoneNumber = phoneNumber;
             this.Address = address;
             this.EGN = eGN ?? throw new ArgumentNullException(nameof(eGN));
-            this.Accounts = new HashSet<Account>();
         }
 
         public string UserName { get;private set; }
@@ -37,7 +36,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
         public EGN EGN { get; private set; }
         public CustomerStatus Status { get; private set; }
 
-        public virtual ICollection<Account> Accounts { get; private set; }
+        public virtual ICollection<Account> Accounts { get; private set; } = new HashSet<Account>();
 
         public static Customer CreateSystemCustomer(
     Guid id,

@@ -26,7 +26,6 @@ namespace BankingSystem.Application.UseCases.Customers.DeactivateCustomer
 
             customer.Deactivate();
 
-            await _customerRepository.SaveAsync(customer);
             await _unitOfWork.SaveChangesAsync();
 
 

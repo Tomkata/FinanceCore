@@ -1,8 +1,10 @@
 ﻿namespace BankingSystem.Infrastructure.Persistence
 {
     using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Domain.Aggregates.Customer;
     using BankingSystem.Domain.Common;
     using BankingSystem.Infrastructure.Data;
+    using Microsoft.EntityFrameworkCore;
 
     public class UnitOfWork : IUnitOfWork
     {
@@ -20,6 +22,8 @@
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                var entries = _context.ChangeTracker.Entries().ToList();
+               
                 var aggregates = _context.ChangeTracker.Entries()
                     .Where(e => e.Entity is AggregateRoot)
                     .Select(e => (AggregateRoot)e.Entity)
@@ -34,10 +38,13 @@
 
                 await _context.SaveChangesAsync();
 
-                if (domainEvents.Any())
+                if (domainEvents.Any()) 
+                {
                     await _dispatcher.Dispatch(domainEvents);
-                
-                await _context.SaveChangesAsync();
+
+                    await _context.SaveChangesAsync();
+                }
+                  
 
                 await transaction.CommitAsync();
             }

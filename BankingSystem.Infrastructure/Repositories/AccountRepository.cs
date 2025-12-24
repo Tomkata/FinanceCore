@@ -25,24 +25,24 @@ namespace BankingSystem.Infrastructure.Repositories
                 .AsNoTracking()
                 .Include(x => x.Transactions)
                 .ThenInclude(x => x.TransactionEntries)
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id);  
         }
 
-        public async Task SaveAsync(Account account)
-        {
-            var existingAccount = await _context.Accounts
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == account.Id);
-
-            if (existingAccount is null)
+            public async Task SaveAsync(Account account)
             {
-                await _context.Accounts.AddAsync(account);
-            }
-            else
-            {
-                _context.Accounts.Update(account);
-            }
+                var existingAccount = await _context.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == account.Id);
 
-        }
+                if (existingAccount is null)
+                {
+                    await _context.Accounts.AddAsync(account);
+                }
+                else
+                {
+                    _context.Accounts.Update(account);
+                }
+
+            }
     }
 }

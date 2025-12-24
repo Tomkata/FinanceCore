@@ -1,6 +1,4 @@
 ﻿using BankingSystem.Domain.Exceptions;
-using System.Data;
-using System.Numerics;
 
 public record IBAN
 {

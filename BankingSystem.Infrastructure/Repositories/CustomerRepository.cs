@@ -21,22 +21,25 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task<Customer?> GetByIdAsync(Guid id)
         {
-            return await _context.Customers.FindAsync(id);  
+            return await _context.Customers
+                .Include(c => c.Accounts)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task SaveAsync(Customer customer)  
+        public async Task SaveAsync(Customer customer)
         {
-            var existingCustomer = await _context.Customers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == customer.Id);
+            var entry = _context.Entry(customer);
 
-            if (existingCustomer is null)
+            if (entry.State == EntityState.Detached)
             {
-                await _context.Customers.AddAsync(customer);
-            }
-            else
-            {
-                _context.Customers.Update(customer);
+                var exists = await _context.Customers
+                    .AsNoTracking()
+                    .AnyAsync(c => c.Id == customer.Id);
+
+                if (exists)
+                    _context.Customers.Update(customer);
+                else
+                    await _context.Customers.AddAsync(customer);
             }
         }
     }
