@@ -1,17 +1,18 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.Common.Results;
-using BankingSystem.Domain.Interfaces;
-
+﻿
 namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
 {
-    public class CloseBankAccountHandler
+    using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Application.Common.Results;
+    using BankingSystem.Domain.Interfaces;
+
+    public class FreezeBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
-        private readonly CloseBankAccountValidator _validator;
+        private readonly FreezeBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CloseBankAccountHandler(ICustomerRepository customerRepository, 
-            CloseBankAccountValidator validator,
+        public FreezeBankAccountHandler(ICustomerRepository customerRepository, 
+            FreezeBankAccountValidator validator,
             IUnitOfWork unitOfWork)
         {
             this._customerRepository = customerRepository;
@@ -19,7 +20,7 @@ namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
             this._unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<Guid>> Handle(CloseBankAccountCommand command)
+        public async Task<Result<Guid>> Handle(FreezeBankAccountCommand command)
         {
             var validationResult = await _validator.ValidateAsync(command);
             if (!validationResult.IsValid)
@@ -30,9 +31,9 @@ namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
             if(customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            var account = customer.GetAccountById(command.accountId); //not async !!
-            account.Close();
-
+            var account = customer.GetAccountById(command.accountId); 
+            account.Freeze();
+                
            await _customerRepository.SaveAsync(customer);
             await _unitOfWork.SaveChangesAsync();
 

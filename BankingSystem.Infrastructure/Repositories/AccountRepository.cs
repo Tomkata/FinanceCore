@@ -24,7 +24,7 @@ namespace BankingSystem.Infrastructure.Repositories
             return await _context.Accounts
                 .AsNoTracking()
                 .Include(x => x.Transactions)
-                .ThenInclude(x => x.TransactionEntries)
+                .ThenInclude(x => x.TransactionEntries) 
                 .FirstOrDefaultAsync(x => x.Id == id);  
         }
 
