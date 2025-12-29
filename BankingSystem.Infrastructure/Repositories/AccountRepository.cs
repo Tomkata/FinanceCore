@@ -28,7 +28,16 @@ namespace BankingSystem.Infrastructure.Repositories
                 .FirstOrDefaultAsync(x => x.Id == id);  
         }
 
-            public async Task SaveAsync(Account account)
+        public async Task<Account?> GetByIbanAsync(string iban)
+        {
+            return await _context.Accounts
+                .AsNoTracking()
+                .Include(x => x.Transactions)
+                .ThenInclude(x => x.TransactionEntries)
+                .FirstOrDefaultAsync(x => x.IBAN.Value == iban);    
+        }
+
+        public async Task SaveAsync(Account account)
             {
                 var existingAccount = await _context.Accounts
                 .AsNoTracking()

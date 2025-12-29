@@ -6,6 +6,8 @@ namespace BankingSystem.Domain.Interfaces
     public interface IAccountRepository
     {
         Task<Account?> GetByIdAsync(Guid id);
+        Task<Account?> GetByIbanAsync(string iban);
+
 
         Task SaveAsync(Account account);
     }
