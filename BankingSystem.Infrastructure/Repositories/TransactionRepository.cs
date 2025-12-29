@@ -1,4 +1,5 @@
-﻿using BankingSystem.Domain.Aggregates.Transaction;
+﻿using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.Aggregates.Transaction;
 using BankingSystem.Domain.Interfaces;
 using BankingSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,9 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task<Transaction?> GetByIdAsync(Guid id)
         {
-            return await _context.Transactions.FindAsync(id);
+            return await _context.Transactions
+                .Include(x=>x.TransactionEntries)
+                .FirstOrDefaultAsync(t=>t.Id == id);
         }
         public void Add(Transaction transaction)
         {
@@ -37,17 +40,18 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task SaveAsync(Transaction transaction)
         {
-            var existingTransaction = await _context.Transactions
-             .AsNoTracking()
-             .FirstOrDefaultAsync(c => c.Id == transaction.Id);
+            var entry = _context.Entry(transaction);
 
-            if (existingTransaction is null)
+            if (entry.State == EntityState.Detached)
             {
-                await _context.Transactions.AddAsync(transaction);
-            }
-            else
-            {
-                _context.Transactions.Update(transaction);
+                var exists = await _context.Transactions
+                    .AsNoTracking()
+                    .AnyAsync(c => c.Id == transaction.Id);
+
+                if (exists)
+                    _context.Transactions.Update(transaction);
+                else
+                    await _context.Transactions.AddAsync(transaction);
             }
         }
     }

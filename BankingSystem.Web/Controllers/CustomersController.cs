@@ -11,6 +11,7 @@ using BankingSystem.Application.UseCases.Customers.WithdrawFromAccount;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.AccessControl;
 
 namespace BankingSystem.Web.Controllers
@@ -46,11 +47,11 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] CreateCustomerDto Dto)
+        public async Task<IActionResult> Create([FromBody] CreateCustomerDto dto)
         {
             var command = new CreateCustomerCommand
             {
-                Data = Dto
+                Data = dto
             };
 
             var result = await _createCustomerHandler.Handle(command);
@@ -64,16 +65,16 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("open")]
-        public async Task<IActionResult> Open([FromBody] OpenAccountDto Dto)
+        public async Task<IActionResult> Open([FromBody] OpenAccountDto dto)
         {
 
-            var depositTerm = Dto.DepositTerm.HasValue ? new DepositTerm(Dto.DepositTerm.Value) : null;
+            var depositTerm = dto.DepositTerm.HasValue ? new DepositTerm(dto.DepositTerm.Value) : null;
 
             var command = new OpenBankAccountCommand(
-                (AccountType)Dto.AccountType,
-                Dto.CustomerId,
-                Dto.InitialBalance,
-                Dto.WithdrawLimit,
+                (AccountType)dto.AccountType,
+                dto.CustomerId,
+                dto.InitialBalance,
+                dto.WithdrawLimit,
                 depositTerm);
 
             var result = await _openBankAccountHandler.Handle(command);
@@ -85,11 +86,23 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("deactive")]
-        public async Task<IActionResult> Deactive([FromForm] Guid Id)
+        public async Task<IActionResult> Deactive([FromForm] Guid id)
         {
-            var command = new DeactivateCustomerCommand(Id);
+            var command = new DeactivateCustomerCommand(id);
 
             var result = await _deactivateCustomerCommandHandler.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpPost("deposit")]
+        public async Task<IActionResult> Deposit([FromForm] Guid customerId, Guid accountId,decimal amount)
+        {
+            var command = new DepositBankAccountCommand(customerId,accountId,amount);
+
+            var result = await _depositToBankAccountHandler.Handle(command);
             if (result.IsSuccess)
                 return Ok(result.Value);
 
