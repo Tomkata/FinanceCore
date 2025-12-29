@@ -1,6 +1,7 @@
 ﻿using BankingSystem.Application.DTOs.Accounts;
 using BankingSystem.Application.UseCases.Accounts.CloseBankAccount;
 using BankingSystem.Application.UseCases.Accounts.GetAccountById;
+using BankingSystem.Application.UseCases.Accounts.GetAllAccountsFromCustomer;
 using BankingSystem.Application.UseCases.Accounts.NewFolder;
 using BankingSystem.Application.UseCases.Accounts.OpenBankAccount;
 using BankingSystem.Application.UseCases.Accounts.ReactiveBankAccount;
@@ -19,18 +20,21 @@ namespace BankingSystem.Web.Controllers
         private readonly ReactiveBankAccountHandler   _reactiveBankAccountHandler;
         private readonly GetAccountByIdHandler _getAccountByIdHandler;
         private readonly GetAccountByIbanHandler _getAccountByIbanHandler;
+        private readonly GetAllAccountsForCustomerHandler _getAllAccountsForCustomerHandler;
 
         public AccountsController(OpenBankAccountHandler openAccountHandler,
                                    GetAccountByIdHandler getAccountByIdHandler,
                                    GetAccountByIbanHandler getAccountByIbanHandler,
                                    FreezeBankAccountHandler freezeBankAccountHandler,
-                                   ReactiveBankAccountHandler reactiveBankAccountHandler)
+                                   ReactiveBankAccountHandler reactiveBankAccountHandler,
+                                   GetAllAccountsForCustomerHandler getAllAccountsForCustomerHandler)
         {
             this._openAccountHandler = openAccountHandler;
             this._getAccountByIdHandler = getAccountByIdHandler;
             this._getAccountByIbanHandler = getAccountByIbanHandler;
             this._freezeBankAccountHandler = freezeBankAccountHandler;
             this._reactiveBankAccountHandler = reactiveBankAccountHandler;
+            this._getAllAccountsForCustomerHandler = getAllAccountsForCustomerHandler;
         }
 
         [HttpPost("open")]
@@ -123,5 +127,21 @@ namespace BankingSystem.Web.Controllers
 
             return NotFound(result.Error);
         }
+
+        [HttpGet("customer")]
+        public async Task<IActionResult> GetAllByCustomer(Guid Id)
+        {
+            var query = new GetAllAccountsForCustomerQuery(Id);
+
+            var result = await _getAllAccountsForCustomerHandler.Handle(query);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
+        }
+
+
+
     }
 }
