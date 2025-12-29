@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Application.UseCases.Customers.GetCustomerById
 {
-    public class GetCustomerByIdQueryHandler
+    public class GetCustomerByIdHandler
     {
         private readonly ICustomerRepository _customerRepository;
 
-        public GetCustomerByIdQueryHandler(ICustomerRepository customerRepository)
+        public GetCustomerByIdHandler(ICustomerRepository customerRepository)
         {
             this._customerRepository = customerRepository;
         }

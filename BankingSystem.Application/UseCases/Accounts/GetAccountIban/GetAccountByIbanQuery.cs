@@ -1,4 +1,4 @@
-﻿namespace BankingSystem.Application.UseCases.Accounts.NewFolder
+﻿namespace BankingSystem.Application.UseCases.Accounts.GetAccountByIban
 {
     public record GetAccountByIbanQuery(string iban);
 }

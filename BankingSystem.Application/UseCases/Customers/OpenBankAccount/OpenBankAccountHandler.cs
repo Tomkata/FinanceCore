@@ -1,6 +1,4 @@
-﻿
-
-namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
+﻿namespace BankingSystem.Application.UseCases.Customers.OpenBankAccount
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Application.Common.Results;

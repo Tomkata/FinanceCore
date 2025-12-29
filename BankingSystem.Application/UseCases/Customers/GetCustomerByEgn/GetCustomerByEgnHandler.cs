@@ -7,11 +7,11 @@ namespace BankingSystem.Application.UseCases.Customers.GetCustomerByEgn
     using BankingSystem.Domain.Interfaces;
     using Mapster;
         
-    public  class GetCustomerByEgnQueryHandler
+    public  class GetCustomerByEgnHandler
     {
         private readonly ICustomerRepository _customerRepository;
 
-        public GetCustomerByEgnQueryHandler(ICustomerRepository customerRepository)
+        public GetCustomerByEgnHandler(ICustomerRepository customerRepository)
         {
             this._customerRepository = customerRepository;
         }

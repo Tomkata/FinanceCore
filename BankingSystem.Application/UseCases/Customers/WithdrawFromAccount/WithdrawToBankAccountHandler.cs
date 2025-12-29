@@ -1,17 +1,15 @@
-﻿
-
-namespace BankingSystem.Application.UseCases.Accounts.WithdrawBankAccount
+﻿namespace BankingSystem.Application.UseCases.Customers.WithdrawFromAccount
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Application.Common.Results;
     using BankingSystem.Domain.Interfaces;
-    public class WithdrawBankAccountHandler
+    public class WithdrawToBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly WithdrawBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public WithdrawBankAccountHandler(
+        public WithdrawToBankAccountHandler(
             ICustomerRepository customerRepository,
             WithdrawBankAccountValidator validator,
             IUnitOfWork unitOfWork)

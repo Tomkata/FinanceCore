@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingSystem.Application.UseCases.Accounts.NewFolder
+namespace BankingSystem.Application.UseCases.Accounts.GetAccountByIban
 {
     public class GetAccountByIbanHandler
     {

@@ -2,9 +2,9 @@
 using BankingSystem.Application.UseCases.Accounts.CloseBankAccount;
 using BankingSystem.Application.UseCases.Accounts.GetAccountById;
 using BankingSystem.Application.UseCases.Accounts.GetAllAccountsFromCustomer;
-using BankingSystem.Application.UseCases.Accounts.NewFolder;
-using BankingSystem.Application.UseCases.Accounts.OpenBankAccount;
+using BankingSystem.Application.UseCases.Accounts.GetAccountByIban;
 using BankingSystem.Application.UseCases.Accounts.ReactiveBankAccount;
+using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -37,26 +37,7 @@ namespace BankingSystem.Web.Controllers
             this._getAllAccountsForCustomerHandler = getAllAccountsForCustomerHandler;
         }
 
-        [HttpPost("open")]
-        public async Task<IActionResult> Open([FromBody] OpenAccountDto dto)
-        {
-
-            var depositTerm = dto.DepositTerm.HasValue ? new DepositTerm(dto.DepositTerm.Value) : null;
-
-            var command = new OpenBankAccountCommand(
-                (AccountType)dto.AccountType,
-                dto.CustomerId,
-                dto.InitialBalance,
-                dto.WithdrawLimit,
-                depositTerm);
-
-            var result = await _openAccountHandler.Handle(command);
-
-            if (result.IsSuccess)
-                return Ok(result.Value);
-
-            return BadRequest(result.Error);
-        }
+       
 
         [HttpPost("close")]
         public async Task<IActionResult> Close([FromForm] Guid CustomerId,Guid AccountId)

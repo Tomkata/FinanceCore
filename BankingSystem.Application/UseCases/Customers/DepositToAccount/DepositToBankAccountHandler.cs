@@ -1,17 +1,15 @@
-﻿
-
-namespace BankingSystem.Application.UseCases.Accounts.DepositBankAccount
+﻿namespace BankingSystem.Application.UseCases.Customers.DepositToAccount
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Application.Common.Results;
     using BankingSystem.Domain.Interfaces;
-    public class DepositBankAccountHandler
+    public class DepositToBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly DepositBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public DepositBankAccountHandler(
+        public DepositToBankAccountHandler(
             ICustomerRepository customerRepository,
             DepositBankAccountValidator validator,
             IUnitOfWork unitOfWork)
@@ -22,7 +20,7 @@ namespace BankingSystem.Application.UseCases.Accounts.DepositBankAccount
         }
 
         public async Task<Result<Guid>> Handle(DepositBankAccountCommand command)
-        {
+        {   
             var validationResult = await _validator.ValidateAsync(command);
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(String.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));

@@ -21,7 +21,7 @@ namespace BankingSystem.Infrastructure.Repositories
 
         public async Task<Customer?> GetByIdAsync(Guid id)
         {
-            return await _context.Customers
+                return await _context.Customers
                 .Include(c => c.Accounts)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }

@@ -1,6 +1,6 @@
-﻿namespace BankingSystem.Application.UseCases.Accounts.WithdrawBankAccount
+﻿namespace BankingSystem.Application.UseCases.Customers.WithdrawFromAccount
 {
-    using BankingSystem.Application.UseCases.Accounts.DepositBankAccount;
+    using BankingSystem.Application.UseCases.Customers.DepositToAccount;
     using FluentValidation;
     public class WithdrawBankAccountValidator : AbstractValidator<WithdrawBankAccountCommand>
     {

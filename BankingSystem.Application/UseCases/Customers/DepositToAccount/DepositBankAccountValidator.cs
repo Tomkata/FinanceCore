@@ -1,5 +1,4 @@
-﻿
-namespace BankingSystem.Application.UseCases.Accounts.DepositBankAccount
+﻿namespace BankingSystem.Application.UseCases.Customers.DepositToAccount
 {
     using FluentValidation;
 

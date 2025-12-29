@@ -1,5 +1,4 @@
-﻿
-namespace BankingSystem.Application.UseCases.Accounts.OpenBankAccount
+﻿namespace BankingSystem.Application.UseCases.Customers.OpenBankAccount
 {
     using BankingSystem.Domain.Enums;
     using BankingSystem.Domain.ValueObjects;
