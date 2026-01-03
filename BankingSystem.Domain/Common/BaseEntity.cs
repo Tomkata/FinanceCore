@@ -10,7 +10,7 @@
         public Guid Id { get; set; }
         public DateTime CreatedAt { get;private set; }
         public DateTime UpdatedAt { get; private set; }
-        public byte[] RowVersion { get; private set; }
+        public byte[]? RowVersion { get; private set; }
 
         protected void UpdateTimeStamp()        
         {
