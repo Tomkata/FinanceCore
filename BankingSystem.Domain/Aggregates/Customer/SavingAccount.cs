@@ -1,37 +1,40 @@
 ﻿using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Exceptions;
 
-public class SavingAccount : Account
+namespace BankingSystem.Domain.Aggregates.Customer
 {
-    public int WithdrawLimits { get; private set; }
-    public int CurrentMonthWithdrawals { get; private set; }
-    public DateTime? LastWithdrawalDate { get; private set; }
-
-    public override AccountType AccountType => AccountType.Saving;
-
-    private SavingAccount() : base() { }
-
-    public SavingAccount(IBAN iban, Guid customerId, int withdrawLimit)
-        : base(iban, customerId)
+    public class SavingAccount : Account
     {
-        if (withdrawLimit <= 0)
-            throw new AccountWithdrawInvalidParameter(withdrawLimit);
+            public int WithdrawLimits { get; private set; }
+        public int CurrentMonthWithdrawals { get; private set; }
+        public DateTime? LastWithdrawalDate { get; private set; }
 
-        WithdrawLimits = withdrawLimit;
-    }
+        public override AccountType AccountType => AccountType.Saving;
 
-    protected override void ValidateTypeSpecificWithdrawalRules(decimal amount)
-    {
-        if (LastWithdrawalDate?.Month != DateTime.UtcNow.Month)
-            CurrentMonthWithdrawals = 0;
+        private SavingAccount() : base() { }
 
-        if (CurrentMonthWithdrawals >= WithdrawLimits)
-            throw new WithdrawLimitReachedException();
-    }
+        public SavingAccount(IBAN iban, Guid customerId, int withdrawLimit)
+            : base(iban, customerId)
+        {
+            if (withdrawLimit <= 0)
+                throw new AccountWithdrawInvalidParameter(withdrawLimit);
 
-    protected override void OnWithdrawalCompleted(decimal amount)
-    {
-        CurrentMonthWithdrawals++;
-        LastWithdrawalDate = DateTime.UtcNow;
+            WithdrawLimits = withdrawLimit;
+        }
+
+        protected override void ValidateTypeSpecificWithdrawalRules(decimal amount)
+        {
+            if (LastWithdrawalDate?.Month != DateTime.UtcNow.Month)
+                CurrentMonthWithdrawals = 0;
+
+            if (CurrentMonthWithdrawals >= WithdrawLimits)
+                throw new WithdrawLimitReachedException();
+        }
+
+        protected override void OnWithdrawalCompleted(decimal amount)
+        {
+            CurrentMonthWithdrawals++;
+            LastWithdrawalDate = DateTime.UtcNow;
+        }
     }
 }
