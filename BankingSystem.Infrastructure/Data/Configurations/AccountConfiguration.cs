@@ -44,6 +44,18 @@
                 builder.HasOne(x => x.Customer)
                     .WithMany(x => x.Accounts)
                     .HasForeignKey(x => x.CustomerId);
+
+                // Many-to-many: Account <-> Transaction through TransactionEntry
+                builder.HasMany(x => x.Transactions)
+                    .WithMany()
+                    .UsingEntity<BankingSystem.Domain.Aggregates.Transaction.TransactionEntry>(
+                        j => j.HasOne(te => te.Transaction)
+                              .WithMany(t => t.TransactionEntries)
+                              .HasForeignKey(te => te.TransactionId),
+                        j => j.HasOne(te => te.Account)
+                              .WithMany(a => a.TransactionEntries)
+                              .HasForeignKey(te => te.AccountId)
+                    );
             }
         }
     }

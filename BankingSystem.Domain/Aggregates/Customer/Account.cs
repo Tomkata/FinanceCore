@@ -18,6 +18,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
         // Navigation properties
         public virtual Customer Customer { get; protected set; }
         public virtual ICollection<TransactionEntry> TransactionEntries { get; protected set; } = new HashSet<TransactionEntry>();
+        public virtual ICollection<BankingSystem.Domain.Aggregates.Transaction.Transaction> Transactions { get; protected set; } = new HashSet<BankingSystem.Domain.Aggregates.Transaction.Transaction>();
 
         protected Account() { }
 

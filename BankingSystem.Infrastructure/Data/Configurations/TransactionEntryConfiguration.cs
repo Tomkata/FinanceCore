@@ -21,15 +21,7 @@ namespace BankingSystem.Infrastructure.Data.Configurations
                 .IsConcurrencyToken()
                 .ValueGeneratedOnAddOrUpdate();
 
-            builder.HasOne(x => x.Account)
-                .WithMany(a => a.TransactionEntries)
-                .HasForeignKey(x => x.AccountId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(x => x.Transaction)
-                .WithMany(x => x.TransactionEntries)
-                .HasForeignKey(x => x.TransactionId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // Relationships are configured in AccountConfiguration.UsingEntity
         }
     }
 }
