@@ -43,7 +43,7 @@ public class InfrastructureTestFixture : IDisposable
             "Vault",
             new PhoneNumber("+359000000000"),
             new Address("Bank HQ", "Sofia", 1000, "BG"),
-            EGN.Create("0000000000")
+            EGN.Create("5001010001")  // Valid EGN: born Jan 1, 1950
         );
 
         var bankVaultAccount = bankVaultCustomer.OpenAccount(
