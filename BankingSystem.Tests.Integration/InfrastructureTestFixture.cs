@@ -1,5 +1,8 @@
 ﻿using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.DomainService;
+using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
+using BankingSystem.Domain.Interfaces;
 using BankingSystem.Domain.ValueObjects;
 using BankingSystem.Infrastructure.Data;
 using BankingSystem.Infrastructure.Services;
@@ -10,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 public class InfrastructureTestFixture : IDisposable
 {
     public ServiceProvider ServiceProvider { get; }
-    public Guid BankVaultAccountId { get; } 
+    public Guid BankVaultAccountId { get; }
 
     private readonly SqliteConnection _connection;
 
@@ -24,11 +27,15 @@ public class InfrastructureTestFixture : IDisposable
         services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseSqlite(_connection));
 
+        services.AddScoped<IAccountFactory, AccountFactory>();
+        services.AddScoped<IIbanGenerator, FakeIbanGenerator>();
+
         var tempProvider = services.BuildServiceProvider();
         var db = tempProvider.GetRequiredService<ApplicationDbContext>();
         db.Database.EnsureCreated();
 
-        var ibanGen = new FakeIbanGenerator();
+        var ibanGen = tempProvider.GetRequiredService<IIbanGenerator>();
+        var factory = tempProvider.GetRequiredService<IAccountFactory>();
 
         var bankVaultCustomer = new Customer(
             "BANK_VAULT",
@@ -36,13 +43,14 @@ public class InfrastructureTestFixture : IDisposable
             "Vault",
             new PhoneNumber("+359000000000"),
             new Address("Bank HQ", "Sofia", 1000, "BG"),
-            new EGN("0000000000", new DateOnly(2000, 1, 1), Gender.Male)
+            EGN.Create("0000000000")
         );
 
         var bankVaultAccount = bankVaultCustomer.OpenAccount(
             AccountType.Checking,
-            1_000_000_000, 
-            ibanGen
+            1_000_000_000,
+            ibanGen,
+            factory
         );
 
         BankVaultAccountId = bankVaultAccount.Id;

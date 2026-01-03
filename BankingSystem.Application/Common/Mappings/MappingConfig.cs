@@ -53,17 +53,27 @@ namespace BankingSystem.Application.Common.Mappings
 
 
             TypeAdapterConfig<Account, AccountDto>
-                .NewConfig()
-                .Map(dest => dest.Id, src => src.Id)
-                .Map(dest => dest.IBAN, src => src.IBAN.Value)
-                .Map(dest => dest.Balance, src => src.Balance)
-                .Map(dest => dest.AccountStatus, src => src.AccountStatus.ToString())
-                .Map(dest => dest.AccountType, src => src.AccountType.ToString())
-                .Map(dest => dest.WithdrawLimits, src => src.WithdrawLimits)
-                .Map(dest => dest.CurrentMonthWithdrawals, src => src.CurrentMonthWithdrawals)
-                .Map(dest => dest.MaturityDate, src => src.MaturityDate)
-                .Map(dest => dest.CreatedAt, src => src.CreatedAt)
-                .Map(dest => dest.UpdatedAt, src => src.UpdatedAt);
+    .NewConfig()
+    .Map(dest => dest.Id, src => src.Id)
+    .Map(dest => dest.IBAN, src => src.IBAN.Value)
+    .Map(dest => dest.Balance, src => src.Balance)
+    .Map(dest => dest.AccountStatus, src => src.AccountStatus.ToString())
+    .Map(dest => dest.AccountType, src => src.AccountType.ToString())
+    .Map(dest => dest.CreatedAt, src => src.CreatedAt)
+    .Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
+    .AfterMapping((src, dest) =>
+    {
+        if (src is SavingAccount saving)
+        {
+            dest.WithdrawLimits = saving.WithdrawLimits;
+            dest.CurrentMonthWithdrawals = saving.CurrentMonthWithdrawals;
+        }
+
+        if (src is DepositAccount deposit)
+        {
+            dest.MaturityDate = deposit.MaturityDate;
+        }
+    });
 
 
             TypeAdapterConfig<Transaction, TransactionDto>

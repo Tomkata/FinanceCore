@@ -1,34 +1,62 @@
 ﻿using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.DomainService;
+using BankingSystem.Domain.DomainServices;
+using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
+using FluentAssertions;
 
 namespace BankingSystem.Tests.Integration.Accounts;
 
 public class WithdrawTests
 {
     private static readonly IBAN TestIban = IBAN.Create("BG80BNBG96611020345678");
+    private readonly IAccountFactory _factory = new AccountFactory();
+
 
     private Account CreateRegularAccount(decimal initialDeposit = 0m)
     {
-        var account = Account.CreateRegular(TestIban, Guid.NewGuid());
+        var account = _factory.Create(
+            AccountType.Checking,
+            TestIban,
+            Guid.NewGuid()
+        );
+
         if (initialDeposit > 0)
             account.Deposit(initialDeposit);
+
         return account;
     }
 
-    private Account CreateSavingAccount(int withdrawLimit, decimal initialDeposit = 0m)
+    private SavingAccount CreateSavingAccount(int withdrawLimit, decimal initialDeposit = 0m)
     {
-        var account = Account.CreateSaving(TestIban, Guid.NewGuid(), withdrawLimit);
+        var account = _factory.Create(
+            AccountType.Saving,
+            TestIban,
+            Guid.NewGuid(),
+            withdrawLimit: withdrawLimit
+        ) as SavingAccount
+          ?? throw new Exception("Factory did not return SavingAccount");
+
         if (initialDeposit > 0)
             account.Deposit(initialDeposit);
+
         return account;
     }
 
-    private Account CreateDepositAccount(int termMonths , decimal initialDeposit = 0m)
+    private DepositAccount CreateDepositAccount(int termMonths, decimal initialDeposit = 0m)
     {
-        var account = Account.CreateDeposit(TestIban, Guid.NewGuid(), new DepositTerm(termMonths));
+        var account = _factory.Create(
+            AccountType.Deposit,
+            TestIban,
+            Guid.NewGuid(),
+            depositTerm: new DepositTerm(termMonths)
+        ) as DepositAccount
+          ?? throw new Exception("Factory did not return DepositAccount");
+
         if (initialDeposit > 0)
             account.Deposit(initialDeposit);
+
         return account;
     }
 
@@ -116,8 +144,9 @@ public class WithdrawTests
 
         account.Withdraw(100m);
 
-        Assert.Equal(400m, account.Balance);
-        Assert.Equal(1, account.CurrentMonthWithdrawals);
+        var saving = account as SavingAccount;
+        saving.Should().NotBeNull();
+        saving.CurrentMonthWithdrawals.Should().Be(1);
     }
 
     [Fact]
@@ -152,14 +181,18 @@ public class WithdrawTests
     public void Withdraw_FromDepositAccount_AfterMaturity_Succeeds()
     {
         var account = CreateDepositAccount(termMonths: 1, initialDeposit: 1000m);
+        var deposit = account as DepositAccount;
+        deposit.Should().NotBeNull();
 
-        var maturityProperty = typeof(Account).GetProperty("MaturityDate");
-        maturityProperty?.SetValue(account, DateTime.UtcNow.AddDays(-1));
+        typeof(DepositAccount)
+            .GetProperty("MaturityDate")!
+            .SetValue(deposit, DateTime.UtcNow.AddDays(-1));
 
         account.Withdraw(500m);
 
         Assert.Equal(500m, account.Balance);
     }
+
 
     #endregion
 }

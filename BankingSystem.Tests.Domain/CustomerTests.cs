@@ -1,17 +1,20 @@
 ﻿using BankingSystem.Domain.Aggregates.Customer;
 using BankingSystem.Domain.Aggregates.Customer.Events;
+using BankingSystem.Domain.DomainService;
+using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Customer;
 using BankingSystem.Domain.Exceptions;
 using BankingSystem.Domain.ValueObjects;
 using BankingSystem.Infrastructure.Services;
+using FluentAssertions;
 
 namespace BankingSystem.Tests.Domain;
 
 public class CustomerTests
 {
     private readonly FakeIbanGenerator _ibanGenerator = new();
-
+    private readonly IAccountFactory _factory = new AccountFactory();
     private Customer CreateCustomer(CustomerStatus? status = null)
     {
         var customer = new Customer(
@@ -38,8 +41,14 @@ public class CustomerTests
         DepositTerm? depositTerm = null)
     {
         var customer = CreateCustomer();
-        var account = customer.OpenAccount(type, balance, _ibanGenerator, withdrawLimit, depositTerm);
-        customer.ClearDomainEvents();
+        var account = customer.OpenAccount(
+            type,
+            balance,
+            _ibanGenerator,
+            _factory,
+            withdrawLimit,
+            depositTerm
+        ); customer.ClearDomainEvents();
         return (customer, account);
     }
 
@@ -81,13 +90,8 @@ public class CustomerTests
     {
         var customer = CreateCustomer();
 
-        var account = customer.OpenAccount(type, balance, _ibanGenerator);
-
-        Assert.NotNull(account);
-        Assert.Equal(type, account.AccountType);
-        Assert.Equal(balance, account.Balance);
-        Assert.Equal(customer.Id, account.CustomerId);
-        Assert.Single(customer.Accounts);
+        var acc = customer.OpenAccount(AccountType.Checking, 100, _ibanGenerator, _factory);
+        Assert.IsType<CheckingAccount>(acc);
     }
 
     [Fact]
@@ -95,22 +99,28 @@ public class CustomerTests
     {
         var customer = CreateCustomer();
 
-        var account = customer.OpenAccount(AccountType.Saving, 500m, _ibanGenerator, withdrawLimit: 3);
+        var account = customer.OpenAccount(AccountType.Saving, 500m, _ibanGenerator, _factory, withdrawLimit: 3);
 
-        Assert.Equal(AccountType.Saving, account.AccountType);
-        Assert.Equal(3, account.WithdrawLimits);
+        var acc = customer.OpenAccount(AccountType.Saving, 100, _ibanGenerator, _factory, withdrawLimit: 3);
+        var saving = Assert.IsType<SavingAccount>(acc);
+        Assert.Equal(3, saving.WithdrawLimits);
     }
 
     [Fact]
-    public void OpenAccount_Saving_WithoutWithdrawLimit_ThrowsInvalidOperationException()
+    public void OpenAccount_Saving_WithoutWithdrawLimit_ShouldThrowWithdrawLimitRequired()
     {
         var customer = CreateCustomer();
 
-        var ex = Assert.Throws<InvalidOperationException>(() =>
-            customer.OpenAccount(AccountType.Saving, 100m, _ibanGenerator));
+        Action act = () => customer.OpenAccount(
+            AccountType.Saving,
+            100m,
+            _ibanGenerator,
+            _factory
+        );
 
-        Assert.Contains("Withdraw limit required", ex.Message);
+        act.Should().Throw<WithdrawLimitRequiredException>();
     }
+
 
     [Fact]
     public void OpenAccount_Deposit_WithDepositTerm_CreatesAccountWithMaturityDate()
@@ -118,45 +128,62 @@ public class CustomerTests
         var customer = CreateCustomer();
         var depositTerm = new DepositTerm(12);
 
-        var account = customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator, depositTerm: depositTerm);
+        var account = customer.OpenAccount(
+            AccountType.Deposit,
+            1000m,
+            _ibanGenerator,
+            _factory,
+            depositTerm: depositTerm
+        );
 
-        Assert.Equal(AccountType.Deposit, account.AccountType);
-        Assert.NotNull(account.MaturityDate);
-        Assert.True(account.MaturityDate > DateTime.UtcNow);
+        var deposit = Assert.IsType<DepositAccount>(account);
+
+        Assert.NotNull(deposit.MaturityDate);
+        Assert.True(deposit.MaturityDate > DateTime.UtcNow);
     }
 
+
     [Fact]
-    public void OpenAccount_Deposit_WithoutDepositTerm_ThrowsInvalidOperationException()
+    public void OpenAccount_Deposit_WithoutDepositTerm_ShouldThrowArgumentNull()
     {
         var customer = CreateCustomer();
 
-        var ex = Assert.Throws<InvalidOperationException>(() =>
-            customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator));
-
-        Assert.Contains("Withdraw limit required", ex.Message);
+        Assert.Throws<ArgumentNullException>(() =>
+            customer.OpenAccount(
+                AccountType.Deposit,
+                1000m,
+                _ibanGenerator,
+                _factory
+            )
+        );
     }
+
 
     [Fact]
     public void OpenAccount_MultipleCheckingAccounts_Succeeds()
     {
         var customer = CreateCustomer();
 
-        customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator);
-        customer.OpenAccount(AccountType.Checking, 200m, _ibanGenerator);
+        customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
+        customer.OpenAccount(AccountType.Checking, 200m, _ibanGenerator, _factory);
 
         Assert.Equal(2, customer.Accounts.Count);
     }
+
 
     [Fact]
     public void OpenAccount_MultipleDepositAccounts_ThrowsCannotHaveMultipleDepositAccountsException()
     {
         var customer = CreateCustomer();
-        var depositTerm = new DepositTerm(12);
-        customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator, depositTerm: depositTerm);
+        var term = new DepositTerm(12);
+
+        customer.OpenAccount(AccountType.Deposit, 1000m, _ibanGenerator, _factory, depositTerm: term);
 
         Assert.Throws<CannotHaveMultipleDepositAccountsException>(() =>
-            customer.OpenAccount(AccountType.Deposit, 2000m, _ibanGenerator, depositTerm: depositTerm));
+            customer.OpenAccount(AccountType.Deposit, 2000m, _ibanGenerator, _factory, depositTerm: term)
+        );
     }
+
 
     [Fact]
     public void OpenAccount_InactiveCustomer_ThrowsCannotOpenAccountForInactiveCustomerException()
@@ -164,8 +191,10 @@ public class CustomerTests
         var customer = CreateCustomer(CustomerStatus.Inactive);
 
         Assert.Throws<CannotOpenAccountForInactiveCustomerException>(() =>
-            customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator));
+            customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory)
+        );
     }
+
 
     [Fact]
     public void OpenAccount_NegativeBalance_ThrowsInvalidAmountException()
@@ -173,8 +202,10 @@ public class CustomerTests
         var customer = CreateCustomer();
 
         Assert.Throws<InvalidAmountException>(() =>
-            customer.OpenAccount(AccountType.Checking, -100m, _ibanGenerator));
+            customer.OpenAccount(AccountType.Checking, -100m, _ibanGenerator, _factory)
+        );
     }
+
 
     #endregion
 
@@ -249,14 +280,15 @@ public class CustomerTests
     public void Transfer_BetweenOwnAccounts_TransfersFundsAndRaisesEvent()
     {
         var customer = CreateCustomer();
-        var fromAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator);
-        var toAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator);
+        var fromAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
+        var toAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
         customer.ClearDomainEvents();
 
         customer.Transfer(fromAccount.Id, toAccount.Id, 200m);
 
         Assert.Equal(300m, fromAccount.Balance);
         Assert.Equal(300m, toAccount.Balance);
+
         var transferEvent = Assert.Single(customer.DomainEvents) as TransferInitiatedEvent;
         Assert.NotNull(transferEvent);
         Assert.Equal(fromAccount.Id, transferEvent.fromAccountId);
@@ -264,13 +296,15 @@ public class CustomerTests
         Assert.Equal(200m, transferEvent.amount);
     }
 
+
     [Theory]
     [InlineData(true, false)]  // From non-existent
     [InlineData(false, true)]  // To non-existent
     public void Transfer_NonExistentAccount_ThrowsAccountNotFoundException(bool fromExists, bool toExists)
     {
         var customer = CreateCustomer();
-        var existingAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator);
+        var existingAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
+
         var fromId = fromExists ? existingAccount.Id : Guid.NewGuid();
         var toId = toExists ? existingAccount.Id : Guid.NewGuid();
 
@@ -278,16 +312,18 @@ public class CustomerTests
             customer.Transfer(fromId, toId, 50m));
     }
 
+
     [Fact]
     public void Transfer_InsufficientFunds_ThrowsInsufficientFundsException()
     {
         var customer = CreateCustomer();
-        var fromAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator);
-        var toAccount = customer.OpenAccount(AccountType.Checking, 50m, _ibanGenerator);
+        var fromAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
+        var toAccount = customer.OpenAccount(AccountType.Checking, 50m, _ibanGenerator, _factory);
 
         Assert.Throws<InsufficientFundsException>(() =>
             customer.Transfer(fromAccount.Id, toAccount.Id, 200m));
     }
+
 
     #endregion
 

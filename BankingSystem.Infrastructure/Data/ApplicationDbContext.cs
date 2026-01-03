@@ -39,8 +39,11 @@ namespace BankingSystem.Infrastructure.Data
 
             modelBuilder.ApplyConfiguration(new AccountConfiguration());
             modelBuilder.ApplyConfiguration(new CustomerConfiguration());
-            modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionConfiguration());    
             modelBuilder.ApplyConfiguration(new TransactionEntryConfiguration());
+            modelBuilder.ApplyConfiguration(new SavingAccountConfiguration());
+            modelBuilder.ApplyConfiguration(new DepositAccountConfiguration());
+
         }
     }
 }

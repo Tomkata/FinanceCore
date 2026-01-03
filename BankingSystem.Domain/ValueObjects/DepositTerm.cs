@@ -1,28 +1,19 @@
-﻿namespace BankingSystem.Domain.ValueObjects
+﻿using BankingSystem.Domain.Exceptions;
+
+public record DepositTerm
 {
+    public int Months { get; init; }
 
-    using Domain.Exceptions;
+    private DepositTerm() { }
 
-    public record DepositTerm
+    public DepositTerm(int months)
     {
-        private DepositTerm()
-        {}
-        public int? Months { get; init; }
+        if (months <= 0)
+            throw new InvalidMonthsException(months);
 
-        public DepositTerm(int months)
-        {
-            if (months <= 0) throw new InvalidMonthsException(months);
-
-            Months = months;
-        }
-
-        public DateTime CalculateMaturity(DateTime startDate)
-        {
-            if (Months == null)
-                throw new InvalidOperationException("Months cannot be null");
-
-            return startDate.AddMonths(Months.Value);
-        }
-
+        Months = months;
     }
+
+    public DateTime CalculateMaturity(DateTime startDate)
+        => startDate.AddMonths(Months);
 }

@@ -2,8 +2,10 @@
     namespace BankingSystem.Infrastructure.Data.Configurations
     {
         using BankingSystem.Domain.Aggregates.Customer;
-        using Microsoft.EntityFrameworkCore;
+    using BankingSystem.Domain.Enums;
+    using Microsoft.EntityFrameworkCore;
         using Microsoft.EntityFrameworkCore.Metadata.Builders;
+    using System.Reflection.Emit;
 
         public class AccountConfiguration : IEntityTypeConfiguration<Account>
         {
@@ -12,7 +14,14 @@
                 builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
-    .ValueGeneratedNever();
+             .ValueGeneratedNever();
+
+
+        builder
+            .HasDiscriminator<AccountType>("AccountType")
+            .HasValue<CheckingAccount>(AccountType.Checking)
+            .HasValue<SavingAccount>(AccountType.Saving)
+            .HasValue<DepositAccount>(AccountType.Deposit);
 
             builder.Property(x => x.RowVersion)
                     .IsRowVersion()
@@ -28,12 +37,6 @@
                     iban.Property(i => i.AccountNumber).HasColumnName("IBANAccountNumber");
                 });
 
-                builder.OwnsOne(x => x.DepositTerm, depositTerm =>
-                {
-                    depositTerm.Property(i => i.Months)
-                        .HasColumnName("DepositTermMonths")
-                        .IsRequired(false);
-                });
 
                 builder.Property(x => x.Balance)
                     .HasPrecision(14, 2);

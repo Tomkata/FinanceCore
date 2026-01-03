@@ -4,6 +4,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
 {
     using BankingSystem.Domain.Aggregates.Customer.Events;
     using BankingSystem.Domain.Common;
+    using BankingSystem.Domain.DomainService;
     using BankingSystem.Domain.DomainServices;
     using BankingSystem.Domain.Enums;
     using BankingSystem.Domain.Enums.Account;
@@ -12,6 +13,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
     using BankingSystem.Domain.ValueObjects;
     public class Customer : AggregateRoot
     {
+
         private Customer() {  }
         public Customer(string userName, 
             string firstName,   
@@ -65,6 +67,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
             AccountType type,
             decimal initialBalance,
             IIbanGenerator ibanGenerator,
+            IAccountFactory accountFactory,
             int? withdrawLimit = null,
             DepositTerm? depositTerm = null)
         {
@@ -74,31 +77,26 @@ namespace BankingSystem.Domain.Aggregates.Customer
             if(initialBalance<0)
                 throw new InvalidAmountException(initialBalance);
 
-                if(type == AccountType.Deposit && this.Accounts.Any(a => a.AccountType == AccountType.Deposit))
-     throw new CannotHaveMultipleDepositAccountsException();
+            if (type == AccountType.Deposit && this.Accounts.Any(a => a.AccountType == AccountType.Deposit))
+                throw new CannotHaveMultipleDepositAccountsException();
 
             var iban = ibanGenerator.Generate(this.Id);
 
-            Account account = type switch
-            {
-                AccountType.Checking => Account.CreateRegular(iban, this.Id),
 
-                AccountType.Saving => withdrawLimit is null
-                    ? throw new InvalidOperationException("Withdraw limit required for Saving account.")
-                    : Account.CreateSaving(iban, this.Id, withdrawLimit.Value),
-
-                AccountType.Deposit => depositTerm is null
-                    ? throw new InvalidOperationException("Withdraw limit required")
-                    : Account.CreateDeposit(iban, this.Id, depositTerm),
-
-                _ => throw new InvalidOperationException("Unknown account type")
-            };
+            var account = accountFactory.Create(
+                 type,
+                 iban,
+                 this.Id,
+                 withdrawLimit,
+                 depositTerm
+             );
 
             if (initialBalance > 0)
+            {
                 account.Deposit(initialBalance);
+            }
 
             this.Accounts.Add(account);
-
             return account;
         }
 

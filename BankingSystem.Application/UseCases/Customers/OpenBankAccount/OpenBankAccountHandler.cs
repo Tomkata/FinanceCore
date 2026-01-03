@@ -2,6 +2,7 @@
 {
     using BankingSystem.Application.Common.Interfaces;
     using BankingSystem.Application.Common.Results;
+    using BankingSystem.Domain.DomainService;
     using BankingSystem.Domain.DomainServices;
     using BankingSystem.Domain.Interfaces;
     public class OpenBankAccountHandler
@@ -10,17 +11,20 @@
         private readonly OpenBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IIbanGenerator _ibanGenerator;
+        private readonly IAccountFactory _accountFactory;
 
         public OpenBankAccountHandler(
                  ICustomerRepository customerRepository,
                  OpenBankAccountValidator validator,
                  IUnitOfWork unitOfWork,
-                 IIbanGenerator ibanGenerator)
+                 IIbanGenerator ibanGenerator,
+                 IAccountFactory accountFactory)
         {
-            _customerRepository = customerRepository;
-            _validator = validator;
-            _unitOfWork = unitOfWork;
-            _ibanGenerator = ibanGenerator;
+            this._customerRepository = customerRepository;
+            this._validator = validator;
+            this._unitOfWork = unitOfWork;
+            this._ibanGenerator = ibanGenerator;
+            this._accountFactory = accountFactory;
         }
 
         public async Task<Result<Guid>> Handle(OpenBankAccountCommand command)
@@ -37,12 +41,14 @@
 
 
             var account = customer.OpenAccount(
-                command.type, 
-                command.initialBalance,
-                _ibanGenerator,
-                command.withdrawLimit,
-                command.term);
-            
+    command.type,
+    command.initialBalance,
+    _ibanGenerator,
+    _accountFactory,        
+    command.withdrawLimit,
+    command.term
+);
+
 
             await _unitOfWork.SaveChangesAsync();
 

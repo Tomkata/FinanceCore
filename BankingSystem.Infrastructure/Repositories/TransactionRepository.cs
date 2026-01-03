@@ -1,16 +1,11 @@
-﻿using BankingSystem.Domain.Aggregates.Customer;
-using BankingSystem.Domain.Aggregates.Transaction;
-using BankingSystem.Domain.Interfaces;
-using BankingSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BankingSystem.Infrastructure.Repositories
 {
+    using BankingSystem.Domain.Aggregates.Transaction;
+    using BankingSystem.Domain.Interfaces;
+    using BankingSystem.Infrastructure.Data;
+    using Microsoft.EntityFrameworkCore;
+
     public class TransactionRepository : ITransactionRepository
     {
         private readonly ApplicationDbContext _context;

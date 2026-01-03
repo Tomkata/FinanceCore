@@ -1,6 +1,7 @@
 ﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.UseCases.Accounts.WithdrawBankAccount;
+using BankingSystem.Application.UseCases.Customers.WithdrawFromAccount;
 using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.DomainService;
 using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Customer;
@@ -30,6 +31,7 @@ namespace BankingSystem.Tests.Integration.Flows
             var uow = _services.GetRequiredService<IUnitOfWork>();
             var customerRepo = _services.GetRequiredService<ICustomerRepository>();
             var ibanGen = _services.GetRequiredService<IIbanGenerator>();
+            var factory = _services.GetRequiredService<IAccountFactory>(); // 🟢 ново
 
             var customer = new Customer
             (
@@ -38,39 +40,44 @@ namespace BankingSystem.Tests.Integration.Flows
                 "Smith",
                 new PhoneNumber("+359888555444"),
                 new Address("Avenue", "Plovdiv", 4000, "BG"),
-                new EGN("1122334455", new DateOnly(1992, 3, 20), Gender.Male)
+                EGN.Create("1122334455")
             );
 
-            var account = customer.OpenAccount(AccountType.Checking,1000,ibanGen);
+            var account = customer.OpenAccount(
+                AccountType.Checking,
+                1000,
+                ibanGen,
+                factory
+            );
 
             await customerRepo.SaveAsync(customer);
             await uow.SaveChangesAsync();
 
-            var handler = new WithdrawBankAccountHandler(
+            var handler = new WithdrawToBankAccountHandler(
                 customerRepo,
                 new WithdrawBankAccountValidator(),
                 uow
-                );
+            );
 
             var command = new WithdrawBankAccountCommand(
                 customer.Id,
                 200,
                 account.Id
-                );
+            );
 
             var result = await handler.Handle(command);
 
             Assert.True(result.IsSuccess);
 
             var updated = await customerRepo.GetByIdAsync(customer.Id);
-            var updatedAccount =  updated.GetAccountById(account.Id);
+            var updatedAccount = updated.GetAccountById(account.Id);
 
-            Assert.Equal(800,updatedAccount.Balance);
+            Assert.Equal(800, updatedAccount.Balance);
+
             var transactions = db.Transactions.ToList();
             Assert.Single(transactions);
             Assert.Equal(0, transactions.First().TransactionEntries.Sum(x => x.Amount));
-
-
         }
+
     }
 }

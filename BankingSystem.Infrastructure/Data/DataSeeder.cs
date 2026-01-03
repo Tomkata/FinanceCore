@@ -1,9 +1,12 @@
 ﻿using BankingSystem.Domain.Aggregates;
 using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.DomainService;
+using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
 
 namespace BankingSystem.Infrastructure.Data
 {
@@ -42,12 +45,13 @@ namespace BankingSystem.Infrastructure.Data
             }
 
             var vaultIban = IBAN.Create("BG51UNCR70008378815696");
+            IAccountFactory factory = new AccountFactory();
 
-            var vaultAccount = Account.CreateSystemAccount(
-                vaultAccountId,
-                vaultIban,
-                systemCustomerId
-            );
+            var vaultAccount = factory.CreateSystemAccount( 
+                     vaultAccountId,
+                     vaultIban,
+                     systemCustomerId
+                 );
 
             context.Accounts.Add(vaultAccount);
             await context.SaveChangesAsync();

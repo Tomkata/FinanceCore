@@ -24,14 +24,14 @@ public class Program
 
         var app = builder.Build();
 
-        using (var scope = app.Services.CreateScope())
-        {
-            var services = scope.ServiceProvider;
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            var configuration = services.GetRequiredService<IConfiguration>();
+        //using (var scope = app.Services.CreateScope())
+        //{
+        //    var services = scope.ServiceProvider;
+        //    var context = services.GetRequiredService<ApplicationDbContext>();
+        //    var configuration = services.GetRequiredService<IConfiguration>();
 
-            await DatabaseSeeder.SeedAsync(context, configuration);
-        }
+        //    await DatabaseSeeder.SeedAsync(context, configuration);
+        //}
 
         if (app.Environment.IsDevelopment())
         {
