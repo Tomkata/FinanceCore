@@ -26,10 +26,10 @@
 
 
             builder.Property(x => x.RowVersion)
-    .IsRowVersion()                    // Concurrency token
-    .IsConcurrencyToken()              // Mark for optimistic locking
-    .ValueGeneratedOnAddOrUpdate()     // EF manages the value
-    .IsRequired(false); 
+            .IsRowVersion()                   
+            .IsConcurrencyToken()              
+            .ValueGeneratedOnAddOrUpdate()     
+            .IsRequired(false); 
 
                 builder.ComplexProperty(x => x.IBAN, iban =>
                 {
