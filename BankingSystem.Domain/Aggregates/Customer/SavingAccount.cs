@@ -5,7 +5,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
 {
     public class SavingAccount : Account
     {
-            public int WithdrawLimits { get; private set; }
+        public int WithdrawLimits { get; private set; }
         public int CurrentMonthWithdrawals { get; private set; }
         public DateTime? LastWithdrawalDate { get; private set; }
 

@@ -3,7 +3,7 @@ using BankingSystem.Domain.Exceptions;
 
 namespace BankingSystem.Domain.Aggregates.Customer
 {
-        public class DepositAccount : Account
+    public class DepositAccount : Account
     {
         public DepositTerm DepositTerm { get; private set; }
         public DateTime MaturityDate { get; private set; }
