@@ -9,6 +9,8 @@ public class SavingAccount : Account
 
     public override AccountType AccountType => AccountType.Saving;
 
+    private SavingAccount() : base() { }
+
     public SavingAccount(IBAN iban, Guid customerId, int withdrawLimit)
         : base(iban, customerId)
     {

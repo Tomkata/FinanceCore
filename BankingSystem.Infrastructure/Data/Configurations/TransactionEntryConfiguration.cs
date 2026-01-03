@@ -22,7 +22,7 @@ namespace BankingSystem.Infrastructure.Data.Configurations
                 .ValueGeneratedOnAddOrUpdate();
 
             builder.HasOne(x => x.Account)
-                .WithMany()
+                .WithMany(a => a.Transactions)
                 .HasForeignKey(x => x.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 

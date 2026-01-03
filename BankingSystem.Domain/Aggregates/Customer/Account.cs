@@ -1,16 +1,23 @@
-﻿using BankingSystem.Domain.Enums;
+﻿using BankingSystem.Domain.Aggregates.Transaction;
+using BankingSystem.Domain.Common;
+using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.Exceptions;
 
-public abstract class Account
+public abstract class Account : BaseEntity
 {
-    public Guid Id { get; protected set; } = Guid.NewGuid();
     public IBAN IBAN { get; protected set; }
     public Guid CustomerId { get; protected set; }
     public decimal Balance { get; protected set; }
     public AccountStatus AccountStatus { get; protected set; } = AccountStatus.Active;
 
     public abstract AccountType AccountType { get; }
+
+    // Navigation properties
+    public virtual Customer Customer { get; protected set; }
+    public virtual ICollection<TransactionEntry> Transactions { get; protected set; } = new HashSet<TransactionEntry>();
+
+    protected Account() { }
 
     protected Account(IBAN iban, Guid customerId)
     {

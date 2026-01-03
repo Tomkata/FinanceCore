@@ -8,6 +8,8 @@ public class DepositAccount : Account
 
     public override AccountType AccountType => AccountType.Deposit;
 
+    private DepositAccount() : base() { }
+
     public DepositAccount(IBAN iban, Guid customerId, DepositTerm term)
         : base(iban, customerId)
     {
