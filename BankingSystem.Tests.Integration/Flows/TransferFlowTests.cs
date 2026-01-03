@@ -1,6 +1,7 @@
 ﻿using BankingSystem.Application.Common.Interfaces;
 using BankingSystem.Application.UseCases.TransferBankAccount;
 using BankingSystem.Domain.Aggregates.Customer;
+using BankingSystem.Domain.DomainService;
 using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Interfaces;
@@ -25,8 +26,7 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         var uow = _services.GetRequiredService<IUnitOfWork>();
         var customerRepo = _services.GetRequiredService<ICustomerRepository>();
         var ibanGen = _services.GetRequiredService<IIbanGenerator>();
-
-       
+        var factory = _services.GetRequiredService<IAccountFactory>();
 
         // Create customer
         var customer = new Customer(
@@ -39,8 +39,8 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         );
 
         // Open two accounts
-        var fromAcc = customer.OpenAccount(AccountType.Checking, 1000, ibanGen);
-        var toAcc = customer.OpenAccount(AccountType.Checking, 0, ibanGen);
+        var fromAcc = customer.OpenAccount(AccountType.Checking, 1000, ibanGen, factory);
+        var toAcc = customer.OpenAccount(AccountType.Checking, 0, ibanGen, factory);
 
         await customerRepo.SaveAsync(customer);
         await uow.SaveChangesAsync();
