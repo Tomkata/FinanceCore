@@ -3,6 +3,7 @@ using BankingSystem.Domain.Common;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankingSystem.Domain.Aggregates.Customer
 {
@@ -13,6 +14,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
         public decimal Balance { get; protected set; }
         public AccountStatus AccountStatus { get; protected set; } = AccountStatus.Active;
 
+        [NotMapped]
         public abstract AccountType AccountType { get; }
 
         // Navigation properties
