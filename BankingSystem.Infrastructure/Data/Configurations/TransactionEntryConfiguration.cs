@@ -19,7 +19,8 @@ namespace BankingSystem.Infrastructure.Data.Configurations
             builder.Property(x => x.RowVersion)
                 .IsRowVersion()
                 .IsConcurrencyToken()
-                .ValueGeneratedOnAddOrUpdate();
+                .ValueGeneratedOnAddOrUpdate()
+                .IsRequired(false);
 
             // Relationships are configured in AccountConfiguration using UsingEntity
             // This enables many-to-many between Account and Transaction with TransactionEntry as join entity
