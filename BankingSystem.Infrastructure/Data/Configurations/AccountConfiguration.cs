@@ -16,6 +16,8 @@
             builder.Property(x => x.Id)
              .ValueGeneratedNever();
 
+        // Ignore computed property - it's determined by subclass, not stored in DB
+        builder.Ignore(x => x.AccountType);
 
         builder
             .HasDiscriminator<AccountType>("Discriminator")
