@@ -11,11 +11,12 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         builder.Property(x => x.Id)
    .ValueGeneratedNever();
 
-        // RowVersion - конфигуриран САМО веднъж
+        // RowVersion - nullable for SQLite compatibility
         builder.Property(x => x.RowVersion)
             .IsRowVersion()
             .IsConcurrencyToken()
-            .ValueGeneratedOnAddOrUpdate();
+            .ValueGeneratedOnAddOrUpdate()
+            .IsRequired(false);
 
         builder.Property(x => x.UserName)
             .HasMaxLength(100)

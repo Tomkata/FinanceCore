@@ -28,7 +28,8 @@
             builder.Property(x => x.RowVersion)
                     .IsRowVersion()
                     .IsConcurrencyToken()
-                    .ValueGeneratedOnAddOrUpdate();
+                    .ValueGeneratedOnAddOrUpdate()
+                    .IsRequired(false);
 
                 builder.ComplexProperty(x => x.IBAN, iban =>
                 {
