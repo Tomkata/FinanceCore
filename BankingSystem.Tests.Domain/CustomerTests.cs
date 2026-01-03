@@ -10,7 +10,6 @@ using BankingSystem.Infrastructure.Services;
 using FluentAssertions;
 
 namespace BankingSystem.Tests.Domain;
-
 public class CustomerTests
 {
     private readonly FakeIbanGenerator _ibanGenerator = new();
@@ -22,7 +21,7 @@ public class CustomerTests
             "John",
             "Doe",
             new PhoneNumber("1234567890"),
-            new Address("123 Main St", "Sofia", 1000, "Bulgaria"),
+            new Address("123 Main St", "Burgas", 1000, "Bulgaria"),
             EGN.Create("0651035020")
         );
 
