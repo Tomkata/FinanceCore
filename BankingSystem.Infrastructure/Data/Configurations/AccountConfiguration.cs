@@ -18,7 +18,7 @@
 
 
         builder
-            .HasDiscriminator<AccountType>("AccountType")
+            .HasDiscriminator<AccountType>("Discriminator")
             .HasValue<CheckingAccount>(AccountType.Checking)
             .HasValue<SavingAccount>(AccountType.Saving)
             .HasValue<DepositAccount>(AccountType.Deposit);
