@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingSystem.Domain.Exceptions
 {
-    internal class WithdrawLimitReachedException : DomainException
+    public class WithdrawLimitReachedException : DomainException
     {
         public WithdrawLimitReachedException()
             :base("Withdraw limit reached ")

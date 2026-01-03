@@ -10,6 +10,7 @@ namespace BankingSystem.Infrastructure
     using BankingSystem.Infrastructure.DomainEvents;
     using BankingSystem.Infrastructure.Persistence;
     using BankingSystem.Infrastructure.Repositories;
+    using BankingSystem.Domain.DomainService;
     using BankingSystem.Infrastructure.Services;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -37,6 +38,10 @@ namespace BankingSystem.Infrastructure
             //services - Use FakeIbanGenerator for now (has proper checksum validation)
             // TODO: Implement real IbanGenerator with bank integration, then use environment-based registration
             services.AddScoped<IIbanGenerator, FakeIbanGenerator>();
+
+
+            //domain services
+            services.AddScoped<IAccountFactory, AccountFactory>();
 
             //event dispatcher
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();

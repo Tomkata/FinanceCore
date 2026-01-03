@@ -18,7 +18,7 @@ namespace BankingSystem.Domain.DomainServices
         {
             return type switch
             {
-                AccountType.Checking => new CheckingAccount(iban, customerId),
+                AccountType.Checking => new CheckingAccount(iban, customerId),  
 
                 AccountType.Saving => new SavingAccount(
                  iban,
@@ -28,7 +28,7 @@ namespace BankingSystem.Domain.DomainServices
                 AccountType.Deposit => new DepositAccount(
                     iban,
                     customerId,
-                    depositTerm ?? throw new ArgumentNullException(nameof(depositTerm))
+                    depositTerm ?? throw new DepositTermRequiredException()
                 ),
 
                 _ => throw new ArgumentOutOfRangeException(nameof(type))

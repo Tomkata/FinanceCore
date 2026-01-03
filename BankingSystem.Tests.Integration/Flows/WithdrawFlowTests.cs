@@ -31,7 +31,7 @@ namespace BankingSystem.Tests.Integration.Flows
             var uow = _services.GetRequiredService<IUnitOfWork>();
             var customerRepo = _services.GetRequiredService<ICustomerRepository>();
             var ibanGen = _services.GetRequiredService<IIbanGenerator>();
-            var factory = _services.GetRequiredService<IAccountFactory>(); // 🟢 ново
+            var factory = _services.GetRequiredService<IAccountFactory>(); 
 
             var customer = new Customer
             (
@@ -40,7 +40,7 @@ namespace BankingSystem.Tests.Integration.Flows
                 "Smith",
                 new PhoneNumber("+359888555444"),
                 new Address("Avenue", "Plovdiv", 4000, "BG"),
-                EGN.Create("1122334455")
+                EGN.Create("0651035020")
             );
 
             var account = customer.OpenAccount(

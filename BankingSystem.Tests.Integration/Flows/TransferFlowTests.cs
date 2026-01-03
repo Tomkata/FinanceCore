@@ -7,6 +7,7 @@ using BankingSystem.Domain.Interfaces;
 using BankingSystem.Domain.ValueObjects;
 using BankingSystem.Infrastructure.Data;
 using Microsoft.Extensions.DependencyInjection;
+using BankingSystem.Domain.DomainService;
 
 public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
 {
@@ -25,8 +26,8 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         var uow = _services.GetRequiredService<IUnitOfWork>();
         var customerRepo = _services.GetRequiredService<ICustomerRepository>();
         var ibanGen = _services.GetRequiredService<IIbanGenerator>();
+        var factory = _services.GetRequiredService<IAccountFactory>();
 
-       
 
         // Create customer
         var customer = new Customer(
@@ -35,12 +36,12 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
             "Doe",
             new PhoneNumber("+359888888888"),
             new Address("Addr", "City", 1000, "BG"),
-            new EGN("1234567890", new DateOnly(1990, 1, 1), Gender.Male)
+            new EGN("7910024406", new DateOnly(1990, 1, 1), Gender.Male)
         );
 
         // Open two accounts
-        var fromAcc = customer.OpenAccount(AccountType.Checking, 1000, ibanGen);
-        var toAcc = customer.OpenAccount(AccountType.Checking, 0, ibanGen);
+        var fromAcc = customer.OpenAccount(AccountType.Checking, 1000, ibanGen, factory);
+        var toAcc = customer.OpenAccount(AccountType.Checking, 0, ibanGen, factory);
 
         await customerRepo.SaveAsync(customer);
         await uow.SaveChangesAsync();

@@ -54,7 +54,7 @@ namespace BankingSystem.Tests.Domain
 
             Action act = () => account.Withdraw(100);
 
-            act.Should().Throw<AccountWithdrawLimitException>();
+            act.Should().Throw<WithdrawLimitReachedException>();
         }
 
         [Fact]

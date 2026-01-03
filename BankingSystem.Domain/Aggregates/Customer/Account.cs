@@ -1,22 +1,31 @@
-﻿using BankingSystem.Domain.Enums;
+﻿using BankingSystem.Domain.Common;
+using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Enums.Account;
 using BankingSystem.Domain.Exceptions;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public abstract class Account
+namespace BankingSystem.Domain.Aggregates.Customer
 {
-    public Guid Id { get; protected set; } = Guid.NewGuid();
-    public IBAN IBAN { get; protected set; }
-    public Guid CustomerId { get; protected set; }
-    public decimal Balance { get; protected set; }
-    public AccountStatus AccountStatus { get; protected set; } = AccountStatus.Active;
-
-    public abstract AccountType AccountType { get; }
-
-    protected Account(IBAN iban, Guid customerId)
+    public abstract class Account : BaseEntity
     {
-        IBAN = iban ?? throw new ArgumentNullException(nameof(iban));
-        CustomerId = customerId;
-    }
+        public IBAN IBAN { get; protected set; }
+        public Guid CustomerId { get; protected set; }
+        public decimal Balance { get; protected set; }
+        public AccountStatus AccountStatus { get; protected set; } = AccountStatus.Active;
+        [NotMapped]
+        public abstract AccountType AccountType { get; }
+        public Customer Customer { get; protected set; }
+        public virtual ICollection<BankingSystem.Domain.Aggregates.Transaction.Transaction> Transactions { get; protected set; } 
+            = new HashSet<BankingSystem.Domain.Aggregates.Transaction.Transaction>();
+        protected Account(IBAN iban, Guid customerId)
+        {
+            IBAN = iban ?? throw new ArgumentNullException(nameof(iban));
+            CustomerId = customerId;
+        }
+
+        protected Account()
+        {
+        }
 
     public void Deposit(decimal amount)
     {
@@ -69,4 +78,5 @@ public abstract class Account
 
     protected virtual void ValidateTypeSpecificWithdrawalRules(decimal amount) { }
     protected virtual void OnWithdrawalCompleted(decimal amount) { }
+    }
 }

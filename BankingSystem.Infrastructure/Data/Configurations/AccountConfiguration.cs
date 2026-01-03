@@ -17,16 +17,19 @@
              .ValueGeneratedNever();
 
 
-        builder
-            .HasDiscriminator<AccountType>("AccountType")
-            .HasValue<CheckingAccount>(AccountType.Checking)
-            .HasValue<SavingAccount>(AccountType.Saving)
-            .HasValue<DepositAccount>(AccountType.Deposit);
+            builder.HasDiscriminator<AccountType>("Discriminator") 
+         .HasValue<CheckingAccount>(AccountType.Checking)
+         .HasValue<SavingAccount>(AccountType.Saving)
+         .HasValue<DepositAccount>(AccountType.Deposit);
+    
+
+
 
             builder.Property(x => x.RowVersion)
-                    .IsRowVersion()
-                    .IsConcurrencyToken()
-                    .ValueGeneratedOnAddOrUpdate();
+    .IsRowVersion()                    // Concurrency token
+    .IsConcurrencyToken()              // Mark for optimistic locking
+    .ValueGeneratedOnAddOrUpdate()     // EF manages the value
+    .IsRequired(false); 
 
                 builder.ComplexProperty(x => x.IBAN, iban =>
                 {

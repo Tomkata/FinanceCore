@@ -25,7 +25,7 @@ namespace BankingSystem.Infrastructure.Data
         {
             base.OnConfiguring(optionsBuilder);
 
-            if (!optionsBuilder.IsConfigured)
+            if (!optionsBuilder.IsConfigured)   
             {
                 optionsBuilder.UseSqlServer(
                     "Server=.;Database=BankingSystem;TrustServerCertificate=true;Integrated Security=true"

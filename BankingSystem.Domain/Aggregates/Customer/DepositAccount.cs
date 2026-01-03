@@ -1,7 +1,10 @@
 ﻿using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Exceptions;
+using BankingSystem.Domain.ValueObjects;
 
-public class DepositAccount : Account
+namespace BankingSystem.Domain.Aggregates.Customer
+{
+    public class DepositAccount : Account
 {
     public DepositTerm DepositTerm { get; private set; }
     public DateTime MaturityDate { get; private set; }
@@ -15,9 +18,12 @@ public class DepositAccount : Account
         MaturityDate = term.CalculateMaturity(DateTime.UtcNow);
     }
 
-    protected override void ValidateTypeSpecificWithdrawalRules(decimal amount)
+        private DepositAccount() : base() { }
+
+        protected override void ValidateTypeSpecificWithdrawalRules(decimal amount)
     {
         if (DateTime.UtcNow < MaturityDate)
             throw new EarlyWithdrawalException(MaturityDate);
+    }
     }
 }

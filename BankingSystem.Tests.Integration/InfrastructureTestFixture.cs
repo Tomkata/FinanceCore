@@ -34,6 +34,7 @@ public class InfrastructureTestFixture : IDisposable
         var db = tempProvider.GetRequiredService<ApplicationDbContext>();
         db.Database.EnsureCreated();
 
+
         var ibanGen = tempProvider.GetRequiredService<IIbanGenerator>();
         var factory = tempProvider.GetRequiredService<IAccountFactory>();
 
@@ -43,7 +44,7 @@ public class InfrastructureTestFixture : IDisposable
             "Vault",
             new PhoneNumber("+359000000000"),
             new Address("Bank HQ", "Sofia", 1000, "BG"),
-            EGN.Create("0000000000")
+            EGN.Create("7601173480")
         );
 
         var bankVaultAccount = bankVaultCustomer.OpenAccount(

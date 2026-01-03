@@ -1,7 +1,10 @@
-﻿using BankingSystem.Domain.Enums;
+﻿using BankingSystem.Domain.Common;
+using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Exceptions;
 
-public class SavingAccount : Account
+namespace BankingSystem.Domain.Aggregates.Customer
+{
+    public class SavingAccount : Account
 {
     public int WithdrawLimits { get; private set; }
     public int CurrentMonthWithdrawals { get; private set; }
@@ -17,8 +20,9 @@ public class SavingAccount : Account
 
         WithdrawLimits = withdrawLimit;
     }
+        private SavingAccount() : base() { }
 
-    protected override void ValidateTypeSpecificWithdrawalRules(decimal amount)
+        protected override void ValidateTypeSpecificWithdrawalRules(decimal amount)
     {
         if (LastWithdrawalDate?.Month != DateTime.UtcNow.Month)
             CurrentMonthWithdrawals = 0;
@@ -31,5 +35,6 @@ public class SavingAccount : Account
     {
         CurrentMonthWithdrawals++;
         LastWithdrawalDate = DateTime.UtcNow;
+    }
     }
 }

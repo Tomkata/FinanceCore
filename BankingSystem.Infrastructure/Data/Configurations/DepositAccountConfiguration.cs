@@ -8,7 +8,7 @@ public class DepositAccountConfiguration : IEntityTypeConfiguration<DepositAccou
     {
         builder.Property(x => x.MaturityDate)
             .HasColumnName("MaturityDate")
-            .IsRequired(false);
+            .IsRequired(true);
 
         builder.OwnsOne(x => x.DepositTerm, dt =>
         {

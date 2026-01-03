@@ -11,18 +11,19 @@ namespace BankingSystem.Infrastructure.Data.Configurations
             builder.HasKey(x => x.Id);  
 
             builder.Property(x => x.Id)
-   .ValueGeneratedNever();
+                .ValueGeneratedNever();
 
             builder.Property(x => x.Amount)
                 .HasPrecision(18, 2);
 
             builder.Property(x => x.RowVersion)
-                .IsRowVersion()
-                .IsConcurrencyToken()
-                .ValueGeneratedOnAddOrUpdate();
+    .IsRowVersion()                    // Concurrency token
+    .IsConcurrencyToken()              // Mark for optimistic locking
+    .ValueGeneratedOnAddOrUpdate()     // EF manages the value
+    .IsRequired(false);
 
             builder.HasOne(x => x.Account)
-                .WithMany()
+                .WithMany() // Removed lambda to fix CS0266 and CS1662
                 .HasForeignKey(x => x.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 

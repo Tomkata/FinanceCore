@@ -169,7 +169,7 @@ public class WithdrawTests
         account.Withdraw(100m);
         account.Withdraw(50m);
 
-        Assert.Throws<AccountWithdrawLimitException>(() => account.Withdraw(25m));
+        Assert.Throws<WithdrawLimitReachedException>(() => account.Withdraw(25m));
         Assert.Equal(350m, account.Balance);
     }
 

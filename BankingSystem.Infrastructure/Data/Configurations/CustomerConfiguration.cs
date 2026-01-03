@@ -13,9 +13,10 @@ internal class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
         // RowVersion - конфигуриран САМО веднъж
         builder.Property(x => x.RowVersion)
-            .IsRowVersion()
-            .IsConcurrencyToken()
-            .ValueGeneratedOnAddOrUpdate();
+    .IsRowVersion()                    // Concurrency token
+    .IsConcurrencyToken()              // Mark for optimistic locking
+    .ValueGeneratedOnAddOrUpdate()     // EF manages the value
+    .IsRequired(false);
 
         builder.Property(x => x.UserName)
             .HasMaxLength(100)
