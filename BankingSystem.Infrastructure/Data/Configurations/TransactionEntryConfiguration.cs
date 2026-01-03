@@ -1,4 +1,4 @@
-﻿using BankingSystem.Domain.Aggregates.Transaction;
+using BankingSystem.Domain.Aggregates.Transaction;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,10 +8,10 @@ namespace BankingSystem.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<TransactionEntry> builder)
         {
-            builder.HasKey(x => x.Id);  
+            builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id)
-   .ValueGeneratedNever();
+                .ValueGeneratedNever();
 
             builder.Property(x => x.Amount)
                 .HasPrecision(18, 2);
@@ -21,7 +21,8 @@ namespace BankingSystem.Infrastructure.Data.Configurations
                 .IsConcurrencyToken()
                 .ValueGeneratedOnAddOrUpdate();
 
-            // Relationships are configured in AccountConfiguration.UsingEntity
+            // Relationships are configured in AccountConfiguration using UsingEntity
+            // This enables many-to-many between Account and Transaction with TransactionEntry as join entity
         }
     }
 }
