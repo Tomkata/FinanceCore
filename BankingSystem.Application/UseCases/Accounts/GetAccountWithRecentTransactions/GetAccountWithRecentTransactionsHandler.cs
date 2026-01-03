@@ -23,7 +23,7 @@ namespace BankingSystem.Application.UseCases.Accounts.GetAccountWithRecentTransa
             if (account is null)
                 return Result<AccountWithRecentTransactionsDto>.Failure("Account not found.");
 
-            var lastFive = account.Transactions
+            var lastFive = account.TransactionEntries
                 .Select(te => te.Transaction)
                 .Distinct()
                 .OrderByDescending(x => x.TransactionDate)
