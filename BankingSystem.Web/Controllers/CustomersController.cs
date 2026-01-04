@@ -8,6 +8,7 @@ using BankingSystem.Application.UseCases.Customers.GetCustomerByEgn;
 using BankingSystem.Application.UseCases.Customers.GetCustomerById;
 using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
 using BankingSystem.Application.UseCases.Customers.WithdrawFromAccount;
+using BankingSystem.Application.UseCases.TransferBankAccount;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
@@ -27,15 +28,17 @@ namespace BankingSystem.Web.Controllers
         private readonly GetCustomerByEgnHandler _getCustomerByEgnHandler;
         private readonly GetCustomerByIdHandler _getCustomerByIdHandler;
         private readonly OpenBankAccountHandler _openBankAccountHandler;
+        private readonly TransferBankAccountHandler _transferBankAccountHandler;
 
         public CustomersController(
-            CreateCustomerHandler createCustomerHandler, 
+            CreateCustomerHandler createCustomerHandler,
             DeactivateCustomerCommandHandler deactivateCustomerCommandHandler,
-            DepositToBankAccountHandler depositToBankAccountHandler, 
-            WithdrawToBankAccountHandler withdrawToBankAccountHandler, 
-            GetCustomerByEgnHandler getCustomerByEgnHandler, 
+            DepositToBankAccountHandler depositToBankAccountHandler,
+            WithdrawToBankAccountHandler withdrawToBankAccountHandler,
+            GetCustomerByEgnHandler getCustomerByEgnHandler,
             GetCustomerByIdHandler getCustomerByIdHandler,
-            OpenBankAccountHandler openBankAccountHandler)
+            OpenBankAccountHandler openBankAccountHandler,
+            TransferBankAccountHandler transferBankAccountHandler)
         {
             this._createCustomerHandler = createCustomerHandler;
             this._deactivateCustomerCommandHandler = deactivateCustomerCommandHandler;
@@ -44,6 +47,7 @@ namespace BankingSystem.Web.Controllers
             this._getCustomerByEgnHandler = getCustomerByEgnHandler;
             this._getCustomerByIdHandler = getCustomerByIdHandler;
             this._openBankAccountHandler = openBankAccountHandler;
+            this._transferBankAccountHandler = transferBankAccountHandler;
         }
 
         [HttpPost("create")]
@@ -109,6 +113,21 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
+        [HttpPost("transfer")]
+        public async Task<IActionResult> Transfer([FromBody] TransferDto dto)
+        {
+            var command = new TransferBankAccountCommand(
+                dto.CustomerId,
+                dto.FromAccountId,
+                dto.ToAccountId,
+                dto.Amount
+            );
 
+            var result = await _transferBankAccountHandler.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
     }
 }
