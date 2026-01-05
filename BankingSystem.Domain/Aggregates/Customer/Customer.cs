@@ -115,6 +115,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
 
         public void Transfer(Guid fromAccountId, Guid toAccountId, decimal amount)
         {
+
             var from = GetAccountById(fromAccountId);
             var to = GetAccountById(toAccountId);
 
@@ -147,11 +148,11 @@ namespace BankingSystem.Domain.Aggregates.Customer
         {
             var account = this.Accounts.SingleOrDefault(x => x.Id == accountId);
             if (account == null)
-                throw new AccountNotFoundException();
+                throw new AccountNotFoundException(accountId);
 
             return account;
         }
-
+        
         public void UpdateAddress(string address, string city, int zip, string country)
         {
             this.Address = new Address(address,city,zip,country);

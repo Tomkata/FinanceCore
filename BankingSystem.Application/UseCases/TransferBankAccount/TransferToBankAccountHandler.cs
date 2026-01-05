@@ -5,13 +5,13 @@ using BankingSystem.Domain.Interfaces;
 
 namespace BankingSystem.Application.UseCases.TransferBankAccount
 {
-    public class TransferBankAccountHandler
+    public class TransferToBankAccountHandler
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly TransferBankAccountValidator _validator;
         private readonly IUnitOfWork _unitOfWork;
 
-        public TransferBankAccountHandler(
+        public TransferToBankAccountHandler(
             ICustomerRepository customerRepository,
             TransferBankAccountValidator validator,
             IUnitOfWork unitOfWork)
@@ -21,7 +21,7 @@ namespace BankingSystem.Application.UseCases.TransferBankAccount
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result<Guid>> Handle(TransferBankAccountCommand command)
+        public async Task<Result<Guid>> Handle(TransferToBankAccountCommand command)
         {
             var validationResult = await _validator.ValidateAsync(command);
             if (!validationResult.IsValid)

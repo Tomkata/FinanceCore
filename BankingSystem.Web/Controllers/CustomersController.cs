@@ -8,11 +8,13 @@ using BankingSystem.Application.UseCases.Customers.GetCustomerByEgn;
 using BankingSystem.Application.UseCases.Customers.GetCustomerById;
 using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
 using BankingSystem.Application.UseCases.Customers.WithdrawFromAccount;
+using BankingSystem.Application.UseCases.TransferBankAccount;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.AccessControl;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BankingSystem.Web.Controllers
 {
@@ -27,6 +29,7 @@ namespace BankingSystem.Web.Controllers
         private readonly GetCustomerByEgnHandler _getCustomerByEgnHandler;
         private readonly GetCustomerByIdHandler _getCustomerByIdHandler;
         private readonly OpenBankAccountHandler _openBankAccountHandler;
+        private readonly TransferToBankAccountHandler _transferToBankAccountHandler;
 
         public CustomersController(
             CreateCustomerHandler createCustomerHandler, 
@@ -35,7 +38,8 @@ namespace BankingSystem.Web.Controllers
             WithdrawToBankAccountHandler withdrawToBankAccountHandler, 
             GetCustomerByEgnHandler getCustomerByEgnHandler, 
             GetCustomerByIdHandler getCustomerByIdHandler,
-            OpenBankAccountHandler openBankAccountHandler)
+            OpenBankAccountHandler openBankAccountHandler,
+            TransferToBankAccountHandler transferToBankAccountHandler)
         {
             this._createCustomerHandler = createCustomerHandler;
             this._deactivateCustomerCommandHandler = deactivateCustomerCommandHandler;
@@ -44,6 +48,7 @@ namespace BankingSystem.Web.Controllers
             this._getCustomerByEgnHandler = getCustomerByEgnHandler;
             this._getCustomerByIdHandler = getCustomerByIdHandler;
             this._openBankAccountHandler = openBankAccountHandler;
+            this._transferToBankAccountHandler = transferToBankAccountHandler;
         }
 
         [HttpPost("create")]
@@ -64,7 +69,7 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpPost("open")]
+        [HttpPost("openAccount")]
         public async Task<IActionResult> Open([FromBody] OpenAccountDto dto)
         {
 
@@ -85,7 +90,7 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpPost("deactive")]
+        [HttpPost("deactiveCustomer")]
         public async Task<IActionResult> Deactive([FromForm] Guid id)
         {
             var command = new DeactivateCustomerCommand(id);
@@ -107,6 +112,56 @@ namespace BankingSystem.Web.Controllers
                 return Ok(result.Value);
 
             return BadRequest(result.Error);
+        }
+
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> Withdraw([FromForm] Guid customerId, Guid accoundId, decimal amount)
+        {
+            var command = new WithdrawBankAccountCommand(customerId,amount,accoundId);
+
+            var result = await _withdrawToBankAccountHandler.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpGet("searchByEgn")]
+        public async Task<IActionResult> SearchByEgn( string egn)
+        {
+            var query = new GetCustomerByEgnQuery(egn);
+
+            var result = await _getCustomerByEgnHandler.Handle(query);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
+                    
+        }
+
+        [HttpGet("searchById")]
+        public async Task<IActionResult> SearchById(Guid id)
+        {
+            var query = new GetCustomerByIdQuery(id);
+
+            var result = await _getCustomerByIdHandler.Handle(query);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
+
+        }
+
+        [HttpPost("transfer")]
+        public async Task<IActionResult> Transfer([FromForm] Guid customerId,Guid fromAccountId, Guid toAccountId, decimal amount)
+        {
+            var command = new TransferToBankAccountCommand(customerId,fromAccountId,toAccountId,amount);
+
+            var result = await _transferToBankAccountHandler.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
         }
 
 

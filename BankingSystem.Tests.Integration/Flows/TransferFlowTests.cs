@@ -46,13 +46,13 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         await customerRepo.SaveAsync(customer);
         await uow.SaveChangesAsync();
 
-        var handler = new TransferBankAccountHandler(
+        var handler = new TransferToBankAccountHandler(
             customerRepo,
             new TransferBankAccountValidator(),
             uow
         );
 
-        var command = new TransferBankAccountCommand(
+        var command = new TransferToBankAccountCommand(
             customer.Id,
             fromAcc.Id,
             toAcc.Id,

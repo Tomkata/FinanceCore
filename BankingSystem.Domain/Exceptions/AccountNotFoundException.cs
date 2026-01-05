@@ -8,8 +8,8 @@ namespace BankingSystem.Domain.Exceptions
 {
     public class AccountNotFoundException : DomainException
     {
-        public AccountNotFoundException()
-        :base("Account not found with this id.")
+        public AccountNotFoundException(Guid Id)
+        :base($"Account not found with this id. ({Id})")
         {
             
         }

@@ -13,3 +13,4 @@ namespace BankingSystem.Domain.Enums
         Deposit = 2
     }
 }
+    

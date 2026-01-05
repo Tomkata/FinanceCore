@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BankingSystem.Domain.Aggregates.Customer
 {
-    public abstract class Account : BaseEntity
+    public abstract class Account : AggregateRoot
     {
         public IBAN IBAN { get; protected set; }
         public Guid CustomerId { get; protected set; }
