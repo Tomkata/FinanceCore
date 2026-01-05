@@ -21,33 +21,33 @@ namespace BankingSystem.Domain.DomainService
     /// </summary>
     public class TransferDomainService : ITransferDomainService
     {
-        public void TransferBetweenCustomers(
+        public void Transfer(
             Customer sender,
-            Customer receiver,
-            Guid fromAccountId,
-            Guid toAccountId,
+            Guid senderAccountId,
+            Customer recipient,
+            Guid recipientAccountId,
             decimal amount)
         {
             if (sender == null)
                 throw new ArgumentNullException(nameof(sender));
 
-            if (receiver == null)
-                throw new ArgumentNullException(nameof(receiver));
+            if (recipient == null)
+                throw new ArgumentNullException(nameof(recipient));
 
             // Business rule: cannot transfer to the same account
-            if (fromAccountId == toAccountId)
+            if (senderAccountId == recipientAccountId)
                 throw new CannotTransferToSameAccountException();
 
             // Execute operations on each aggregate
-            sender.Withdraw(fromAccountId, amount);
-            receiver.Deposit(toAccountId, amount);
+            sender.Withdraw(senderAccountId, amount);
+            recipient.Deposit(recipientAccountId, amount);
 
             // Raise domain event from sender aggregate (initiator of the transfer)
             sender.AddDomainEvent(new TransferInitiatedEvent(
                 sender.Id,
-                receiver.Id,
-                fromAccountId,
-                toAccountId,
+                recipient.Id,
+                senderAccountId,
+                recipientAccountId,
                 amount
             ));
         }

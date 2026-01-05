@@ -12,11 +12,11 @@ namespace BankingSystem.Domain.DomainService
         /// Transfers money between accounts belonging to different customers.
         /// Respects aggregate boundaries by operating on both Customer aggregates.
         /// </summary>
-        void TransferBetweenCustomers(
+        void Transfer(
             Customer sender,
-            Customer receiver,
-            Guid fromAccountId,
-            Guid toAccountId,
+            Guid senderAccountId,
+            Customer recipient,
+            Guid recipientAccountId,
             decimal amount);
     }
 }

@@ -11,7 +11,7 @@ using FluentAssertions;
 namespace BankingSystem.Tests.Domain;
 
 /// <summary>
-/// Tests for TransferDomainService - cross-aggregate transfer operations
+/// Tests for TransferDomainService – cross-aggregate money transfer operations
 /// </summary>
 public class TransferDomainServiceTests
 {
@@ -47,10 +47,10 @@ public class TransferDomainServiceTests
         receiver.ClearDomainEvents();
 
         // Act
-        _transferService.TransferBetweenCustomers(
+        _transferService.Transfer(
             sender,
-            receiver,
             fromAccount.Id,
+            receiver,
             toAccount.Id,
             200m
         );
@@ -85,10 +85,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert
         Assert.Throws<CannotTransferToSameAccountException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 sender,
-                receiver,
                 fromAccount.Id,
+                receiver,
                 fromAccount.Id,  // Same account
                 100m
             )
@@ -109,10 +109,10 @@ public class TransferDomainServiceTests
         customer.ClearDomainEvents();
 
         // Act - Transfer between same customer's accounts
-        _transferService.TransferBetweenCustomers(
+        _transferService.Transfer(
             customer,
-            customer,  // Same customer
             fromAccount.Id,
+            customer,  // Same customer
             toAccount.Id,
             200m
         );
@@ -149,10 +149,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert
         Assert.Throws<AccountNotFoundException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 sender,
-                receiver,
                 fromId,
+                receiver,
                 toId,
                 50m
             )
@@ -171,10 +171,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert - Try to transfer more than available balance
         Assert.Throws<InsufficientFundsException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 sender,
-                receiver,
                 fromAccount.Id,
+                receiver,
                 toAccount.Id,
                 200m  // More than 100 available
             )
@@ -190,10 +190,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 null!,
-                receiver,
                 Guid.NewGuid(),
+                receiver,
                 toAccount.Id,
                 100m
             )
@@ -209,10 +209,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 sender,
-                null!,
                 fromAccount.Id,
+                null!,
                 Guid.NewGuid(),
                 100m
             )
@@ -237,10 +237,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert
         Assert.Throws<AccountNotActiveException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 sender,
-                receiver,
                 fromAccount.Id,
+                receiver,
                 toAccount.Id,
                 100m
             )
@@ -262,10 +262,10 @@ public class TransferDomainServiceTests
 
         // Act & Assert
         Assert.Throws<AccountNotActiveException>(() =>
-            _transferService.TransferBetweenCustomers(
+            _transferService.Transfer(
                 sender,
-                receiver,
                 fromAccount.Id,
+                receiver,
                 toAccount.Id,
                 100m
             )

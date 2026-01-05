@@ -40,10 +40,10 @@ namespace BankingSystem.Application.UseCases.TransferBankAccount
                 return Result<Guid>.Failure("Receiver customer not found");
 
             // Use domain service to coordinate cross-aggregate operation
-            _transferDomainService.TransferBetweenCustomers(
+            _transferDomainService.Transfer(
                 sender,
-                receiver,
                 command.FromAccountId,
+                receiver,
                 command.ToAccountId,
                 command.Amount
             );
