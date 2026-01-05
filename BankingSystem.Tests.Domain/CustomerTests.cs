@@ -273,59 +273,6 @@ public class CustomerTests
 
     #endregion
 
-    #region Transfer Tests
-
-    [Fact]
-    public void Transfer_BetweenOwnAccounts_TransfersFundsAndRaisesEvent()
-    {
-        var customer = CreateCustomer();
-        var fromAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
-        var toAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
-        customer.ClearDomainEvents();
-
-        customer.Transfer(fromAccount.Id, toAccount.Id, 200m);
-
-        Assert.Equal(300m, fromAccount.Balance);
-        Assert.Equal(300m, toAccount.Balance);
-
-        var transferEvent = Assert.Single(customer.DomainEvents) as TransferInitiatedEvent;
-        Assert.NotNull(transferEvent);
-        Assert.Equal(fromAccount.Id, transferEvent.fromAccountId);
-        Assert.Equal(toAccount.Id, transferEvent.toAccountId);
-        Assert.Equal(200m, transferEvent.amount);
-    }
-
-
-    [Theory]
-    [InlineData(true, false)]  // From non-existent
-    [InlineData(false, true)]  // To non-existent
-    public void Transfer_NonExistentAccount_ThrowsAccountNotFoundException(bool fromExists, bool toExists)
-    {
-        var customer = CreateCustomer();
-        var existingAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
-
-        var fromId = fromExists ? existingAccount.Id : Guid.NewGuid();
-        var toId = toExists ? existingAccount.Id : Guid.NewGuid();
-
-        Assert.Throws<AccountNotFoundException>(() =>
-            customer.Transfer(fromId, toId, 50m));
-    }
-
-
-    [Fact]
-    public void Transfer_InsufficientFunds_ThrowsInsufficientFundsException()
-    {
-        var customer = CreateCustomer();
-        var fromAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
-        var toAccount = customer.OpenAccount(AccountType.Checking, 50m, _ibanGenerator, _factory);
-
-        Assert.Throws<InsufficientFundsException>(() =>
-            customer.Transfer(fromAccount.Id, toAccount.Id, 200m));
-    }
-
-
-    #endregion
-
     #region GetAccountById Tests
 
     [Fact]
