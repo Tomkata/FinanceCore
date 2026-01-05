@@ -278,17 +278,27 @@ public class CustomerTests
     [Fact]
     public void Transfer_BetweenOwnAccounts_TransfersFundsAndRaisesEvent()
     {
-        var customer = CreateCustomer();
-        var fromAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
-        var toAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
-        customer.ClearDomainEvents();
+        var transferService = new TransferDomainService();
 
-        customer.Transfer(fromAccount.Id, toAccount.Id, 200m);
+        var sender = CreateCustomer();
+        var reciver = new Customer(
+                    "stoiko12",
+                    "Stoiko",
+                    "Gosshob",
+                    new PhoneNumber("+359888488188"),
+                    new Address("Smokinq", "Varna", 1000, "BG"),
+                    new EGN("8102042087", new DateOnly(1990, 1, 1), Gender.Male)
+                );
+
+ var fromAccount = sender.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
+        var toAccount = reciver.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
+        sender.ClearDomainEvents();
+
 
         Assert.Equal(300m, fromAccount.Balance);
         Assert.Equal(300m, toAccount.Balance);
 
-        var transferEvent = Assert.Single(customer.DomainEvents) as TransferInitiatedEvent;
+        var transferEvent = Assert.Single(sender.DomainEvents) as TransferInitiatedEvent;
         Assert.NotNull(transferEvent);
         Assert.Equal(fromAccount.Id, transferEvent.fromAccountId);
         Assert.Equal(toAccount.Id, transferEvent.toAccountId);

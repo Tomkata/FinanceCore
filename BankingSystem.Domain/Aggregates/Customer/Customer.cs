@@ -113,23 +113,6 @@ namespace BankingSystem.Domain.Aggregates.Customer
             ));
         }
 
-        public void Transfer(Guid fromAccountId, Guid toAccountId, decimal amount)
-        {
-
-            var from = GetAccountById(fromAccountId);
-            var to = GetAccountById(toAccountId);
-
-            from.Withdraw(amount);
-            to.Deposit(amount);
-
-            AddDomainEvent(new TransferInitiatedEvent(
-                this.Id,
-                fromAccountId,
-                toAccountId,
-                amount
-            ));
-        }
-
         public void Withdraw(Guid accountId, decimal amount)
         {
             var account = GetAccountById(accountId);
@@ -146,7 +129,7 @@ namespace BankingSystem.Domain.Aggregates.Customer
 
         public Account GetAccountById(Guid accountId)
         {
-            var account = this.Accounts.SingleOrDefault(x => x.Id == accountId);
+            var account = this.Accounts.SingleOrDefault(x => x.Id == accountId);    
             if (account == null)
                 throw new AccountNotFoundException(accountId);
 

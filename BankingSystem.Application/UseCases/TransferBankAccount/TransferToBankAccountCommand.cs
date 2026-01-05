@@ -1,4 +1,9 @@
 ﻿namespace BankingSystem.Application.UseCases.TransferBankAccount
 {
-    public record TransferToBankAccountCommand(Guid customerId,Guid fromAccountId,Guid toAccountid, decimal amount);
+    public record TransferBankAccountCommand(
+     Guid senderCustomerId,
+     Guid receiverCustomerId,
+     Guid fromAccountId,
+     Guid toAccountId,
+     decimal amount);
 }

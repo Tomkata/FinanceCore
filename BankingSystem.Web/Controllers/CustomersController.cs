@@ -1,6 +1,7 @@
 ﻿using BankingSystem.Application.Common.Results;
 using BankingSystem.Application.DTOs.Accounts;
 using BankingSystem.Application.DTOs.Customer;
+using BankingSystem.Application.DTOs.Transfer;
 using BankingSystem.Application.UseCases.Customers.CreateCustomer;
 using BankingSystem.Application.UseCases.Customers.DeactivateCustomer;
 using BankingSystem.Application.UseCases.Customers.DepositToAccount;
@@ -153,9 +154,15 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("transfer")]
-        public async Task<IActionResult> Transfer([FromForm] Guid customerId,Guid fromAccountId, Guid toAccountId, decimal amount)
+        public async Task<IActionResult> Transfer(TransferDto dto)
         {
-            var command = new TransferToBankAccountCommand(customerId,fromAccountId,toAccountId,amount);
+            var command = new TransferBankAccountCommand(
+     dto.SenderCustomerId,
+     dto.ReceiverCustomerId,
+     dto.FromAccountId,
+     dto.ToAccountId,
+     dto.Amount
+ );
 
             var result = await _transferToBankAccountHandler.Handle(command);
             if (result.IsSuccess)

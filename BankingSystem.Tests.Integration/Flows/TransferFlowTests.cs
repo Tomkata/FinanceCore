@@ -27,33 +27,45 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         var customerRepo = _services.GetRequiredService<ICustomerRepository>();
         var ibanGen = _services.GetRequiredService<IIbanGenerator>();
         var factory = _services.GetRequiredService<IAccountFactory>();
+        var transferService = _services.GetRequiredService<ITransferDomainService>();
 
 
         // Create customer
-        var customer = new Customer(
+        var sender = new Customer(
             "john123",
             "John",
             "Doe",
             new PhoneNumber("+359888888888"),
-            new Address("Addr", "City", 1000, "BG"),
+            new Address("Addr", "Burgas", 1000, "BG"),
             new EGN("7910024406", new DateOnly(1990, 1, 1), Gender.Male)
         );
 
-        // Open two accounts
-        var fromAcc = customer.OpenAccount(AccountType.Checking, 1000, ibanGen, factory);
-        var toAcc = customer.OpenAccount(AccountType.Checking, 0, ibanGen, factory);
+        var reciver = new Customer(
+            "stoiko12",
+            "Stoiko",
+            "Gosshob",
+            new PhoneNumber("+359888488188"),
+            new Address("Smokinq", "Varna", 1000, "BG"),
+            new EGN("8102042087", new DateOnly(1990, 1, 1), Gender.Male)
+        );
 
-        await customerRepo.SaveAsync(customer);
+        // Open two accounts
+        var fromAcc = sender.OpenAccount(AccountType.Checking, 1000, ibanGen, factory);
+        var toAcc = reciver.OpenAccount(AccountType.Checking, 0, ibanGen, factory);
+
+        await customerRepo.SaveAsync(sender);
         await uow.SaveChangesAsync();
 
         var handler = new TransferToBankAccountHandler(
             customerRepo,
             new TransferBankAccountValidator(),
-            uow
+            uow,
+            transferService
         );
 
-        var command = new TransferToBankAccountCommand(
-            customer.Id,
+        var command = new TransferBankAccountCommand(
+            sender.Id,
+            reciver.Id,
             fromAcc.Id,
             toAcc.Id,
             300
@@ -66,7 +78,7 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         Assert.True(result.IsSuccess);
 
         // Reload customer
-        var updated = await customerRepo.GetByIdAsync(customer.Id);
+        var updated = await customerRepo.GetByIdAsync(sender.Id);
 
         var updatedFrom = updated.GetAccountById(fromAcc.Id);
         var updatedTo = updated.GetAccountById(toAcc.Id);

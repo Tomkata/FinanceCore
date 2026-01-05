@@ -23,7 +23,7 @@ namespace BankingSystem.Infrastructure.Repositories
         {
                 
             return await _context.Customers
-                .Include(c => c.Accounts)
+                .Include(c => c.Accounts)   
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
