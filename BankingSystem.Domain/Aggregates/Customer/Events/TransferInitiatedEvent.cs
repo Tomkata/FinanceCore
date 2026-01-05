@@ -3,8 +3,9 @@
 namespace BankingSystem.Domain.Aggregates.Customer.Events
 {
     public record TransferInitiatedEvent(
-    Guid customerId,
-    Guid fromAccountId,
-    Guid toAccountId,
-    decimal amount) : IDomainEvent;
+    Guid SenderCustomerId,
+    Guid ReceiverCustomerId,
+    Guid FromAccountId,
+    Guid ToAccountId,
+    decimal Amount) : IDomainEvent;
 }

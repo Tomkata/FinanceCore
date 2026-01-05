@@ -117,7 +117,8 @@ namespace BankingSystem.Web.Controllers
         public async Task<IActionResult> Transfer([FromBody] TransferDto dto)
         {
             var command = new TransferBankAccountCommand(
-                dto.CustomerId,
+                dto.SenderCustomerId,
+                dto.ReceiverCustomerId,
                 dto.FromAccountId,
                 dto.ToAccountId,
                 dto.Amount

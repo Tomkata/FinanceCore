@@ -2,7 +2,6 @@
 using BankingSystem.Application.UseCases.TransferBankAccount;
 using BankingSystem.Domain.Aggregates.Customer;
 using BankingSystem.Domain.DomainService;
-using BankingSystem.Domain.DomainServices;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.Interfaces;
 using BankingSystem.Domain.ValueObjects;
@@ -19,7 +18,7 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
     }
 
     [Fact]
-    public async Task Transfer_Should_Update_Balances_And_Create_Transaction()
+    public async Task Transfer_Between_Different_Customers_Should_Update_Balances_And_Create_Transaction()
     {
         // Arrange
         var db = _services.GetRequiredService<ApplicationDbContext>();
@@ -27,34 +26,48 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         var customerRepo = _services.GetRequiredService<ICustomerRepository>();
         var ibanGen = _services.GetRequiredService<IIbanGenerator>();
         var factory = _services.GetRequiredService<IAccountFactory>();
+        var transferDomainService = _services.GetRequiredService<ITransferDomainService>();
 
-        // Create customer
-        var customer = new Customer(
-            "john123",
+        // Create SENDER customer with one account (1000 balance)
+        var sender = new Customer(
+            "john_sender",
             "John",
-            "Doe",
-            new PhoneNumber("+359888888888"),
-            new Address("Addr", "City", 1000, "BG"),
-            new EGN("1234567890", new DateOnly(1990, 1, 1), Gender.Male)
+            "Sender",
+            new PhoneNumber("+359888111111"),
+            new Address("Sender St", "Sofia", 1000, "BG"),
+            new EGN("5001010001", new DateOnly(1950, 1, 1), Gender.Male)
         );
-
-        // Open two accounts
-        var fromAcc = customer.OpenAccount(AccountType.Checking, 1000, ibanGen, factory);
-        var toAcc = customer.OpenAccount(AccountType.Checking, 0, ibanGen, factory);
-
-        await customerRepo.SaveAsync(customer);
+        var senderAccount = sender.OpenAccount(AccountType.Checking, 1000, ibanGen, factory);
+        await customerRepo.SaveAsync(sender);
         await uow.SaveChangesAsync();
 
+        // Create RECEIVER customer with one account (0 balance)
+        var receiver = new Customer(
+            "jane_receiver",
+            "Jane",
+            "Receiver",
+            new PhoneNumber("+359888222222"),
+            new Address("Receiver St", "Plovdiv", 2000, "BG"),
+            new EGN("6002020002", new DateOnly(1960, 2, 2), Gender.Female)
+        );
+        var receiverAccount = receiver.OpenAccount(AccountType.Checking, 0, ibanGen, factory);
+        await customerRepo.SaveAsync(receiver);
+        await uow.SaveChangesAsync();
+
+        // Create handler with domain service
         var handler = new TransferBankAccountHandler(
             customerRepo,
             new TransferBankAccountValidator(),
-            uow
+            uow,
+            transferDomainService
         );
 
+        // Create command with BOTH customer IDs
         var command = new TransferBankAccountCommand(
-            customer.Id,
-            fromAcc.Id,
-            toAcc.Id,
+            sender.Id,
+            receiver.Id,
+            senderAccount.Id,
+            receiverAccount.Id,
             300
         );
 
@@ -64,20 +77,22 @@ public class TransferFlowTests : IClassFixture<InfrastructureTestFixture>
         // Assert
         Assert.True(result.IsSuccess);
 
-        // Reload customer
-        var updated = await customerRepo.GetByIdAsync(customer.Id);
+        // Reload BOTH customers to verify changes
+        var updatedSender = await customerRepo.GetByIdAsync(sender.Id);
+        var updatedReceiver = await customerRepo.GetByIdAsync(receiver.Id);
 
-        var updatedFrom = updated.GetAccountById(fromAcc.Id);
-        var updatedTo = updated.GetAccountById(toAcc.Id);
+        var updatedSenderAccount = updatedSender.GetAccountById(senderAccount.Id);
+        var updatedReceiverAccount = updatedReceiver.GetAccountById(receiverAccount.Id);
 
-        Assert.Equal(700, updatedFrom.Balance);   // 1000 - 300
-        Assert.Equal(300, updatedTo.Balance);     // 0 + 300    
+        // Verify balances updated correctly
+        Assert.Equal(700, updatedSenderAccount.Balance);      // 1000 - 300
+        Assert.Equal(300, updatedReceiverAccount.Balance);    // 0 + 300
 
-        // Validate Transaction
+        // Validate Transaction created with double-entry bookkeeping
         var transactions = db.Transactions.ToList();
         Assert.Single(transactions);
 
         var transaction = transactions.First();
-        Assert.Equal(0, transaction.TransactionEntries.Sum(x => x.Amount)); // double-entry balanced
+        Assert.Equal(0, transaction.TransactionEntries.Sum(x => x.Amount)); // balanced
     }
 }

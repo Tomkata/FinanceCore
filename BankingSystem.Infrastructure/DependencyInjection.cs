@@ -37,6 +37,7 @@ namespace BankingSystem.Infrastructure
 
             //domain services
             services.AddScoped<IAccountFactory, AccountFactory>();
+            services.AddScoped<ITransferDomainService, TransferDomainService>();
 
             //services - Use FakeIbanGenerator for now (has proper checksum validation)
             // TODO: Implement real IbanGenerator with bank integration, then use environment-based registration
