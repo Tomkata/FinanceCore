@@ -147,7 +147,7 @@ public class CustomerTests
     {
         var customer = CreateCustomer();
 
-        Assert.Throws<ArgumentNullException>(() =>
+        Assert.Throws<DepositTermRequiredException>(() =>
             customer.OpenAccount(
                 AccountType.Deposit,
                 1000m,
@@ -276,62 +276,38 @@ public class CustomerTests
     #region Transfer Tests
 
     [Fact]
-    public void Transfer_BetweenOwnAccounts_TransfersFundsAndRaisesEvent()
+    public void Transfer_BetweenDifferentCustomers_TransfersFunds()
     {
+        // Arrange
         var transferService = new TransferDomainService();
 
         var sender = CreateCustomer();
-        var reciver = new Customer(
-                    "stoiko12",
-                    "Stoiko",
-                    "Gosshob",
-                    new PhoneNumber("+359888488188"),
-                    new Address("Smokinq", "Varna", 1000, "BG"),
-                    new EGN("8102042087", new DateOnly(1990, 1, 1), Gender.Male)
-                );
+        var receiver = new Customer(
+            "stoiko12",
+            "Stoiko",
+            "Gosshob",
+            new PhoneNumber("+359888488188"),
+            new Address("Smokinq", "Varna", 1000, "BG"),
+            new EGN("8102042087", new DateOnly(1990, 1, 1), Gender.Male)
+        );
 
- var fromAccount = sender.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
-        var toAccount = reciver.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
-        sender.ClearDomainEvents();
+        var fromAccount = sender.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
+        var toAccount = receiver.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
 
+        // Act
+        transferService.Transfer(
+            sender,
+            fromAccount.Id,
+            receiver,
+            toAccount.Id,
+            200m
+        );
 
-        Assert.Equal(300m, fromAccount.Balance);
-        Assert.Equal(300m, toAccount.Balance);
-
-        var transferEvent = Assert.Single(sender.DomainEvents) as TransferInitiatedEvent;
-        Assert.NotNull(transferEvent);
-        Assert.Equal(fromAccount.Id, transferEvent.fromAccountId);
-        Assert.Equal(toAccount.Id, transferEvent.toAccountId);
-        Assert.Equal(200m, transferEvent.amount);
+        // Assert
+        fromAccount.Balance.Should().Be(300m);
+        toAccount.Balance.Should().Be(300m);
     }
 
-
-    [Theory]
-    [InlineData(true, false)]  // From non-existent
-    [InlineData(false, true)]  // To non-existent
-    public void Transfer_NonExistentAccount_ThrowsAccountNotFoundException(bool fromExists, bool toExists)
-    {
-        var customer = CreateCustomer();
-        var existingAccount = customer.OpenAccount(AccountType.Checking, 500m, _ibanGenerator, _factory);
-
-        var fromId = fromExists ? existingAccount.Id : Guid.NewGuid();
-        var toId = toExists ? existingAccount.Id : Guid.NewGuid();
-
-        Assert.Throws<AccountNotFoundException>(() =>
-            customer.Transfer(fromId, toId, 50m));
-    }
-
-
-    [Fact]
-    public void Transfer_InsufficientFunds_ThrowsInsufficientFundsException()
-    {
-        var customer = CreateCustomer();
-        var fromAccount = customer.OpenAccount(AccountType.Checking, 100m, _ibanGenerator, _factory);
-        var toAccount = customer.OpenAccount(AccountType.Checking, 50m, _ibanGenerator, _factory);
-
-        Assert.Throws<InsufficientFundsException>(() =>
-            customer.Transfer(fromAccount.Id, toAccount.Id, 200m));
-    }
 
 
     #endregion

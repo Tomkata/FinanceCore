@@ -11,6 +11,9 @@ namespace BankingSystem.Domain.DomainService
             Customer recipient, Guid recipentAccountId,
             decimal amount)
         {
+            if (sender is null) throw new ArgumentNullException();
+            if (recipient is null) throw new ArgumentNullException();
+
             if (senderAccountId == recipentAccountId)
                 throw new CannotTransferToSameAccountException();
 
