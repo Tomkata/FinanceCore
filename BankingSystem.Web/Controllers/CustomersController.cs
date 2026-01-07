@@ -127,8 +127,8 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpGet("searchByEgn")]
-        public async Task<IActionResult> SearchByEgn( string egn)
+        [HttpGet("{egn:string}")]
+        public async Task<IActionResult> GetByEgn( string egn)
         {
             var query = new GetCustomerByEgnQuery(egn);
 
@@ -140,8 +140,8 @@ namespace BankingSystem.Web.Controllers
                     
         }
 
-        [HttpGet("searchById")]
-        public async Task<IActionResult> SearchById(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             var query = new GetCustomerByIdQuery(id);
 
@@ -170,6 +170,8 @@ namespace BankingSystem.Web.Controllers
 
             return NotFound(result.Error);
         }
+
+        
 
 
     }
