@@ -1,7 +1,7 @@
 ﻿public record SearchTransactionsQuery
 {
     public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
+    public int PageSize { get; set; } = 50;
     public Guid? AccountId { get; set; }
     public string? TransactionType { get; set; }
     public DateTime? StartDate { get; set; }

@@ -157,11 +157,11 @@ namespace BankingSystem.Web.Controllers
         public async Task<IActionResult> Transfer(TransferDto dto)
         {
             var command = new TransferBankAccountCommand(
-     dto.SenderCustomerId,
-     dto.ReceiverCustomerId,
-     dto.FromAccountId,
-     dto.ToAccountId,
-     dto.Amount
+                 dto.SenderCustomerId,
+                 dto.ReceiverCustomerId,
+                 dto.FromAccountId,
+                 dto.ToAccountId,
+                 dto.Amount
  );
 
             var result = await _transferToBankAccountHandler.Handle(command);

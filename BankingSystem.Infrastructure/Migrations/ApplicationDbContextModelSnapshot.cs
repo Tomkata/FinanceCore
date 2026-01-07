@@ -86,7 +86,7 @@ namespace BankingSystem.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
 
                     b.HasDiscriminator<int>("Discriminator");
 
@@ -187,7 +187,7 @@ namespace BankingSystem.Infrastructure.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("BankingSystem.Domain.Aggregates.Transaction.Transaction", b =>
@@ -226,7 +226,7 @@ namespace BankingSystem.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("BankingSystem.Domain.Aggregates.Transaction.TransactionEntry", b =>
@@ -267,7 +267,7 @@ namespace BankingSystem.Infrastructure.Migrations
 
                     b.HasIndex("TransactionId");
 
-                    b.ToTable("TransactionEntries");
+                    b.ToTable("TransactionEntries", (string)null);
                 });
 
             modelBuilder.Entity("BankingSystem.Domain.Aggregates.Customer.CheckingAccount", b =>
@@ -348,7 +348,7 @@ namespace BankingSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("BankingSystem.Domain.Aggregates.Customer.DepositAccount", b =>
                 {
-                    b.OwnsOne("DepositTerm", "DepositTerm", b1 =>
+                    b.OwnsOne("BankingSystem.Domain.Aggregates.Customer.DepositAccount.DepositTerm#DepositTerm", "DepositTerm", b1 =>
                         {
                             b1.Property<Guid>("DepositAccountId")
                                 .HasColumnType("uniqueidentifier");
@@ -365,7 +365,7 @@ namespace BankingSystem.Infrastructure.Migrations
 
                             b1.HasKey("DepositAccountId");
 
-                            b1.ToTable("Accounts");
+                            b1.ToTable("Accounts", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("DepositAccountId");

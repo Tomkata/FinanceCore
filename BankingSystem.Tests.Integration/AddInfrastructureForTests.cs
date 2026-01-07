@@ -19,7 +19,7 @@ public static class InfrastructureTestExtensions
         services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
 
         services.Scan(scan => scan
-            .FromAssemblyOf<TransferInitiatedEventHandler>()
+            .FromAssemblyOf<AccountCreditedEventHandler>()
             .AddClasses(c => c.AssignableTo(typeof(IDomainEventHandler<>)))
             .AsImplementedInterfaces()
             .WithScopedLifetime()
