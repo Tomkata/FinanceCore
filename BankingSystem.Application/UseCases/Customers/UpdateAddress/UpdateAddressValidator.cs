@@ -1,8 +1,9 @@
-﻿using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
-using FluentValidation;
-
+﻿
 namespace BankingSystem.Application.UseCases.Customers.UpdateAddress
 {
+    using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
+    using FluentValidation;
+
     public class UpdateAddressValidator : AbstractValidator<UpdateAddressCommand>
     {
         public UpdateAddressValidator()
