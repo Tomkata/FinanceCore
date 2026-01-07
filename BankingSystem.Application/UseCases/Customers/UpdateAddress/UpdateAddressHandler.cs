@@ -1,11 +1,12 @@
-﻿using BankingSystem.Application.Common.Interfaces;
-using BankingSystem.Application.Common.Results;
-using BankingSystem.Application.DTOs.Customer;
-using BankingSystem.Domain.Aggregates.Customer;
-using BankingSystem.Domain.Interfaces;
+﻿
 
 namespace BankingSystem.Application.UseCases.Customers.UpdateAddress
 {
+    using BankingSystem.Application.Common.Interfaces;
+    using BankingSystem.Application.Common.Results;
+    using BankingSystem.Application.DTOs.Customer;
+    using BankingSystem.Domain.Aggregates.Customer;
+    using BankingSystem.Domain.Interfaces;
     public class UpdateAddressHandler
     {
         private readonly ICustomerRepository _customerRepository;

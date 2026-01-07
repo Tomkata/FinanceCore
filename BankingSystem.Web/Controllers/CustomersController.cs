@@ -8,6 +8,8 @@ using BankingSystem.Application.UseCases.Customers.DepositToAccount;
 using BankingSystem.Application.UseCases.Customers.GetCustomerByEgn;
 using BankingSystem.Application.UseCases.Customers.GetCustomerById;
 using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
+using BankingSystem.Application.UseCases.Customers.UpdateAddress;
+using BankingSystem.Application.UseCases.Customers.UpdatePhoneNumber;
 using BankingSystem.Application.UseCases.Customers.WithdrawFromAccount;
 using BankingSystem.Application.UseCases.TransferBankAccount;
 using BankingSystem.Domain.Enums;
@@ -23,7 +25,7 @@ namespace BankingSystem.Web.Controllers
     [Route("api/[controller]")]
     public class CustomersController : ControllerBase
     {
-        private readonly CreateCustomerHandler  _createCustomerHandler;
+        private readonly CreateCustomerHandler _createCustomerHandler;
         private readonly DeactivateCustomerCommandHandler _deactivateCustomerCommandHandler;
         private readonly DepositToBankAccountHandler _depositToBankAccountHandler;
         private readonly WithdrawToBankAccountHandler _withdrawToBankAccountHandler;
@@ -31,16 +33,20 @@ namespace BankingSystem.Web.Controllers
         private readonly GetCustomerByIdHandler _getCustomerByIdHandler;
         private readonly OpenBankAccountHandler _openBankAccountHandler;
         private readonly TransferToBankAccountHandler _transferToBankAccountHandler;
+        private readonly UpdateAddressHandler _updateAddressHandler;
+        private readonly UpdatePhoneNumberHandler _updatePhoneNumberHandlerl;
 
         public CustomersController(
-            CreateCustomerHandler createCustomerHandler, 
+            CreateCustomerHandler createCustomerHandler,
             DeactivateCustomerCommandHandler deactivateCustomerCommandHandler,
-            DepositToBankAccountHandler depositToBankAccountHandler, 
-            WithdrawToBankAccountHandler withdrawToBankAccountHandler, 
-            GetCustomerByEgnHandler getCustomerByEgnHandler, 
+            DepositToBankAccountHandler depositToBankAccountHandler,
+            WithdrawToBankAccountHandler withdrawToBankAccountHandler,
+            GetCustomerByEgnHandler getCustomerByEgnHandler,
             GetCustomerByIdHandler getCustomerByIdHandler,
             OpenBankAccountHandler openBankAccountHandler,
-            TransferToBankAccountHandler transferToBankAccountHandler)
+            TransferToBankAccountHandler transferToBankAccountHandler,
+            UpdateAddressHandler updateAddressHandler,
+            UpdatePhoneNumberHandler updatePhoneNumberHandler)
         {
             this._createCustomerHandler = createCustomerHandler;
             this._deactivateCustomerCommandHandler = deactivateCustomerCommandHandler;
@@ -50,6 +56,8 @@ namespace BankingSystem.Web.Controllers
             this._getCustomerByIdHandler = getCustomerByIdHandler;
             this._openBankAccountHandler = openBankAccountHandler;
             this._transferToBankAccountHandler = transferToBankAccountHandler;
+            this._updateAddressHandler = updateAddressHandler;
+            this._updatePhoneNumberHandlerl = updatePhoneNumberHandler;
         }
 
         [HttpPost("create")]
@@ -104,9 +112,9 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("deposit")]
-        public async Task<IActionResult> Deposit([FromForm] Guid customerId, Guid accountId,decimal amount)
+        public async Task<IActionResult> Deposit([FromForm] Guid customerId, Guid accountId, decimal amount)
         {
-            var command = new DepositBankAccountCommand(customerId,accountId,amount);
+            var command = new DepositBankAccountCommand(customerId, accountId, amount);
 
             var result = await _depositToBankAccountHandler.Handle(command);
             if (result.IsSuccess)
@@ -118,7 +126,7 @@ namespace BankingSystem.Web.Controllers
         [HttpPost("withdraw")]
         public async Task<IActionResult> Withdraw([FromForm] Guid customerId, Guid accoundId, decimal amount)
         {
-            var command = new WithdrawBankAccountCommand(customerId,amount,accoundId);
+            var command = new WithdrawBankAccountCommand(customerId, amount, accoundId);
 
             var result = await _withdrawToBankAccountHandler.Handle(command);
             if (result.IsSuccess)
@@ -127,8 +135,8 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpGet("{egn:string}")]
-        public async Task<IActionResult> GetByEgn( string egn)
+        [HttpGet("egn")]
+        public async Task<IActionResult> GetByEgn(string egn)
         {
             var query = new GetCustomerByEgnQuery(egn);
 
@@ -137,7 +145,7 @@ namespace BankingSystem.Web.Controllers
                 return Ok(result.Value);
 
             return NotFound(result.Error);
-                    
+
         }
 
         [HttpGet("{id:guid}")]
@@ -171,8 +179,35 @@ namespace BankingSystem.Web.Controllers
             return NotFound(result.Error);
         }
 
-        
+        [HttpPost("address")]
+        public async Task<IActionResult> UpdateAddress(UpdateAddressDto dto)
+        {
+            var command = new UpdateAddressCommand(
+                 dto.AccountId,
+                 dto.Address,
+                 dto.City,
+                 dto.Zip,
+                 dto.Country
+                );
+
+            var result = await _updateAddressHandler.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
+        }
 
 
+        [HttpPost("phoneNumber")]
+        public async Task<IActionResult> UpdatePhone(Guid customerId, string phoneNumber)
+        {
+            var command = new UpdatePhoneNumberCommand(customerId,phoneNumber);
+
+            var result = await _updatePhoneNumberHandlerl.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
+        }
     }
 }

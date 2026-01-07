@@ -61,7 +61,7 @@ namespace BankingSystem.Application.UseCases.Transactions.SearchTransactions
                     x.TransactionEntries.Any(te => te.AccountId == query.AccountId));
             }
 
-            if (!string.IsNullOrEmpty(query.TransactionType))
+            else if (!string.IsNullOrEmpty(query.TransactionType))
             {
                 queryable = queryable.Where(x =>
                     x.TransactionType.ToString() == query.TransactionType);
