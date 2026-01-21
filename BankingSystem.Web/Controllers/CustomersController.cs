@@ -179,7 +179,7 @@ namespace BankingSystem.Web.Controllers
             return NotFound(result.Error);
         }
 
-        [HttpPost("address")]
+        [HttpPut("{customerId}/address")]
         public async Task<IActionResult> UpdateAddress(UpdateAddressDto dto)
         {
             var command = new UpdateAddressCommand(
@@ -198,7 +198,7 @@ namespace BankingSystem.Web.Controllers
         }
 
 
-        [HttpPost("phoneNumber")]
+        [HttpPut("{customerId}/phone")]
         public async Task<IActionResult> UpdatePhone(Guid customerId, string phoneNumber)
         {
             var command = new UpdatePhoneNumberCommand(customerId,phoneNumber);

@@ -6,7 +6,6 @@
         {
             Id = Guid.NewGuid();
             CreatedAt = DateTime.UtcNow;
-            // Ensure RowVersion is non-null so SQLite (which doesn't auto-generate SQL Server rowversion) won't fail NOT NULL inserts in tests
             RowVersion = new byte[8];   
         }
         public Guid Id { get; set; }            
