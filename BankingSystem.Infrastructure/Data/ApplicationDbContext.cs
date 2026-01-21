@@ -1,12 +1,15 @@
-﻿
+
 namespace BankingSystem.Infrastructure.Data
 {
     using BankingSystem.Domain.Aggregates.Customer;
     using BankingSystem.Domain.Aggregates.Transaction;
     using BankingSystem.Infrastructure.Data.Configurations;
+    using BankingSystem.Infrastructure.Identity;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         public ApplicationDbContext()
         {}
