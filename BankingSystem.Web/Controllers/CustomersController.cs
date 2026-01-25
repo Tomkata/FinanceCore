@@ -11,12 +11,14 @@ using BankingSystem.Application.UseCases.Customers.WithdrawFromAccount;
 using BankingSystem.Application.UseCases.TransferBankAccount;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.AccessControl;
 
 namespace BankingSystem.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CustomersController : ControllerBase
@@ -113,6 +115,18 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
+        [HttpPost("withdraw")]
+        public async Task<IActionResult> Withdraw([FromBody] WithdrawDto dto)
+        {
+            var command = new WithdrawBankAccountCommand(dto.CustomerId, dto.AccountId, dto.Amount);
+
+            var result = await _withdrawToBankAccountHandler.Handle(command);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
+
         [HttpPost("transfer")]
         public async Task<IActionResult> Transfer([FromBody] TransferDto dto)
         {
@@ -129,6 +143,30 @@ namespace BankingSystem.Web.Controllers
                 return Ok(result.Value);
 
             return BadRequest(result.Error);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var query = new GetCustomerByIdQuery(id);
+
+            var result = await _getCustomerByIdHandler.Handle(query);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
+        }
+
+        [HttpGet("egn/{egn}")]
+        public async Task<IActionResult> GetByEgn(string egn)
+        {
+            var query = new GetCustomerByEgnQuery(egn);
+
+            var result = await _getCustomerByEgnHandler.Handle(query);
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.Error);
         }
     }
 }

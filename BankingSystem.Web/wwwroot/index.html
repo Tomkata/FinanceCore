@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Auth Section (Login/Register) -->
+        <div id="authSection" class="section">
+            <div class="container">
+                <h1>Banking System</h1>
+
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="showLogin()">Login</button>
+                    <button class="tab-btn" onclick="showRegister()">Register</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="auth-form">
+                    <h2>Login</h2>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button onclick="login()">Login</button>
+                    <div id="loginError" class="error"></div>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="auth-form" style="display: none;">
+                    <h2>Register</h2>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <input type="password" id="registerPassword" placeholder="Password (min 6 chars)" required>
+                    <input type="text" id="registerFirstName" placeholder="First Name" required>
+                    <input type="text" id="registerLastName" placeholder="Last Name" required>
+                    <button onclick="register()">Register</button>
+                    <div id="registerError" class="error"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Section -->
+        <div id="mainSection" class="section" style="display: none;">
+            <nav class="navbar">
+                <h1>Banking System</h1>
+                <div>
+                    <span id="userInfo"></span>
+                    <button onclick="logout()">Logout</button>
+                </div>
+            </nav>
+
+            <div class="container">
+                <!-- Navigation Tabs -->
+                <div class="main-tabs">
+                    <button class="tab-btn active" onclick="showTab('customers')">Customers</button>
+                    <button class="tab-btn" onclick="showTab('accounts')">Accounts</button>
+                    <button class="tab-btn" onclick="showTab('transactions')">Transactions</button>
+                </div>
+
+                <!-- Customers Tab -->
+                <div id="customersTab" class="tab-content">
+                    <h2>Customers</h2>
+
+                    <div class="action-panel">
+                        <button onclick="showCreateCustomerForm()">Create Customer</button>
+                        <div class="search-box">
+                            <input type="text" id="searchEgn" placeholder="Search by EGN">
+                            <button onclick="searchCustomerByEgn()">Search</button>
+                        </div>
+                    </div>
+
+                    <div id="createCustomerForm" class="form-panel" style="display: none;">
+                        <h3>Create New Customer</h3>
+                        <input type="text" id="customerUsername" placeholder="Username" required>
+                        <input type="text" id="customerFirstName" placeholder="First Name" required>
+                        <input type="text" id="customerLastName" placeholder="Last Name" required>
+                        <input type="text" id="customerEgn" placeholder="EGN (10 digits)" required>
+                        <input type="text" id="customerPhone" placeholder="Phone" required>
+                        <input type="email" id="customerEmail" placeholder="Email" required>
+                        <input type="text" id="customerStreet" placeholder="Street" required>
+                        <input type="text" id="customerCity" placeholder="City" required>
+                        <input type="text" id="customerZipCode" placeholder="Zip Code" required>
+                        <input type="text" id="customerCountry" placeholder="Country" required>
+                        <button onclick="createCustomer()">Create</button>
+                        <button onclick="cancelCreateCustomer()">Cancel</button>
+                        <div id="createCustomerError" class="error"></div>
+                    </div>
+
+                    <div id="customersResult" class="results"></div>
+                </div>
+
+                <!-- Accounts Tab -->
+                <div id="accountsTab" class="tab-content" style="display: none;">
+                    <h2>Accounts</h2>
+
+                    <div class="action-panel">
+                        <button onclick="showOpenAccountForm()">Open Account</button>
+                        <div class="search-box">
+                            <input type="text" id="searchCustomerId" placeholder="Customer ID">
+                            <button onclick="getCustomerAccounts()">Get Accounts</button>
+                        </div>
+                    </div>
+
+                    <div id="openAccountForm" class="form-panel" style="display: none;">
+                        <h3>Open New Account</h3>
+                        <input type="text" id="accountCustomerId" placeholder="Customer ID" required>
+                        <select id="accountType">
+                            <option value="0">Checking Account</option>
+                            <option value="1">Saving Account</option>
+                            <option value="2">Deposit Account</option>
+                        </select>
+                        <input type="number" id="initialBalance" placeholder="Initial Balance" required>
+                        <input type="number" id="withdrawLimit" placeholder="Withdraw Limit (optional)">
+                        <input type="number" id="depositTerm" placeholder="Deposit Term (months, for deposit account)">
+                        <button onclick="openAccount()">Open Account</button>
+                        <button onclick="cancelOpenAccount()">Cancel</button>
+                        <div id="openAccountError" class="error"></div>
+                    </div>
+
+                    <div id="accountsResult" class="results"></div>
+                </div>
+
+                <!-- Transactions Tab -->
+                <div id="transactionsTab" class="tab-content" style="display: none;">
+                    <h2>Transactions</h2>
+
+                    <div class="action-panel">
+                        <button onclick="showDepositForm()">Deposit</button>
+                        <button onclick="showWithdrawForm()">Withdraw</button>
+                        <button onclick="showTransferForm()">Transfer</button>
+                    </div>
+
+                    <div id="depositForm" class="form-panel" style="display: none;">
+                        <h3>Deposit</h3>
+                        <input type="text" id="depositCustomerId" placeholder="Customer ID" required>
+                        <input type="text" id="depositAccountId" placeholder="Account ID" required>
+                        <input type="number" id="depositAmount" placeholder="Amount" required>
+                        <button onclick="deposit()">Deposit</button>
+                        <button onclick="cancelDeposit()">Cancel</button>
+                        <div id="depositError" class="error"></div>
+                    </div>
+
+                    <div id="withdrawForm" class="form-panel" style="display: none;">
+                        <h3>Withdraw</h3>
+                        <input type="text" id="withdrawCustomerId" placeholder="Customer ID" required>
+                        <input type="text" id="withdrawAccountId" placeholder="Account ID" required>
+                        <input type="number" id="withdrawAmount" placeholder="Amount" required>
+                        <button onclick="withdraw()">Withdraw</button>
+                        <button onclick="cancelWithdraw()">Cancel</button>
+                        <div id="withdrawError" class="error"></div>
+                    </div>
+
+                    <div id="transferForm" class="form-panel" style="display: none;">
+                        <h3>Transfer</h3>
+                        <input type="text" id="transferSenderCustomerId" placeholder="Sender Customer ID" required>
+                        <input type="text" id="transferFromAccountId" placeholder="From Account ID" required>
+                        <input type="text" id="transferReceiverCustomerId" placeholder="Receiver Customer ID" required>
+                        <input type="text" id="transferToAccountId" placeholder="To Account ID" required>
+                        <input type="number" id="transferAmount" placeholder="Amount" required>
+                        <button onclick="transfer()">Transfer</button>
+                        <button onclick="cancelTransfer()">Cancel</button>
+                        <div id="transferError" class="error"></div>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text" id="transactionAccountId" placeholder="Account ID">
+                        <button onclick="getAccountTransactions()">Get Transactions</button>
+                    </div>
+
+                    <div id="transactionsResult" class="results"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

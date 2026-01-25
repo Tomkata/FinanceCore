@@ -2,10 +2,12 @@ using BankingSystem.Application.UseCases.Transactions.GetTransactionById;
 using BankingSystem.Application.UseCases.Transactions.GetTransactionHistoryForAccount;
 using BankingSystem.Application.UseCases.Transactions.GetTransactionsByDate;
 using BankingSystem.Application.UseCases.Transactions.SearchTransactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TransactionsController : ControllerBase

@@ -7,10 +7,12 @@ using BankingSystem.Application.UseCases.Accounts.ReactiveBankAccount;
 using BankingSystem.Application.UseCases.Customers.OpenBankAccount;
 using BankingSystem.Domain.Enums;
 using BankingSystem.Domain.ValueObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.Web.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AccountsController : ControllerBase
@@ -37,14 +39,30 @@ namespace BankingSystem.Web.Controllers
             this._getAllAccountsForCustomerHandler = getAllAccountsForCustomerHandler;
         }
 
-       
+        [HttpPost("open")]
+        public async Task<IActionResult> Open([FromBody] OpenAccountDto dto)
+        {
+            var depositTerm = dto.DepositTerm.HasValue ? new DepositTerm(dto.DepositTerm.Value) : null;
+
+            var command = new OpenBankAccountCommand(
+                (AccountType)dto.AccountType,
+                dto.CustomerId,
+                dto.InitialBalance,
+                dto.WithdrawLimit,
+                depositTerm);
+
+            var result = await _openAccountHandler.Handle(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.Error);
+        }
 
         [HttpPost("close")]
-        public async Task<IActionResult> Close([FromForm] Guid CustomerId,Guid AccountId)
+        public async Task<IActionResult> Close([FromBody] CloseAccountDto dto)
         {
-
-
-            var command = new FreezeBankAccountCommand(CustomerId,AccountId);
+            var command = new FreezeBankAccountCommand(dto.CustomerId, dto.AccountId);
 
             var result = await _freezeBankAccountHandler.Handle(command);
 
@@ -54,12 +72,10 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpPost("reactive")]
-        public async Task<IActionResult> Reactive([FromForm] Guid CustomerId, Guid AccountId)
+        [HttpPost("reactivate")]
+        public async Task<IActionResult> Reactivate([FromBody] ReactivateAccountDto dto)
         {
-
-
-            var command = new ReactiveBankAccountCommand(CustomerId, AccountId);
+            var command = new ReactiveBankAccountCommand(dto.CustomerId, dto.AccountId);
 
             var result = await _reactiveBankAccountHandler.Handle(command);
 
@@ -70,11 +86,9 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("freeze")]
-        public async Task<IActionResult> Freeze([FromForm] Guid CustomerId, Guid AccountId)
+        public async Task<IActionResult> Freeze([FromBody] FreezeAccountDto dto)
         {
-
-
-            var command = new FreezeBankAccountCommand(CustomerId, AccountId);
+            var command = new FreezeBankAccountCommand(dto.CustomerId, dto.AccountId);
 
             var result = await _freezeBankAccountHandler.Handle(command);
 
@@ -84,23 +98,23 @@ namespace BankingSystem.Web.Controllers
             return BadRequest(result.Error);
         }
 
-        [HttpGet("id")]
-        public async Task<IActionResult> GetById(Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            var query = new GetAccountByIdQuery(Id);    
+            var query = new GetAccountByIdQuery(id);
             var result = await _getAccountByIdHandler.Handle(query);
 
             if (result.IsSuccess)
                 return Ok(result.Value);
 
             return NotFound(result.Error);
-            
+
         }
 
-        [HttpGet("iban")]
-        public async Task<IActionResult> GetByIban(string Iban)
+        [HttpGet("iban/{iban}")]
+        public async Task<IActionResult> GetByIban(string iban)
         {
-            var query = new  GetAccountByIbanQuery(Iban);
+            var query = new  GetAccountByIbanQuery(iban);
             var result = await _getAccountByIbanHandler.Handle(query);
 
             if (result.IsSuccess)
@@ -109,10 +123,10 @@ namespace BankingSystem.Web.Controllers
             return NotFound(result.Error);
         }
 
-        [HttpGet("customer")]
-        public async Task<IActionResult> GetAllByCustomer(Guid Id)
+        [HttpGet("customer/{customerId}")]
+        public async Task<IActionResult> GetAllByCustomer(Guid customerId)
         {
-            var query = new GetAllAccountsForCustomerQuery(Id);
+            var query = new GetAllAccountsForCustomerQuery(customerId);
 
             var result = await _getAllAccountsForCustomerHandler.Handle(query);
 
