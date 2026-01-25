@@ -6,13 +6,13 @@
     {
         public WithdrawBankAccountValidator()
         {
-            RuleFor(x => x.customerId)
+            RuleFor(x => x.CustomerId)
               .NotEmpty();
 
-            RuleFor(x => x.accountId)
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
 
-            RuleFor(x => x.amount)
+            RuleFor(x => x.Amount)
                .NotNull()
                .GreaterThan(0);
         }

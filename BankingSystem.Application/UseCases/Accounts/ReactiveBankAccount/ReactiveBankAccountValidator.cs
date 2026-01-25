@@ -8,10 +8,10 @@ namespace BankingSystem.Application.UseCases.Accounts.ReactiveBankAccount
     {
         public ReactiveBankAccountValidator()
         {
-            RuleFor(x => x.accountId)
+            RuleFor(x => x.AccountId)
                .NotEmpty();
 
-            RuleFor(x => x.customerId)
+            RuleFor(x => x.CustomerId)
                 .NotEmpty();
         }
     }

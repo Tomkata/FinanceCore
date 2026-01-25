@@ -20,22 +20,22 @@
         }
 
         public async Task<Result<Guid>> Handle(DepositBankAccountCommand command)
-        {   
+        {
             var validationResult = await _validator.ValidateAsync(command);
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(String.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
 
-            var customer = await _customerRepository.GetByIdAsync(command.customerId);
+            var customer = await _customerRepository.GetByIdAsync(command.CustomerId);
 
             if (customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            customer.Deposit(command.accountId, command.amount);
+            customer.Deposit(command.AccountId, command.Amount);
 
             await _customerRepository.SaveAsync(customer);
             await _unitOfWork.SaveChangesAsync();
 
-            return Result<Guid>.Success(command.accountId);
+            return Result<Guid>.Success(command.AccountId);
         }
     }
 

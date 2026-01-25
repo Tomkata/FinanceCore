@@ -104,9 +104,9 @@ namespace BankingSystem.Web.Controllers
         }
 
         [HttpPost("deposit")]
-        public async Task<IActionResult> Deposit([FromForm] Guid customerId, Guid accountId,decimal amount)
+        public async Task<IActionResult> Deposit([FromBody] DepositDto dto)
         {
-            var command = new DepositBankAccountCommand(customerId,accountId,amount);
+            var command = new DepositBankAccountCommand(dto.CustomerId, dto.AccountId, dto.Amount);
 
             var result = await _depositToBankAccountHandler.Handle(command);
             if (result.IsSuccess)

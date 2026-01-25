@@ -29,11 +29,11 @@ namespace BankingSystem.Application.UseCases.BlockBankAccount
                 return Result<Guid>.Failure(string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
 
 
-            var customer = await _customerRepository.GetByIdAsync(command.customerId);
+            var customer = await _customerRepository.GetByIdAsync(command.CustomerId);
             if (customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            var account = customer.GetAccountById(command.accountId); //not async !!
+            var account = customer.GetAccountById(command.AccountId); //not async !!
             account.Freeze();
 
             await _customerRepository.SaveAsync(customer);

@@ -7,10 +7,10 @@ namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
     {
         public FreezeBankAccountValidator()
         {
-            RuleFor(x => x.accountId)   
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
 
-            RuleFor(x => x.customerId)
+            RuleFor(x => x.CustomerId)
                 .NotEmpty();
         }
     }

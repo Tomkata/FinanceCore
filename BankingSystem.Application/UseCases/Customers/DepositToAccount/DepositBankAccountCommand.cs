@@ -1,4 +1,4 @@
 ﻿namespace BankingSystem.Application.UseCases.Customers.DepositToAccount
 {
-    public record DepositBankAccountCommand(Guid customerId, Guid accountId, decimal amount);
+    public record DepositBankAccountCommand(Guid CustomerId, Guid AccountId, decimal Amount);
 }

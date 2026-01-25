@@ -25,17 +25,17 @@
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(String.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
 
-            var customer = await _customerRepository.GetByIdAsync(command.customerId);
+            var customer = await _customerRepository.GetByIdAsync(command.CustomerId);
 
             if (customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            customer.Withdraw(command.accountId, command.amount);
+            customer.Withdraw(command.AccountId, command.Amount);
 
             await _customerRepository.SaveAsync(customer);
-            await _unitOfWork.SaveChangesAsync();   
+            await _unitOfWork.SaveChangesAsync();
 
-            return Result<Guid>.Success(command.accountId);
+            return Result<Guid>.Success(command.AccountId);
         }
     }
 

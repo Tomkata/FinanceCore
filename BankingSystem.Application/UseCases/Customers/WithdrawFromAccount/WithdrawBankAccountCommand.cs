@@ -1,4 +1,4 @@
 ﻿namespace BankingSystem.Application.UseCases.Customers.WithdrawFromAccount
 {
-    public record WithdrawBankAccountCommand(Guid customerId,decimal amount, Guid accountId);
+    public record WithdrawBankAccountCommand(Guid CustomerId, Guid AccountId, decimal Amount);
 }

@@ -6,10 +6,10 @@ namespace BankingSystem.Application.UseCases.BlockBankAccount
     {
         public BlockBankAccountValidator()
         {
-            RuleFor(x => x.accountId)
+            RuleFor(x => x.AccountId)
                .NotEmpty();
 
-            RuleFor(x => x.customerId)
+            RuleFor(x => x.CustomerId)
                 .NotEmpty();
         }
     }

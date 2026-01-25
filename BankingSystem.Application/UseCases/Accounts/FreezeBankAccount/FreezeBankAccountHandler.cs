@@ -26,12 +26,12 @@ namespace BankingSystem.Application.UseCases.Accounts.CloseBankAccount
             if (!validationResult.IsValid)
                 return Result<Guid>.Failure(string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage)));
 
-            var customer = await _customerRepository.GetByIdAsync(command.customerId);
+            var customer = await _customerRepository.GetByIdAsync(command.CustomerId);
 
             if(customer is null)
                 return Result<Guid>.Failure("Customer not found");
 
-            var account = customer.GetAccountById(command.accountId); 
+            var account = customer.GetAccountById(command.AccountId); 
             account.Freeze();
                 
            await _customerRepository.SaveAsync(customer);
