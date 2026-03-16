@@ -38,10 +38,11 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        app.UseGlobalExceptionHandler();
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();
